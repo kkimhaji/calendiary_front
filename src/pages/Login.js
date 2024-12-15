@@ -25,8 +25,8 @@ function Login() {
             const response = await api.post('/auth/login', loginData);
             // 로그인 성공 시 토큰을 localStorage에 저장
             localStorage.setItem('token', response.data.token);
-            // 메인 페이지로 이동
-            navigate('/');
+            // 로그인 성공 시 /boardList로 이동
+            navigate('/boardList');
         } catch (error) {
             setError('아이디 또는 비밀번호가 올바르지 않습니다.');
         }

@@ -2,15 +2,21 @@ import logo from './logo.svg';
 import './App.css';
 import Login from './pages/Login';
 import BoardList from './pages/BoardList';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('token');
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 
 function App() {
   return (
     <Router>
       <div>
         <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element = {<Login />} />
-          <Route path="/" element = {<BoardList />} />
+          <Route path='/boardList' element={<PrivateRoute> <BoardList/> </PrivateRoute>}/>
         </Routes>
       </div>
     </Router>
