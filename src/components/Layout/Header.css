@@ -6,6 +6,12 @@
     background-color: #f8f9fa;
     box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 
 .logo a {
     font-size: 1.5rem;
@@ -32,4 +38,45 @@
 
 .nav a:hover {
     color: #007bff;
+}
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-icon {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+    position: relative;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+.menu-icon::before {
+    top: -6px;
+}
+
+.menu-icon::after {
+    bottom: -6px;
+}
+
+.menu-button:hover .menu-icon,
+.menu-button:hover .menu-icon::before,
+.menu-button:hover .menu-icon::after {
+    background-color: #007bff;
 }
