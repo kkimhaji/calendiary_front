@@ -5,7 +5,7 @@ import './Login.css';
 
 function Login() {
     const [loginData, setLoginData] = useState({
-        username: '',
+        email: '',
         password: ''
     });
     const [error, setError] = useState('');
@@ -22,13 +22,16 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/auth/login', loginData);
+            const response = await api.post('/auth/authenticate', loginData);
+            const { accessToken } = response.data.accessToken;
+
             // 로그인 성공 시 토큰을 localStorage에 저장
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', accessToken);
             // 로그인 성공 시 /boardList로 이동
             navigate('/boardList');
         } catch (error) {
             setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+            console.error('Login error: ', error);
         }
     };
 
@@ -39,13 +42,13 @@ function Login() {
                 {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>아이디</label>
+                        <label>이메일</label>
                         <input
-                            type="text"
-                            name="username"
-                            value={loginData.username}
+                            type="email"
+                            name="email"
+                            value={loginData.email}
                             onChange={handleChange}
-                            placeholder="아이디를 입력하세요"
+                            placeholder="이메일을 입력하세요"
                             required
                         />
                     </div>
