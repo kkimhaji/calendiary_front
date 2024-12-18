@@ -14,6 +14,8 @@ function Register() {
     const [error, setError] = useState('');
     const [isEmailSent, setIsEmailSent] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
+    const [resendDisabled, setResendDisabled] = useState(false);
+    const [resendTimer, setResendTimer] = useState(0);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,11 +34,43 @@ function Register() {
             });
             setIsEmailSent(true);
             setError('');
+            //타이머 실행
+            setResendTimer();
             alert('인증 코드가 이메일로 전송되었습니다.');
         } catch (error) {
             setError('이메일 전송에 실패했습니다. 다시 시도해주세요.');
         }
     };
+
+    //타이머 함수
+    const startResendTimer = () => {
+        setResendDisabled(true);
+        setResendTimer(300); // 5분
+        const timer = setInterval(() => {
+            setResendTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    setResendDisabled(false);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        //인증 메일 재전송
+        const handleResendVerification = async (e) => {
+            e.preventDefault();
+            try {
+                await api.post('/auth/email/verification/resend', {
+                    email: formData.email
+                });
+                startResendTimer();
+                alert('인증 코드가 재전송되었습니다.');
+            } catch (error) {
+                setError('인증 코드 재전송에 실패했습니다.');
+            }
+        };
+    
 
        // 인증 코드 확인
        const handleVerifyCode = async (e) => {
@@ -112,6 +146,19 @@ function Register() {
                                 인증메일 전송
                             </button>
                         </div>
+                        {isEmailSent && !isVerified && (
+                            <div className="resend-group">
+                                <button 
+                                    type="button" 
+                                    onClick={handleResendVerification}
+                                    className="resend-button"
+                                    disabled={resendDisabled}
+                                >
+                                                            인증메일 재전송
+                                    {resendDisabled && ` (${Math.floor(resendTimer / 60)}:${(resendTimer % 60).toString().padStart(2, '0')})`}
+                                </button>
+                            </div>
+                        )}
                     </div>
                     {isEmailSent && (
                         <div className="form-group">
