@@ -53,3 +53,27 @@
     margin-bottom: 1rem;
     text-align: center;
 }
+
+.register-link {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.register-link p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.register-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.register-button:hover {
+    background-color: #218838;
+}

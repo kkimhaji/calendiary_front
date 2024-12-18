@@ -13,10 +13,10 @@ function Login() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setLoginData({
-            ...loginData,
+        setLoginData(prev => ({
+            ...prev,
             [name]: value
-        });
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -67,6 +67,10 @@ function Login() {
                         로그인
                     </button>
                 </form>
+                <div className="register-link">
+                    <p>계정이 없으신가요?</p>
+                    <Link to="/register" className="register-button">회원가입</Link>
+                </div>
             </div>
         </div>
     );
