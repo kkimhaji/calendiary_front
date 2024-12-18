@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../api/axios';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from '../api/axios';
 import './Login.css';
 
 function Login() {
@@ -22,7 +22,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/auth/authenticate', loginData);
+            const response = await axios.post('/auth/authenticate', loginData);
             const { accessToken } = response.data.accessToken;
 
             // 로그인 성공 시 토큰을 localStorage에 저장

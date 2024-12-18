@@ -29,7 +29,7 @@ function Register() {
     const handleSendVerification = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/auth/email/verification', {
+            await axios.post('/auth/email/verification', {
                 email: formData.email
             });
             setIsEmailSent(true);
@@ -61,7 +61,7 @@ function Register() {
         const handleResendVerification = async (e) => {
             e.preventDefault();
             try {
-                await api.post('/auth/email/verification/resend', {
+                await axios.post('/auth/email/verification/resend', {
                     email: formData.email
                 });
                 startResendTimer();
@@ -76,7 +76,7 @@ function Register() {
        const handleVerifyCode = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/auth/email/verify', {
+            await axios.post('/auth/email/verify', {
                 email: formData.email,
                 code: formData.verificationCode
             });
@@ -97,7 +97,7 @@ function Register() {
         }
 
         try {
-            await api.post('/auth/register', {
+            await axios.post('/auth/register', {
                 nickname: formData.nickname,
                 email: formData.email,
                 password: formData.password
@@ -108,7 +108,7 @@ function Register() {
             setError('회원가입에 실패했습니다. 다시 시도해주세요.');
         }
     };
-
+    }
     return (
         <div className="register-container">
             <div className="register-box">
@@ -205,5 +205,6 @@ function Register() {
             </div>
         </div>
     );
-
 }
+
+export default Register;
