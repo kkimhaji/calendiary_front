@@ -44,6 +44,21 @@
 }
 
 .main-content {
+  margin-left: 250px; /* 사이드바 너비만큼 여백 */
   flex: 1;
-  padding: 2rem;
+  padding: 20px;
+  width: calc(100% - 250px);
+  min-height: calc(100vh - 60px); /* 헤더 높이 제외 */
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  margin-top: 60px; /* 헤더 높이만큼 여백 */
 }

@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
-import Sidebar from './Sidebar';
+import Menubar from './Menubar';
 
 function Header() {
-        const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+        const [isMenubarOpen, setIsMenubarOpen] = useState(false);
     
-        const toggleSidebar = () => {
-            setIsSidebarOpen(!isSidebarOpen);
+        const toggleMenubar = () => {
+            setIsMenubarOpen(!isMenubarOpen);
         };
 
     return (
         <>
             <header className="header">
                 <div className='header-left'>
-                    <button className='menu-button' onClick={toggleSidebar}>
+                    <button className='menu-button' onClick={toggleMenubar}>
                         <span className='menu-icon'></span>
                     </button>
                     <div className="logo">
@@ -28,7 +28,7 @@ function Header() {
                     </ul>
                 </nav>
             </header>
-            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <Menubar isOpen={isMenubarOpen} toggleMenubar={toggleMenubar} />
         </>
     );
 }

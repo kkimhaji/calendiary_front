@@ -2,26 +2,32 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Sidebar.css';
 
-function Sidebar({ isOpen, toggleSidebar }) {
+function Sidebar() {
+    // 팀 카테고리 예시 데이터
+    const categories = [
+        { id: 1, name: '일정' },
+        { id: 2, name: '게시판' },
+        { id: 3, name: '갤러리' },
+        { id: 4, name: '팀원 관리' }
+    ];
+
     return (
-        <>
-            <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-                <div className="sidebar-header">
-                    <button className="close-button" onClick={toggleSidebar}>
-                        ×
-                    </button>
-                </div>
-                <nav className="sidebar-menu">
-                    <ul>
-                        <li><Link to="/board" onClick={toggleSidebar}>게시판</Link></li>
-                        <li><Link to="/notice" onClick={toggleSidebar}>공지사항</Link></li>
-                        <li><Link to="/mypage" onClick={toggleSidebar}>마이페이지</Link></li>
-                        <li><Link to="/settings" onClick={toggleSidebar}>설정</Link></li>
-                    </ul>
-                </nav>
+        <div className="sidebar-fixed">
+            <div className="team-info">
+                <h2>게시판 프로젝트</h2>
             </div>
-            {isOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
-        </>
+            <nav className="category-menu">
+                <ul>
+                    {categories.map(category => (
+                        <li key={category.id}>
+                            <Link to={`/${category.name}`}>
+                                {category.name}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+        </div>
     );
 }
 
