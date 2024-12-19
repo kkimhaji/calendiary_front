@@ -5,7 +5,7 @@ import './Register.css';
 
 function Register() {
     const navigate = useNavigate();
-    const [fiormData, setFormData] = useState({
+    const [formData, setFormData] = useState({
         nickname: '',
         email: '',
         password: '',
@@ -56,6 +56,7 @@ function Register() {
                 return prev - 1;
             });
         }, 1000);
+    }
 
         //인증 메일 재전송
         const handleResendVerification = async (e) => {
@@ -88,27 +89,28 @@ function Register() {
         }
     };
 
-    // 회원가입 제출
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!isVerified) {
-            setError('이메일 인증을 완료해주세요.');
-            return;
-        }
+        // 회원가입 제출
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            if (!isVerified) {
+                setError('이메일 인증을 완료해주세요.');
+                return;
+            }
 
-        try {
-            await axios.post('/auth/register', {
-                nickname: formData.nickname,
-                email: formData.email,
-                password: formData.password
-            });
-            alert('회원가입이 완료되었습니다.');
-            navigate('/login');
-        } catch (error) {
-            setError('회원가입에 실패했습니다. 다시 시도해주세요.');
-        }
-    };
-    }
+            try {
+                await axios.post('/auth/register', {
+                    nickname: formData.nickname,
+                    email: formData.email,
+                    password: formData.password
+                });
+                alert('회원가입이 완료되었습니다.');
+                navigate('/login');
+            } catch (error) {
+                setError('회원가입에 실패했습니다. 다시 시도해주세요.');
+            }
+        };
+    
+
     return (
         <div className="register-container">
             <div className="register-box">
