@@ -1,13 +1,4 @@
-.sidebar-fixed {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background-color: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-    padding: 20px;
-}
+
 
 .team-info {
     padding: 20px 0;

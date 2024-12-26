@@ -15,23 +15,21 @@
 }
 
 .menubar-header {
-    height: 60px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding: 0 15px;
-    border-bottom: 1px solid #eee;
+    /* justify-content: flex-end; */
+    padding: 15px;
     background-color: white;
 }
 
-.close-button {
+/* .close-button {
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
     padding: 10px;
     color: #333;
-}
+} */
 .menubar-menu {
     padding: 20px;
 }
@@ -67,4 +65,53 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+}
+
+/* Menubar.css */
+.team-menu {
+    position: fixed;
+    left: -250px;  /* 초기에는 화면 밖에 위치 */
+    width: 250px;
+    height: calc(100vh - 60px);  /* 전체 높이에서 헤더 높이를 뺀 만큼 */
+    background-color: white;
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
+
+.team-menu.open {
+    transform: translateX(250px);  /* 메뉴바를 화면 안으로 이동 */
+}
+
+.menu-button {
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: none;
+    cursor: pointer;
+    border: none;
+    font-size: 24px;
+    color: #333;
+}
+
+.team-menu ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.team-menu li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.team-menu li.selected {
+    background-color: #f0f0f0;
 }

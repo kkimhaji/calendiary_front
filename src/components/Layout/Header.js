@@ -4,17 +4,17 @@ import './Header.css';
 import Menubar from './Menubar';
 
 function Header() {
-        const [isMenubarOpen, setIsMenubarOpen] = useState(false);
+        const [isOpen, setIsOpen] = useState(false);
     
         const toggleMenubar = () => {
-            setIsMenubarOpen(!isMenubarOpen);
+            setIsOpen(!isOpen);
         };
 
     return (
         <>
             <header className="header">
                 <div className='header-left'>
-                    <button className='menu-button' onClick={toggleMenubar}>
+                    <button className={`menu-button ${isOpen ? 'active' : ''}`} onClick={toggleMenubar}>
                         <span className='menu-icon'></span>
                     </button>
                     <div className="logo">
@@ -28,7 +28,7 @@ function Header() {
                     </ul>
                 </nav>
             </header>
-            <Menubar isOpen={isMenubarOpen} toggleMenubar={toggleMenubar} />
+            <Menubar isOpen={isOpen} setIsOpen={setIsOpen} onClose={() => setIsOpen(false)} />
         </>
     );
 }

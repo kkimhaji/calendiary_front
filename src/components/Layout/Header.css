@@ -2,7 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding-left: 10px;
+    padding-right: 1rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,.1);
     position: fixed;
     top: 0;
@@ -12,6 +15,7 @@
     background-color: #f8f9fa;
     z-index: 1000; /* 사이드바보다 위에 표시 */
 }
+
 .header-left {
     display: flex;
     align-items: center;

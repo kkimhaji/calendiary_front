@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,22 +43,13 @@
   min-height: 100vh;
 }
 
-.main-content {
-  margin-left: 250px; /* 사이드바 너비만큼 여백 */
-  flex: 1;
-  padding: 20px;
-  width: calc(100% - 250px);
-  min-height: calc(100vh - 60px); /* 헤더 높이 제외 */
-}
-
-.app-container {
+.layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
-.content-wrapper {
+.main-container {
   display: flex;
   flex: 1;
-  margin-top: 60px; /* 헤더 높이만큼 여백 */
 }

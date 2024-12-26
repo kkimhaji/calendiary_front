@@ -4,11 +4,11 @@ const TeamContext = createContext();
 
 export function TeamProvider({ children }) {
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(null);
 
   return (
     <TeamContext.Provider value={{ 
-      selectedTeam, 
+      selectedTeam,
       setSelectedTeam,
       categories,
       setCategories 
