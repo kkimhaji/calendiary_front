@@ -3,35 +3,40 @@ import './App.css';
 import Login from './pages/Login';
 import BoardList from './pages/BoardList';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Header from './components/Layout/Header';
 import Register from './pages/Register';
-import Sidebar from './components/Layout/Sidebar';
 import TestConnection from './TestConnection';
+import { TeamProvider } from './contexts/TeamContext';
+import Layout from './components/Layout/Layout';
+import { AuthProvider } from './contexts/AuthContext';
 
-const PrivateRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token');
-  return isAuthenticated ? children : <Navigate to="/login" />;
-}
+// const PrivateRoute = ({ children }) => {
+//   const isAuthenticated = localStorage.getItem('token');
+//   return isAuthenticated ? children : <Navigate to="/login" />;
+// }
 
 function App() {
+  const isAuthenticated = localStorage.getItem('token');
   return (
     <Router>
-      <div className='app-container'>
-        <Header />
-        <div className='content-wrapper'>
-          <Sidebar />
-          <main className='main-content'>
+      <AuthProvider>
+        <TeamProvider>
+          {isAuthenticated ? (
+            <Layout>
+              <Routes>
+                <Route path='/boardList' element={<BoardList />} />
+                <Route path='/test' element={<TestConnection />} />
+                <Route path="*" element={<Navigate to="/boardList" replace />} />
+              </Routes>
+            </Layout>
+          ) : (
             <Routes>
-              <Route path='/test' element={<TestConnection />} />
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element = {<Login />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path='/boardList' element={<PrivateRoute> <BoardList/> </PrivateRoute>}/>
+              <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-          </main>
-        </div>
-      </div>
-
+          )}
+        </TeamProvider>
+      </AuthProvider>
     </Router>
   );
 }

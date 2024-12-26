@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './Login.css';
+import { useAuth } from '../contexts/AuthContext';
 
 function Login() {
+    const { login } = useAuth();
+
     const [loginData, setLoginData] = useState({
         email: '',
         password: ''
@@ -27,6 +30,7 @@ function Login() {
 
             // 로그인 성공 시 토큰을 localStorage에 저장
             localStorage.setItem('token', accessToken);
+            login(accessToken);
             // 로그인 성공 시 /boardList로 이동
             navigate('/boardList');
         } catch (error) {
