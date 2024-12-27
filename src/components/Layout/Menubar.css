@@ -1,7 +1,7 @@
 .menubar {
     position: fixed;
     left: -280px;
-    width: 280px;
+    width: 20%;
     height: 100vh;
     top: 0;
     background-color: white;
@@ -12,6 +12,7 @@
 
 .menubar.open {
     left: 0;
+    transform: translateX(250px);
 }
 
 .menubar-header {
@@ -22,14 +23,6 @@
     background-color: white;
 }
 
-/* .close-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 10px;
-    color: #333;
-} */
 .menubar-menu {
     padding: 20px;
 }
@@ -67,16 +60,16 @@
     z-index: 1000;
 }
 
-/* Menubar.css */
 .team-menu {
     position: fixed;
-    left: -250px;  /* 초기에는 화면 밖에 위치 */
-    width: 250px;
+    left: -20%;  /* 초기에는 화면 밖에 위치 */
+    width: 20%;
     height: calc(100vh - 60px);  /* 전체 높이에서 헤더 높이를 뺀 만큼 */
     background-color: white;
     transition: transform 0.3s ease;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 1001;
+    transition: all 0.3s ease-in-out;  /* 부드러운 전환 효과 */
 }
 
 .team-menu.open {

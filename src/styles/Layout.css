@@ -4,14 +4,14 @@
     position: relative;
 }
 
-.team-menu {
+/* .team-menu {
     width: 200px;
     transition: width 0.3s;
 }
 
 .team-menu.closed {
     width: 50px;
-}
+} */
 
 .main-content {
     flex: 1;
