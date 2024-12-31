@@ -31,8 +31,10 @@ function Login() {
             // 로그인 성공 시 토큰을 localStorage에 저장
             localStorage.setItem('token', accessToken);
             login(accessToken);
+            //기본 헤더 설정
+            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             // 로그인 성공 시 /boardList로 이동
-            navigate('/boardList');
+            navigate('/boardList', {replace:true});
         } catch (error) {
             setError('아이디 또는 비밀번호가 올바르지 않습니다.');
             console.error('Login error: ', error);
