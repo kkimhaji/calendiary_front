@@ -74,7 +74,12 @@ function Register() {
             });
             const { accessToken } = response.data;
             localStorage.setItem('token', accessToken);
-            navigate('/login');  // 또는 메인 페이지로 이동
+            // 2. Auth 컨텍스트 업데이트
+            login(accessToken);
+            // 3. axios 기본 헤더 설정
+            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            // navigate('/login');  // 또는 메인 페이지로 이동
+            navigate('/boardList', { replace: true });
         } catch (error) {
             console.error('Verification failed:', error);
             alert('인증번호가 올바르지 않습니다.');
