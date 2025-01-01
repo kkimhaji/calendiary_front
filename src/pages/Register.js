@@ -76,9 +76,9 @@ function Register() {
             localStorage.setItem('token', accessToken);
             // 2. Auth 컨텍스트 업데이트
             login(accessToken);
-            // 3. axios 기본 헤더 설정
-            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             // navigate('/login');  // 또는 메인 페이지로 이동
+            axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            // 4. 페이지 리다이렉트
             navigate('/boardList', { replace: true });
         } catch (error) {
             console.error('Verification failed:', error);
