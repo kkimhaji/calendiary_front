@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Register.css';
+import '../styles/Register.css';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 

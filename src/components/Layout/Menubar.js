@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import './Menubar.css';
 import { useTeam } from '../../contexts/TeamContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Menubar({ isOpen, setIsOpen, onClose }) {
     const [teams, setTeams] = useState([]);
     const { setSelectedTeamId, selectedTeamId } = useTeam();
-
+    const navigate = useNavigate();
     const fetchTeams = async () => {
         try {
-            const response = await axios.get('/api/teams');
+            const response = await axios.get('/teams');
             setTeams(response.data);
         } catch (error) {
             console.error('팀 목록 조회 실패:', error);
@@ -30,6 +31,10 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
         setSelectedTeamId(teamId);
     };
 
+    const handleCreateTeam = () => {
+        navigate('/create-team');  // 함수로 분리하여 처리
+    };
+
     return (
         <div className={`team-menu ${isOpen ? 'open' : ''}`}>
             <div className='menubar-header'>
@@ -38,7 +43,9 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
                     x
                 </button>
             </div>
-
+            <button className='create-team-button' onClick={handleCreateTeam}>
+                    팀 만들기
+                </button>
             <nav className='menubar-menu'>
                 <ul>
                     {teams.map(team => (

@@ -8,6 +8,7 @@ import TestConnection from './TestConnection';
 import { TeamProvider } from './contexts/TeamContext';
 import Layout from './components/Layout/Layout';
 import { AuthProvider } from './contexts/AuthContext';
+import CreateTeam from './pages/CreateTeam';
 
 // const PrivateRoute = ({ children }) => {
 //   const isAuthenticated = localStorage.getItem('token');
@@ -26,6 +27,7 @@ function App() {
                 <Route path='/boardList' element={<BoardList />} />
                 <Route path='/test' element={<TestConnection />} />
                 <Route path="*" element={<Navigate to="/boardList" replace />} />
+                <Route path="/create-team" element={<CreateTeam />}/>
               </Routes>
             </Layout>
           ) : (
