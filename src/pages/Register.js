@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 function Register() {
     const navigate = useNavigate();
+    const {login} = useAuth();
     const [step, setStep] = useState(1);  // 1: 기본 정보, 2: 인증번호
 
     const [timeLeft, setTimeLeft] = useState(300); // 5분 = 300초
@@ -79,7 +81,8 @@ function Register() {
             // navigate('/login');  // 또는 메인 페이지로 이동
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             // 4. 페이지 리다이렉트
-            navigate('/boardList', { replace: true });
+            // navigate('/boardList', { replace: true });
+            window.location.replace('/boardList');
         } catch (error) {
             console.error('Verification failed:', error);
             alert('인증번호가 올바르지 않습니다.');
