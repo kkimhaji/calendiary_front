@@ -28,7 +28,10 @@ function CreateTeam() {
                 }
             });
             alert('팀이 생성되었습니다.');
-            navigate('/boardList');  // 메인 페이지로 이동
+            navigate('/boardList', { 
+                replace: true,
+                state: { refresh: true } 
+            });  // 메인 페이지로 이동
         } catch (error) {
             console.error('팀 생성 실패:', error);
             alert('팀 생성에 실패했습니다.');

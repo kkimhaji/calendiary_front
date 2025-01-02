@@ -8,12 +8,14 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
     const [teams, setTeams] = useState([]);
     const { setSelectedTeamId, selectedTeamId } = useTeam();
     const navigate = useNavigate();
+
     const fetchTeams = async () => {
         try {
             const response = await axios.get('/member/getTeam', {
-                headers: {'Authorization': `Bearer ${localStorage.getItme('token')}`}
+                headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}
             });
             setTeams(response.data);
+            console.log('팀 받아오기');
         } catch (error) {
             console.error('팀 목록 조회 실패:', error);
         }
