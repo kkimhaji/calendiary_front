@@ -10,7 +10,9 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
     const navigate = useNavigate();
     const fetchTeams = async () => {
         try {
-            const response = await axios.get('/teams');
+            const response = await axios.get('/member/getTeam', {
+                headers: {'Authorization': `Bearer ${localStorage.getItme('token')}`}
+            });
             setTeams(response.data);
         } catch (error) {
             console.error('팀 목록 조회 실패:', error);
@@ -25,7 +27,7 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
         // }, []);
         // API 호출하여 사용자의 팀 목록 가져오기
         fetchTeams();
-    }, []);
+    }, [window.location.key]); //페이지 변경 감지
 
     const handleTeamSelect = (teamId) => {
         setSelectedTeamId(teamId);

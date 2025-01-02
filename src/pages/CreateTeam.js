@@ -19,8 +19,14 @@ function CreateTeam() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
         try {
-            await axios.post('/team/create', teamData);
+            await axios.post('/team/create', teamData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             alert('팀이 생성되었습니다.');
             navigate('/boardList');  // 메인 페이지로 이동
         } catch (error) {
