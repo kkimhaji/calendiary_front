@@ -6,9 +6,10 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [isAuthenticated, setIsAuthenticated] = useState(!!token);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
-      // 토큰 설정 및 검증 함수
-      const setAuthToken = (newToken) => {
+    // 토큰 설정 및 검증 함수
+    const setAuthToken = (newToken) => {
         if (newToken) {
             localStorage.setItem('token', newToken);
             setToken(newToken);
@@ -50,6 +51,8 @@ export function AuthProvider({ children }) {
     const login = useCallback((accessToken) => {
         setToken(accessToken);
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        setIsAuthenticated(true);
+        setIsLoggedIn(true);
     }, []);
     // const login = (accessToken) => {
     //     localStorage.setItem('token', accessToken);
@@ -61,6 +64,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('token');
         setToken(null);
         setIsAuthenticated(false);
+        setIsLoggedIn(false);
     };
 
     return (
