@@ -6,7 +6,7 @@ import axios from 'axios';
 
 //팀의 카테고리
 function Sidebar() {
-    const { categories, setCategories } = useTeam();
+    const [categories, setCategories] = useState([]);
     const {
         selectedTeamId,
         selectedCategoryId,
@@ -24,19 +24,15 @@ function Sidebar() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            //     fetch(`/teams/${selectedTeam}/categories`)
-            //         .then(res => res.json())
-            //         .then(data => setCategories(data))
-            //         .catch(error => {
-            //             console.error('카테고리를 불러오는 데에 실패했습니다.: ', error);
-            //             setCategories([])
-            //         })
-            // }, [selectedTeam, setCategories]);
             if (selectedTeamId) {
                 // 선택된 팀의 카테고리 목록 가져오기
                 try {
-                    const response = await axios.get(`/teams/${selectedTeamId}/categories`);
-                    setCategories(response.data);
+                    const response = await axios.get(`/teams/${selectedTeamId}/categories`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    setCategories(response.data || []); // 응답이 없을 경우 빈 배열 설정
                 } catch (error) {
                     console.error('카테고리 목록 조회 실패: ', error);
                     setCategories([]);
@@ -59,36 +55,23 @@ function Sidebar() {
     }
 
     return (
-        //     <div className="sidebar-fixed">
-        //         <div className="team-info">
-        //             <h2>게시판 프로젝트</h2>
-        //         </div>
-        //         <nav className="category-list">
-        //             <ul>
-        //                 {categories.map(category => (
-        //                     <li key={category.id} className="category-item">
-        //                         <Link to={`/${category.id}`}>
-        //                             {category.name}
-        //                         </Link>
-        //                     </li>
-        //                 ))}
-        //             </ul>
-        //         </nav>
-        //     </div>
-        // );
         <div className="sidebar">
             <h3>카테고리</h3>
             <nav className="category-list">
                 <ul>
-                    {categories.map(category => (
-                        <li
-                            key={category.id}
-                            className={selectedCategoryId === category.id ? 'selected' : ''}
-                            onClick={() => handleCategorySelect(category.id)}
-                        >
-                            {category.name}
-                        </li>
-                    ))}
+                    {Array.isArray(categories) && categories.length > 0 ? (
+                        categories.map(category => (
+                            <li
+                                key={category.id}
+                                className={selectedCategoryId === category.id ? 'selected' : ''}
+                                onClick={() => handleCategorySelect(category.id)}
+                            >
+                                {category.name}
+                            </li>
+                        ))
+                    ) : (
+                        <li>카테고리가 없습니다</li>
+                    )}
                 </ul>
             </nav>
         </div>
