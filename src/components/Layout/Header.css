@@ -101,10 +101,11 @@
 
 .property {
     border: none;
-    background-color: none;
+    background: none;
     cursor: pointer;
+    border-radius: 4erm;
 }
 
-.property a:hover{
+.property:hover{
     color: #007bff;
 }

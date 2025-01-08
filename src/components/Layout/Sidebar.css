@@ -45,3 +45,13 @@
     border-radius: 4px;
     cursor: pointer;
   }
+
+.create-category-button{
+    border:none;
+    cursor: pointer;
+    background: none;
+}
+
+.create-category-button:hover{
+    color: #007bff;
+}
