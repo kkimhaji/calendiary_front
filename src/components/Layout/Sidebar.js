@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 import { useTeam } from '../../contexts/TeamContext';
 import axios from 'axios';
@@ -20,6 +20,11 @@ function Sidebar() {
         } catch (error) {
             console.error('카테고리 목록 조회 실패:', error);
         }
+    };
+
+    const navigate = useNavigate();
+    const handleCreateCategory = () => {
+        navigate(`/teams/${selectedTeamId}/category/create`);
     };
 
     useEffect(() => {
@@ -57,6 +62,13 @@ function Sidebar() {
     return (
         <div className="sidebar">
             <h3>카테고리</h3>
+            <hr></hr>
+            <button
+                className="create-category-button"
+                onClick={handleCreateCategory}
+            >
+                카테고리 추가
+            </button>
             <nav className="category-list">
                 <ul>
                     {Array.isArray(categories) && categories.length > 0 ? (
