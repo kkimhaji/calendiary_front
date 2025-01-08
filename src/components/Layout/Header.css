@@ -41,6 +41,7 @@
     margin-left: 1rem;
 }
 
+
 .nav a {
     color: #333;
     text-decoration: none;
@@ -96,4 +97,14 @@
 .menu-button:hover .menu-icon::before,
 .menu-button:hover .menu-icon::after {
     background-color: #007bff;
+}
+
+.property {
+    border: none;
+    background-color: none;
+    cursor: pointer;
+}
+
+.property a:hover{
+    color: #007bff;
 }

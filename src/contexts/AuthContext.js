@@ -5,7 +5,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'));
-    const [isAuthenticated, setIsAuthenticated] = useState(!!token);
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
     // 토큰 설정 및 검증 함수
@@ -13,37 +12,23 @@ export function AuthProvider({ children }) {
         if (newToken) {
             localStorage.setItem('token', newToken);
             setToken(newToken);
-            setIsAuthenticated(true);
+            // setIsAuthenticated(true);
             // axios 기본 헤더 설정
             axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
         } else {
             localStorage.removeItem('token');
             setToken(null);
-            setIsAuthenticated(false);
+            // setIsAuthenticated(false);
             delete axios.defaults.headers.common['Authorization'];
         }
     };
 
     // 앱 시작 시 토큰 유효성 검사
     useEffect(() => {
-        // const validateToken = async () => {
-        //     const storedToken = localStorage.getItem('token');
-        //     if (storedToken) {
-        //         try {
-        //             // 토큰 유효성 검사 API 호출
-        //             await axios.get('/auth/validate', {
-        //                 headers: { Authorization: `Bearer ${storedToken}` }
-        //             });
-        //             setAuthToken(storedToken);
-        //         } catch (error) {
-        //             setAuthToken(null);
-        //         }
-        //     }
-        // };
-        // validateToken();
-        const storedToken = localStorage.getItem('accessToken');
+        const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
+            setIsLoggedIn(true);
             axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         }
     }, []);
@@ -51,24 +36,20 @@ export function AuthProvider({ children }) {
     const login = useCallback((accessToken) => {
         setToken(accessToken);
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        setIsAuthenticated(true);
+        // setIsAuthenticated(true);
         setIsLoggedIn(true);
     }, []);
-    // const login = (accessToken) => {
-    //     localStorage.setItem('token', accessToken);
-    //     setToken(accessToken);
-    //     setIsAuthenticated(true);
-    // };
 
     const logout = () => {
         localStorage.removeItem('token');
         setToken(null);
-        setIsAuthenticated(false);
+        // setIsAuthenticated(false);
         setIsLoggedIn(false);
+        window.location.href = '/';
     };
 
     return (
-        <AuthContext.Provider value={{ token, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ token, isLoggedIn, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

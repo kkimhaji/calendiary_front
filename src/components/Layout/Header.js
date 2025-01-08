@@ -1,21 +1,30 @@
-import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import Menubar from './Menubar';
 import { useAuth } from '../../contexts/AuthContext';
 
 function Header() {
-        const [isOpen, setIsOpen] = useState(false);
-        const { isLoggedIn, logout} = useAuth();
-    
-        const toggleMenubar = () => {
-            setIsOpen(!isOpen);
-        };
+    const [isOpen, setIsOpen] = useState(false);
+    const { isLoggedIn, logout } = useAuth();
+    const navigate = useNavigate();
 
-        const handleLogout = () => {
-            logout();
+    const toggleMenubar = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    }
+
+    const handleAuth = () => {
+        if (isLoggedIn) {
+            handleLogout();
+        } else {
+            navigate('/login');
         }
-
+    };
     return (
         <>
             <header className="header">
@@ -31,11 +40,12 @@ function Header() {
                     <ul>
                         <li><Link to="/board">게시판</Link></li>
                         <li>
-                        {isLoggedIn ? (
-                            <button onClick={handleLogout} className='property'>로그아웃</button>
-                        ) : (
-                            <Link to="/login" className='property'>로그인</Link>
-                        )}
+                            <button
+                                onClick={handleAuth}
+                                className='property'
+                            >
+                                {isLoggedIn ? '로그아웃' : '로그인'}
+                            </button>
                         </li>
                     </ul>
                 </nav>
