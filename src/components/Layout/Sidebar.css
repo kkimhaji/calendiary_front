@@ -23,6 +23,7 @@
 
 .category-list li {
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .category-list a {
