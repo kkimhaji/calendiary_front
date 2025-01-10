@@ -38,7 +38,6 @@ function Header() {
                 </div>
                 <nav className="nav">
                     <ul>
-                        <li><Link to="/board">게시판</Link></li>
                         <li>
                             <button
                                 onClick={handleAuth}
