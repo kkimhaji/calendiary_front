@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams  } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/CreateCategory.css';
-import { TeamPermission, getPermissionLabel } from '../constants/Permissions';
+import { TeamPermission, getPermissionLabel } from '../constants/TeamPermissions';
+import { CategoryPermision, getPermissionLabel } from '../constants/CategoryPermission';
 
 const CreateCategory = () => {
     const [name, setName] = useState('');
@@ -108,7 +109,7 @@ const CreateCategory = () => {
                             <div key={role.id} className="role-permissions">
                                 <h4>{role.name}</h4>
                                 <div className="permissions-grid">
-                                    {Object.values(TeamPermission).map(permission => (
+                                    {Object.values(CategoryPermision).map(permission => (
                                         <label key={permission.key} className="permission-checkbox">
                                             <input
                                                 type="checkbox"
