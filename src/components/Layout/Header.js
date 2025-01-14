@@ -38,6 +38,16 @@ function Header() {
                 </div>
                 <nav className="nav">
                     <ul>
+                    {isLoggedIn && (
+                            <li>
+                                <Link 
+                                    to="/account" 
+                                    className="property"
+                                >
+                                    계정 정보
+                                </Link>
+                            </li>
+                        )}
                         <li>
                             <button
                                 onClick={handleAuth}
