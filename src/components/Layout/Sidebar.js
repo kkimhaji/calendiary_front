@@ -51,7 +51,7 @@ function Sidebar() {
 
     const handleCategorySelect = (categoryId) => {
         setSelectedCategoryId(categoryId);
-        navigate(`/category/${categoryId}/posts`);
+        navigate(`/teams/${selectedTeamId}/category/${selectedCategoryId}/posts`);
     };
 
     if (!selectedTeamId) {

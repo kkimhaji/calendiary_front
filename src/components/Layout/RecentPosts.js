@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/RecentPosts.css';
+import {selectedTeamId, setSelectedTeamId, useTeam} from '../../contexts/TeamContext.js';
 
 const RecentPosts = ({ teamId, categoryId }) => {
     const [posts, setPosts] = useState([]);
+    const {selectedTeamId, setSelectedTeamId} = useTeam();
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
@@ -11,15 +13,15 @@ const RecentPosts = ({ teamId, categoryId }) => {
         try {
             let url;
             if (categoryId){
-                url = `/category/${categoryId}/posts`;
+                url = `/teams/${selectedTeamId}/category/${categoryId}/posts`;
             } else{
-                url = `/teams/${teamId}/recent`;
+                url = `/teams/${selectedTeamId}/recent`;
             }
             const response = await axios.get(url, {
                 params: {
                     page: 0,
                     size: 20,
-                    sort: 'createdAt,desc'
+                    sort: 'createdDate,desc'
                 },
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
