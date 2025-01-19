@@ -16,6 +16,7 @@ function Sidebar() {
     const fetchCategories = async (teamId) => {
         try {
             const response = await axios.get(`/api/teams/${teamId}/categories`);
+
             setCategories(response.data);
         } catch (error) {
             console.error('카테고리 목록 조회 실패:', error);
@@ -49,9 +50,9 @@ function Sidebar() {
 
     }, [selectedTeamId]);
 
-    const handleCategorySelect = (categoryId) => {
-        setSelectedCategoryId(categoryId);
-        navigate(`/teams/${selectedTeamId}/category/${selectedCategoryId}/posts`);
+    const handleCategorySelect = async (categoryId) => {
+        await setSelectedCategoryId(categoryId);
+        navigate(`/teams/${selectedTeamId}/category/${categoryId}/posts`);
     };
 
     if (!selectedTeamId) {

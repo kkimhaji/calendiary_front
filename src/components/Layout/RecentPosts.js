@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/RecentPosts.css';
 import {selectedTeamId, setSelectedTeamId, useTeam} from '../../contexts/TeamContext.js';
+import { useLocation, useParams } from 'react-router-dom';
 
-const RecentPosts = ({ teamId, categoryId }) => {
+const RecentPosts = () => {
     const [posts, setPosts] = useState([]);
-    const {selectedTeamId, setSelectedTeamId} = useTeam();
+    // const {selectedTeamId, setSelectedTeamId, selectedCategoryId, setSelectedCategoryId} = useTeam();
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const { teamId, categoryId } = useParams(); // URL 파라미터 사용
+    const location = useLocation();
 
     const fetchPosts = async () => {
+        if (!teamId) return; // teamId가 없으면 요청하지 않음
+
         try {
             let url;
             if (categoryId){
-                url = `/teams/${selectedTeamId}/category/${categoryId}/posts`;
+                url = `/teams/${teamId}/category/${categoryId}/posts`;
             } else{
-                url = `/teams/${selectedTeamId}/recent`;
+                url = `/teams/${teamId}/recent`;
             }
             const response = await axios.get(url, {
                 params: {
@@ -27,13 +32,21 @@ const RecentPosts = ({ teamId, categoryId }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                   }
             });
-            setPosts(response.data.content);
 
-            if (response.data.length < 20) {
-                setHasMore(false);
+            if (response.data.content) {
+                if (page === 0) {
+                    setPosts(response.data.content);
+                } else {
+                    setPosts(prev => [...prev, ...response.data.content]);
+                }
+                setHasMore(response.data.content.length === 20);
             }
 
-            setPosts(prev => page === 0 ? response.data : [...prev, ...response.data]);
+            // setPosts(response.data.content);
+            // if (response.data.length < 20) {
+            //     setHasMore(false);
+            // }
+            // setPosts(prev => page === 0 ? response.data : [...prev, ...response.data]);
 
         } catch (error) {
             console.error('게시물 로딩 실패:', error);
@@ -41,11 +54,11 @@ const RecentPosts = ({ teamId, categoryId }) => {
     };
 
     useEffect(() => {
+        setPage(0);
         fetchPosts();
         //페이지 초기화
-        setPage(0);
         setPosts([]);
-    }, [teamId, page]);
+    }, [teamId, categoryId, location.pathname]);
 
     const loadMore = () => {
         setPage(prev => prev + 1);
