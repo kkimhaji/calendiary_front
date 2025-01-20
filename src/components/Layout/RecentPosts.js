@@ -68,13 +68,21 @@ const RecentPosts = () => {
 
     const handleCreatePost = () =>{
         if (categoryId){
-            navigate()
+            navigate(`/teams/${teamId}/categories/${categoryId}/posts/create`);
+        }else{
+            navigate(`/teams/${teamId}/posts/create`)
         }
     }
 
     return (
         <div className="recent-posts-container">
-            <h2>{categoryId ? '카테고리 게시물' : '팀 게시물'}</h2>
+            <div className='posts-header'>
+                <h2>{categoryId ? '카테고리 게시물' : '팀 게시물'}</h2>
+                <button className='create-post-button'
+                onClick={handleCreatePost} >
+                    글 작성하기
+                </button>
+            </div>
             <div className="posts-list">
                 {posts.length > 0 ? (
                         posts.map(post => (
