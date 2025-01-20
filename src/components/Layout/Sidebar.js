@@ -52,7 +52,7 @@ function Sidebar() {
 
     const handleCategorySelect = async (categoryId) => {
         await setSelectedCategoryId(categoryId);
-        navigate(`/teams/${selectedTeamId}/category/${categoryId}/posts`);
+        navigate(`/teams/${selectedTeamId}/category/${categoryId}/recent`);
     };
 
     if (!selectedTeamId) {

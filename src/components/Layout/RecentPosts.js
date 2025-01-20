@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../../styles/RecentPosts.css';
 import {selectedTeamId, setSelectedTeamId, useTeam} from '../../contexts/TeamContext.js';
 import { useLocation, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RecentPosts = () => {
     const [posts, setPosts] = useState([]);
@@ -11,6 +12,7 @@ const RecentPosts = () => {
     const [hasMore, setHasMore] = useState(true);
     const { teamId, categoryId } = useParams(); // URL 파라미터 사용
     const location = useLocation();
+    const navigate = useNavigate();
 
     const fetchPosts = async () => {
         if (!teamId) return; // teamId가 없으면 요청하지 않음
@@ -18,7 +20,7 @@ const RecentPosts = () => {
         try {
             let url;
             if (categoryId){
-                url = `/teams/${teamId}/category/${categoryId}/posts`;
+                url = `/teams/${teamId}/category/${categoryId}/recent`;
             } else{
                 url = `/teams/${teamId}/recent`;
             }
@@ -63,6 +65,12 @@ const RecentPosts = () => {
     const loadMore = () => {
         setPage(prev => prev + 1);
     };
+
+    const handleCreatePost = () =>{
+        if (categoryId){
+            navigate()
+        }
+    }
 
     return (
         <div className="recent-posts-container">
