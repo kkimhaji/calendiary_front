@@ -11,6 +11,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import CreateTeam from './pages/CreateTeam';
 import RecentPosts from './components/Layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
+import CreatePost from './pages/CreatePost';
 
 // const PrivateRoute = ({ children }) => {
 //   const isAuthenticated = localStorage.getItem('token');
@@ -32,6 +33,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/teams/:teamId/recent" replace />} />
                 <Route path="/create-team" element={<CreateTeam />} />
                 <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
+                <Route path='/teams/:teamId/category/:categoryId/posts' element={<CreatePost />} />
               </Routes>
             </Layout>
           ) : (
