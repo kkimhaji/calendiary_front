@@ -12,6 +12,7 @@ import CreateTeam from './pages/CreateTeam';
 import RecentPosts from './components/Layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
 import CreatePost from './pages/CreatePost';
+import React from 'react';
 
 // const PrivateRoute = ({ children }) => {
 //   const isAuthenticated = localStorage.getItem('token');
