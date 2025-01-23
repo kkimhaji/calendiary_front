@@ -13,16 +13,6 @@ function Sidebar() {
         setSelectedCategoryId
     } = useTeam();
 
-    const fetchCategories = async (teamId) => {
-        try {
-            const response = await axios.get(`/api/teams/${teamId}/categories`);
-
-            setCategories(response.data);
-        } catch (error) {
-            console.error('카테고리 목록 조회 실패:', error);
-        }
-    };
-
     const navigate = useNavigate();
     const handleCreateCategory = () => {
         navigate(`/teams/${selectedTeamId}/category/create`);

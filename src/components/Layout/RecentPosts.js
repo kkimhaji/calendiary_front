@@ -14,7 +14,7 @@ const RecentPosts = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (teamId, categoryId) => {
         if (!teamId) return; // teamId가 없으면 요청하지 않음
 
         try {
@@ -57,9 +57,11 @@ const RecentPosts = () => {
 
     useEffect(() => {
         setPage(0);
-        fetchPosts();
         //페이지 초기화
         setPosts([]);
+        if (teamId) {  // teamId가 있을 때만 실행
+            fetchPosts(teamId, categoryId);  // 파라미터 전달
+        }
     }, [teamId, categoryId, location.pathname]);
 
     const loadMore = () => {
@@ -67,8 +69,9 @@ const RecentPosts = () => {
     };
 
     const handleCreatePost = () =>{
-        if (categoryId){
-            navigate(`/teams/${teamId}/categories/${categoryId}/posts/create`);
+
+        if (categoryId && categoryId !== 'undefined'){
+            navigate(`/teams/${teamId}/category/${categoryId}/posts/create`);
         }else{
             navigate(`/teams/${teamId}/posts/create`)
         }

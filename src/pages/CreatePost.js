@@ -21,9 +21,10 @@ const CreatePost = () => {
                 teamId: parseInt(teamId),
                 categoryId: categoryId ? parseInt(categoryId) : null
             };
-
+            
+            //글 작성
             const url = categoryId 
-                ? `/teams/${teamId}/categories/${categoryId}/posts`
+                ? `/teams/${teamId}/category/${categoryId}/posts`
                 : `/teams/${teamId}/posts`;
 
             await axios.post(url, postData, {
@@ -34,7 +35,7 @@ const CreatePost = () => {
 
             // 작성 완료 후 목록으로 돌아가기
             if (categoryId) {
-                navigate(`/teams/${teamId}/categories/${categoryId}/posts`);
+                navigate(`/teams/${teamId}/category/${categoryId}/recent`);
             } else {
                 navigate(`/teams/${teamId}/recent`);
             }
