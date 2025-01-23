@@ -6,10 +6,31 @@ import axios from 'axios';
 import '../styles/CreatePost.css';
 
 const CreatePost = () => {
+    const [isEditorReady, setIsEditorReady] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { teamId, categoryId } = useParams();
     const navigate = useNavigate();
+
+    const editorConfiguration = {
+        toolbar: [
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'outdent',
+            'indent',
+            '|',
+            'blockQuote',
+            'insertTable',
+            'undo',
+            'redo'
+        ]
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,9 +44,8 @@ const CreatePost = () => {
             };
             
             //글 작성
-            const url = categoryId 
-                ? `/teams/${teamId}/category/${categoryId}/posts`
-                : `/teams/${teamId}/posts`;
+            const url = `/teams/${teamId}/category/${categoryId}/posts`;
+
 
             await axios.post(url, postData, {
                 headers: {
@@ -62,9 +82,15 @@ const CreatePost = () => {
                     <CKEditor
                         editor={ClassicEditor}
                         data={content}
+                        config={editorConfiguration}
+                        onReady={editor => {
+                            setIsEditorReady(true);
+                        }}
                         onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setContent(data);
+                            if (isEditorReady) {
+                                const data = editor.getData();
+                                setContent(data);
+                            }
                         }}
                     />
                 </div>
