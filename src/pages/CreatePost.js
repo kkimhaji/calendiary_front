@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -6,11 +6,12 @@ import axios from 'axios';
 import '../styles/CreatePost.css';
 
 const CreatePost = () => {
-    const [isEditorReady, setIsEditorReady] = useState(false);
+    // const [isEditorReady, setIsEditorReady] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { teamId, categoryId } = useParams();
     const navigate = useNavigate();
+    const [editor, setEditor] = useState(null);
 
     const editorConfiguration = {
         toolbar: [
@@ -31,6 +32,17 @@ const CreatePost = () => {
             'redo'
         ]
     };
+
+    useEffect(() => {
+        return () => {
+            if (editor) {
+                editor.destroy()
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        };
+    }, [editor]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -83,14 +95,12 @@ const CreatePost = () => {
                         editor={ClassicEditor}
                         data={content}
                         config={editorConfiguration}
-                        onReady={editor => {
-                            setIsEditorReady(true);
+                        onReady={editor =>{
+                            setEditor(editor);
                         }}
                         onChange={(event, editor) => {
-                            if (isEditorReady) {
                                 const data = editor.getData();
                                 setContent(data);
-                            }
                         }}
                     />
                 </div>
