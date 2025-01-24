@@ -34,7 +34,6 @@ function App() {
                 <Route path="*" element={<Navigate to="/teams/:teamId/recent" replace />} />
                 <Route path="/create-team" element={<CreateTeam />} />
                 <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
-                <Route path='/teams/:teamId/category/:categoryId/posts/create' element={<CreatePost />} />
                 <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
 
               </Routes>

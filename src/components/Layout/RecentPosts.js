@@ -69,12 +69,7 @@ const RecentPosts = () => {
     };
 
     const handleCreatePost = () =>{
-
-        if (categoryId && categoryId !== 'undefined'){
-            navigate(`/teams/${teamId}/category/${categoryId}/posts/create`);
-        }else{
-            navigate(`/teams/${teamId}/posts/create`)
-        }
+        navigate(`/teams/${teamId}/posts/create`);
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -9,9 +9,11 @@ const CreatePost = () => {
     // const [isEditorReady, setIsEditorReady] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const { teamId, categoryId } = useParams();
+    const [categories, setCategories] = useState([]);
+    const { teamId } = useParams();
     const navigate = useNavigate();
-    const [editor, setEditor] = useState(null);
+    const [error, setError] = useState('');
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
     const editorConfiguration = {
         toolbar: [
@@ -33,44 +35,46 @@ const CreatePost = () => {
         ]
     };
 
-    useEffect(() => {
-        return () => {
-            if (editor) {
-                editor.destroy()
-                    .catch(error => {
-                        console.error(error);
-                    });
+    useEffect(() =>{
+        const fetchCategories = async() =>{
+            try{
+                const response = await axios.get(`/teams/${teamId}/categories`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}
+                });
+                setCategories(response.data|| []);
+            }catch (error) {
+                console.error('카테고리 목록 불러오기 실패: ', error);
+                setCategories([]);
             }
         };
-    }, [editor]);
+        fetchCategories();
+    }, [teamId]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        try {
-            const postData = {
+        if (!selectedCategoryId) {
+            setError('카테고리를 선택해주세요.');
+            return;
+        }
+        try {            
+            //글 작성
+            const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
+
+
+            await axios.post(url, {
                 title,
                 content,
                 teamId: parseInt(teamId),
-                categoryId: categoryId ? parseInt(categoryId) : null
-            };
-            
-            //글 작성
-            const url = `/teams/${teamId}/category/${categoryId}/posts`;
-
-
-            await axios.post(url, postData, {
+                categoryId: parseInt(selectedCategoryId)
+            }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
 
-            // 작성 완료 후 목록으로 돌아가기
-            if (categoryId) {
-                navigate(`/teams/${teamId}/category/${categoryId}/recent`);
-            } else {
-                navigate(`/teams/${teamId}/recent`);
-            }
+            navigate(`/teams/${teamId}/cateogry/${selectedCategoryId}/recent`);
         } catch (error) {
             console.error('게시글 작성 실패:', error);
             alert('게시글 작성에 실패했습니다.');
@@ -90,14 +94,30 @@ const CreatePost = () => {
                         className="post-title-input"
                     />
                 </div>
+                <div className="category-selection">
+                    <label>카테고리 선택<span className="required">*</span></label>
+                    <div className="category-buttons">
+                        {categories.map(category => (
+                            <button
+                                key={category.id}
+                                type="button"
+                                className={`category-button ${selectedCategoryId === category.id ? 'selected' : ''}`}
+                                onClick={() => {
+                                    setSelectedCategoryId(category.id);
+                                    setError(''); // 카테고리 선택 시 에러 메시지 제거
+                                }}
+                            >
+                                {category.name}
+                            </button>
+                        ))}
+                    </div>
+                    {error && <p className="error-message">{error}</p>}
+                </div>
                 <div className="form-group">
                     <CKEditor
                         editor={ClassicEditor}
                         data={content}
                         config={editorConfiguration}
-                        onReady={editor =>{
-                            setEditor(editor);
-                        }}
                         onChange={(event, editor) => {
                                 const data = editor.getData();
                                 setContent(data);
@@ -105,7 +125,8 @@ const CreatePost = () => {
                     />
                 </div>
                 <div className="button-group">
-                    <button type="submit" className="submit-button">
+                    <button type="submit" className="submit-button" disabled={!selectedCategoryId} // 카테고리 미선택 시 버튼 비활성화
+                    >
                         작성완료
                     </button>
                     <button 
