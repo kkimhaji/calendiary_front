@@ -28,6 +28,9 @@ function Sidebar() {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     });
+
+                    console.log('API Response:', response.data);
+
                     setCategories(response.data || []); // 응답이 없을 경우 빈 배열 설정
                 } catch (error) {
                     console.error('카테고리 목록 조회 실패: ', error);
@@ -61,20 +64,20 @@ function Sidebar() {
             >
                 카테고리 추가
             </button>
-            <nav className="category-list">
+            <nav className="sidebar-category-list">
                 <ul>
                     {Array.isArray(categories) && categories.length > 0 ? (
                         categories.map(category => (
                             <li
                                 key={category.id}
-                                className={selectedCategoryId === category.id ? 'selected' : ''}
+                                className={`sidebar-category-item ${selectedCategoryId === category.id ? 'selected' : ''}`}
                                 onClick={() => handleCategorySelect(category.id)}
                             >
                                 {category.name}
                             </li>
                         ))
                     ) : (
-                        <li>카테고리가 없습니다</li>
+                        <li className='sidebar-no-category'>카테고리가 없습니다</li>
                     )}
                 </ul>
             </nav>

@@ -11,22 +11,22 @@
     color: #333;
 }
 
-.category-list {
+.sidebar-category-list {
     margin-top: 20px;
 }
 
-.category-list ul {
+.sidebar-category-list ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.category-list li {
+.sidebar-category-list li {
     margin-bottom: 10px;
     cursor: pointer;
 }
 
-.category-list a {
+.sidebar-category-list a {
     display: block;
     padding: 10px;
     color: #495057;
@@ -35,12 +35,12 @@
     transition: background-color 0.2s;
 }
 
-.category-list a:hover {
+.sidebar-category-list a:hover {
     background-color: #e9ecef;
     color: #007bff;
 }
 
-.category-item {
+.sidebar-category-item {
     padding: 10px;
     margin: 5px 0;
     border-radius: 4px;
