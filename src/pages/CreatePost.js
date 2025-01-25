@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -14,8 +14,12 @@ const CreatePost = () => {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [selectedCategoryName, setSelectedCategoryName] = useState('카테고리 선택');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     const editorConfiguration = {
+        licenseKey: 'GPL', // GPL 라이선스 키 추가
         toolbar: [
             'heading',
             '|',
@@ -35,30 +39,57 @@ const CreatePost = () => {
         ]
     };
 
-    useEffect(() =>{
-        const fetchCategories = async() =>{
-            try{
-                const response = await axios.get(`/teams/${teamId}/categories`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}
-                });
-                setCategories(response.data|| []);
-            }catch (error) {
-                console.error('카테고리 목록 불러오기 실패: ', error);
-                setCategories([]);
+    useEffect(() => {
+        const fetchCategories = async () => {
+            if (teamId) {
+                // 선택된 팀의 카테고리 목록 가져오기
+                try {
+                    const response = await axios.get(`/teams/${teamId}/categories`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+
+                    console.log('API Response:', response.data);
+
+                    setCategories(response.data || []); // 응답이 없을 경우 빈 배열 설정
+                } catch (error) {
+                    console.error('카테고리 목록 조회 실패: ', error);
+                    setCategories([]);
+                }
             }
         };
+
         fetchCategories();
-    }, [teamId]);
+
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleCategorySelect = (categoryId, categoryName) => {
+        setSelectedCategoryId(categoryId);
+        setSelectedCategoryName(categoryName);
+        setIsDropdownOpen(false);
+        setError('');
+    };
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!selectedCategoryId) {
             setError('카테고리를 선택해주세요.');
             return;
         }
-        try {            
+        try {
             //글 작성
             const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
 
@@ -92,25 +123,37 @@ const CreatePost = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         className="post-title-input"
+                        required
                     />
                 </div>
-                <div className="category-selection">
-                    <label>카테고리 선택<span className="required">*</span></label>
-                    <div className="category-buttons">
-                        {categories.map(category => (
-                            <button
-                                key={category.id}
-                                type="button"
-                                className={`category-button ${selectedCategoryId === category.id ? 'selected' : ''}`}
-                                onClick={() => {
-                                    setSelectedCategoryId(category.id);
-                                    setError(''); // 카테고리 선택 시 에러 메시지 제거
-                                }}
-                            >
-                                {category.name}
-                            </button>
-                        ))}
-                    </div>
+
+                <div className="post-category-dropdown" ref={dropdownRef}>
+                    <button
+                        type="button"
+                        className="post-category-dropdown-button"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        aria-haspopup="listbox"
+                        aria-expanded={isDropdownOpen}
+                    >
+                        <span>{selectedCategoryName}</span>
+                        <i className={`post-dropdown-caret ${isDropdownOpen ? 'open' : ''}`}></i>
+                    </button>
+
+                    {isDropdownOpen && (
+                        <div className="post-category-list" role="listbox">
+                            {categories.map(category => (
+                                <div
+                                    key={category.id}
+                                    className={`post-category-item ${selectedCategoryId === category.id ? 'selected' : ''}`}
+                                    onClick={() => handleCategorySelect(category.id, category.name)}
+                                    role="option"
+                                    aria-selected={selectedCategoryId === category.id}
+                                >
+                                    <span>{category.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     {error && <p className="error-message">{error}</p>}
                 </div>
                 <div className="form-group">
@@ -119,8 +162,8 @@ const CreatePost = () => {
                         data={content}
                         config={editorConfiguration}
                         onChange={(event, editor) => {
-                                const data = editor.getData();
-                                setContent(data);
+                            const data = editor.getData();
+                            setContent(data);
                         }}
                     />
                 </div>
@@ -129,8 +172,8 @@ const CreatePost = () => {
                     >
                         작성완료
                     </button>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="cancel-button"
                         onClick={() => navigate(-1)}
                     >
