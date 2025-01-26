@@ -6,7 +6,6 @@ import axios from 'axios';
 import '../styles/CreatePost.css';
 
 const CreatePost = () => {
-    // const [isEditorReady, setIsEditorReady] = useState(false);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [categories, setCategories] = useState([]);

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 const RecentPosts = () => {
     const [posts, setPosts] = useState([]);
-    // const {selectedTeamId, setSelectedTeamId, selectedCategoryId, setSelectedCategoryId} = useTeam();
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const { teamId, categoryId } = useParams(); // URL 파라미터 사용
@@ -35,20 +34,17 @@ const RecentPosts = () => {
                 }
             });
 
-            if (response.data.content) {
-                if (page === 0) {
-                    setPosts(response.data.content);
-                } else {
-                    setPosts(prev => [...prev, ...response.data.content]);
-                }
-                setHasMore(response.data.content.length === 20);
-            }
+            console.log('API Response:', response.data);
 
-            // setPosts(response.data.content);
-            // if (response.data.length < 20) {
-            //     setHasMore(false);
-            // }
-            // setPosts(prev => page === 0 ? response.data : [...prev, ...response.data]);
+            if (response.data.content) {
+                const postsData = response.data.content || response.data;
+                if (page === 0) {
+                    setPosts(postsData);
+                } else {
+                    setPosts(prev => [...prev, ...postsData]);
+                }
+                setHasMore(postsData.length === 20);
+            }
 
         } catch (error) {
             console.error('게시물 로딩 실패:', error);
@@ -87,7 +83,7 @@ const RecentPosts = () => {
                         <div key={post.id} className="post-card">
                             <div className='post-main-info'>
                                 <h3 className="post-title">{post.title}</h3>
-                                <div className='post-category'> {post.cateogoryName} </div>
+                                <div className='post-category'> {post.categoryName} </div>
                             </div>
                             <div className='post-meta'>
                                 <span className='post-author'> {post.authorName} </span>
