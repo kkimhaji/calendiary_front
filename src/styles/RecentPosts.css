@@ -1,53 +1,90 @@
 .recent-posts-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .posts-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .post-card {
-    background-color: white;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-  }
-  
-  .post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-title {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .post-date {
-    margin: 8px 0 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .load-more-btn {
-    width: 100%;
-    padding: 12px;
-    margin-top: 20px;
-    background-color: #f0f0f0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.2s ease;
-  }
-  
-  .load-more-btn:hover {
-    background-color: #e0e0e0;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-card {
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.post-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+  flex-grow: 1;
+}
+
+.post-category {
+  padding: 0.3rem 0.8rem;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.post-author {
+  font-weight: 500;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #666;
+  gap: 1rem;
+}
+
+.post-views {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.post-views i {
+  font-size: 0.8rem;
+}
+
+.post-date {
+  color: #888;
+}
+
+.load-more-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.load-more-btn:hover {
+  background-color: #e0e0e0;
+}

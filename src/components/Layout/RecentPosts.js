@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/RecentPosts.css';
-import {selectedTeamId, setSelectedTeamId, useTeam} from '../../contexts/TeamContext.js';
+import { selectedTeamId, setSelectedTeamId, useTeam } from '../../contexts/TeamContext.js';
 import { useLocation, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,9 +19,9 @@ const RecentPosts = () => {
 
         try {
             let url;
-            if (categoryId){
+            if (categoryId) {
                 url = `/teams/${teamId}/category/${categoryId}/recent`;
-            } else{
+            } else {
                 url = `/teams/${teamId}/recent`;
             }
             const response = await axios.get(url, {
@@ -32,7 +32,7 @@ const RecentPosts = () => {
                 },
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
-                  }
+                }
             });
 
             if (response.data.content) {
@@ -68,7 +68,7 @@ const RecentPosts = () => {
         setPage(prev => prev + 1);
     };
 
-    const handleCreatePost = () =>{
+    const handleCreatePost = () => {
         navigate(`/teams/${teamId}/posts/create`);
     }
 
@@ -77,21 +77,26 @@ const RecentPosts = () => {
             <div className='posts-header'>
                 <h2>{categoryId ? '카테고리 게시물' : '팀 게시물'}</h2>
                 <button className='create-post-button'
-                onClick={handleCreatePost} >
+                    onClick={handleCreatePost} >
                     글 작성하기
                 </button>
             </div>
             <div className="posts-list">
                 {posts.length > 0 ? (
-                        posts.map(post => (
-                            <div key={post.id} className="post-card">
+                    posts.map(post => (
+                        <div key={post.id} className="post-card">
+                            <div className='post-main-info'>
                                 <h3 className="post-title">{post.title}</h3>
-                                <p className="post-date">
-                                    {new Date(post.createdDate).toLocaleDateString()}
-                                </p>
+                                <div className='post-category'> {post.cateogoryName} </div>
                             </div>
-                        ))
-            ) : (
+                            <div className='post-meta'>
+                                <span className='post-author'> {post.authorName} </span>
+                                <span className='post-date'> {new Date(post.createdDate).toLocaleDateString()}</span>
+                                <span className='post-views'> <i className='fas fa-eye'></i> {post.viewCount} </span>
+                            </div>
+                        </div>
+                    ))
+                ) : (
                     <div className="no-posts-message">
                         작성된 게시글이 없습니다.
                     </div>)}
