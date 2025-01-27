@@ -34,8 +34,6 @@ const RecentPosts = () => {
                 }
             });
 
-            console.log('API Response:', response.data);
-
             if (response.data.content) {
                 const postsData = response.data.content || response.data;
                 if (page === 0) {
@@ -68,6 +66,10 @@ const RecentPosts = () => {
         navigate(`/teams/${teamId}/posts/create`);
     }
 
+    const handlePostClick = (post) =>{
+        navigate(`/teams/${teamId}/category/${post.categoryId}/posts/${post.id}`);
+    }
+
     return (
         <div className="recent-posts-container">
             <div className='posts-header'>
@@ -80,7 +82,7 @@ const RecentPosts = () => {
             <div className="posts-list">
                 {posts.length > 0 ? (
                     posts.map(post => (
-                        <div key={post.id} className="post-card">
+                        <div key={post.id} className="post-card" onClick={() => handlePostClick(post)}>
                             <div className='post-main-info'>
                                 <h3 className="post-title">{post.title}</h3>
                                 <div className='post-category'> {post.categoryName} </div>

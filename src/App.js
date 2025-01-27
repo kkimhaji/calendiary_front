@@ -12,6 +12,7 @@ import CreateTeam from './pages/CreateTeam';
 import RecentPosts from './components/Layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
 import CreatePost from './pages/CreatePost';
+import PostDetail from './pages/PostDetail';
 import React from 'react';
 
 // const PrivateRoute = ({ children }) => {
@@ -35,7 +36,7 @@ function App() {
                 <Route path="/create-team" element={<CreateTeam />} />
                 <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
                 <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
-
+                <Route path="/teams/:teamId/category/:categoryId/posts/:postId" element={<PostDetail />} />
               </Routes>
             </Layout>
           ) : (
