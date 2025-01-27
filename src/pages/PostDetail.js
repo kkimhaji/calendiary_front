@@ -77,15 +77,27 @@ const PostDetail = () => {
 
     return (
         <div className="post-detail-container">
+            <div className='post-content'>
             <div className="post-header">
+            <span className="category-name">{post.categoryName}</span>
                 <h1 className="post-title">{post.title}</h1>
+                {permissions.canEdit && (
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleEdit}
+                    >
+                        수정
+                    </button>
+                )}
+                </div>
                 <div className="post-info">
-                    <span className="category-name">{post.categoryName}</span>
+                    
                     작성자: {post.author.username} | 작성일: {new Date(post.createdDate).toLocaleDateString()}
                 </div>
-            </div>
+            
+        
 
-            <div className="post-content" dangerouslySetInnerHTML={{
+            <div className="post-body" dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(post.content)
             }}>
             </div>
@@ -96,14 +108,7 @@ const PostDetail = () => {
                 >
                     목록으로
                 </button>
-                {permissions.canEdit && (
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleEdit}
-                    >
-                        수정
-                    </button>
-                )}
+                <div className="spacer"></div>
                 {permissions.canDelete && (
                     <button
                         className="btn btn-danger"
@@ -113,6 +118,7 @@ const PostDetail = () => {
                     </button>
                 )}
             </div>
+        </div>
         </div>
     );
 };
