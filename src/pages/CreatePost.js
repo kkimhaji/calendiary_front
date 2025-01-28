@@ -9,13 +9,17 @@ const CreatePost = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [categories, setCategories] = useState([]);
-    const { teamId } = useParams();
+    const { teamId, categoryId, postId } = useParams();
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [selectedCategoryName, setSelectedCategoryName] = useState('카테고리 선택');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const isEdit = !!postId;
+    const [images, setImages] = useState([]);
+    const [existingImages, setExistingImages] = useState([]); // 기존 이미지 목록
+    const [deleteImageIds, setDeleteImageIds] = useState([]); // 삭제할 이미지 ID 목록
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
@@ -39,6 +43,27 @@ const CreatePost = () => {
     };
 
     useEffect(() => {
+        if (isEdit) {
+            const fetchPost = async () => {
+                try{
+                    const response = await axios.get(`/teams/${teamId}/categories/${categoryId}/posts/${postId}`,{
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    const post = response.data;
+                    setTitle(post.title);
+                    setContent(post.content);
+                    setExistingImages(post.images || []); // 기존 이미지 정보 설정
+                } catch(error) {
+                    console.error('게시글 로드 실패: ', error);
+                    alert('게시글을 불러오는 데 실패했습니다.');
+                    navigate(-1);
+                }
+            };
+            fetchPost();
+        }
+
         const fetchCategories = async () => {
             if (teamId) {
                 // 선택된 팀의 카테고리 목록 가져오기
@@ -71,7 +96,7 @@ const CreatePost = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
+    }, [teamId, categoryId, postId, isEdit]);
 
     const handleCategorySelect = (categoryId, categoryName) => {
         setSelectedCategoryId(categoryId);
@@ -79,17 +104,35 @@ const CreatePost = () => {
         setIsDropdownOpen(false);
         setError('');
     };
+    const handleImageChange = (e) => {
+        setImages([...e.target.files]);
+    };
 
+    const handleExistingImageDelete = (imageId) => {
+        setDeleteImageIds([...deleteImageIds, imageId]);
+        setExistingImages(existingImages.filter(img => img.id !== imageId));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const postData = {
+            title, content
+        };
 
-        if (!selectedCategoryId) {
-            setError('카테고리를 선택해주세요.');
-            return;
-        }
-        try {
-            //글 작성
+        try{
+            if (isEdit) {
+                await axios.put(`/api/teams/${teamId}/category/${categoryId}/posts/${postId}`, FormData,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
+                );
+                alert('게시글이 수정되었습니다.');
+            } else{
+                            //글 작성
             const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
 
 
@@ -100,15 +143,23 @@ const CreatePost = () => {
                 categoryId: parseInt(selectedCategoryId)
             }, {
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
 
             navigate(`/teams/${teamId}/cateogry/${selectedCategoryId}/recent`);
+            }
         } catch (error) {
             console.error('게시글 작성 실패:', error);
             alert('게시글 작성에 실패했습니다.');
+            alert(isEdit ? '게시글 수정에 실패했습니다.' : '게시글 작성에 실패했습니다.');
         }
+        if (!selectedCategoryId) {
+            setError('카테고리를 선택해주세요.');
+            return;
+        }
+
     };
 
     return (
@@ -169,7 +220,7 @@ const CreatePost = () => {
                 <div className="button-group">
                     <button type="submit" className="submit-button" disabled={!selectedCategoryId} // 카테고리 미선택 시 버튼 비활성화
                     >
-                        작성완료
+                        {isEdit ? '수정하기' : '작성하기'}
                     </button>
                     <button
                         type="button"
