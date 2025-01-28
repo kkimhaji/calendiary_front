@@ -45,8 +45,12 @@ const PostDetail = () => {
                 });
                 navigate(`/teams/${teamId}/category/${categoryId}/recent`);
             } catch (error) {
+                if (error.response?.status === 403) {
+                    alert('게시글 삭제 권한이 없습니다.');
+                }else{
                 console.error('게시글 삭제 실패:', error);
                 alert('게시글 삭제에 실패했습니다.');
+                }
             }
         }
     };
@@ -62,8 +66,12 @@ const PostDetail = () => {
             // 현재 로그인한 사용자와 게시글 작성자 비교
 
         } catch (error) {
+            if (error.response?.status === 403){
+                alert('게시글 조회 권한이 없습니다.');
+            } else{
             console.error('게시글 로딩 실패:', error);
             alert('게시글을 불러오는데 실패했습니다.');
+            }
             navigate(-1);
         }
     };
