@@ -118,7 +118,7 @@ const CreatePost = () => {
 
         try{
             if (isEdit) {
-                await axios.put(`/api/teams/${teamId}/category/${categoryId}/posts/${postId}`, postData,
+                await axios.put(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, postData,
                     {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -206,12 +206,6 @@ const CreatePost = () => {
                         data={content || ''}
                         config={
                             editorConfiguration
-                        //     {simpleUpload: {
-                        //     uploadUrl: `/api/teams/${teamId}/categories/${categoryId}/upload-image`,
-                        //     headers: {
-                        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        //     }
-                        // }}
                     }
                         onChange={(event, editor) => {
                             const data = editor.getData();
