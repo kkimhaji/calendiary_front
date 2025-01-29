@@ -78,7 +78,7 @@ const PostDetail = () => {
 
 
     const handleEdit = () => {
-        navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}`);
+        navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`);
     };
 
     if (!post) return <div>로딩 중...</div>;
@@ -103,7 +103,6 @@ const PostDetail = () => {
                     작성자: {post.author.username} | 작성일: {new Date(post.createdDate).toLocaleDateString()}
                 </div>
             
-        
 
             <div className="post-body" dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(post.content)

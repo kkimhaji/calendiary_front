@@ -16,10 +16,8 @@ const CreatePost = () => {
     const [selectedCategoryName, setSelectedCategoryName] = useState('카테고리 선택');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const isEdit = !!postId;
-    const [images, setImages] = useState([]);
-    const [existingImages, setExistingImages] = useState([]); // 기존 이미지 목록
-    const [deleteImageIds, setDeleteImageIds] = useState([]); // 삭제할 이미지 ID 목록
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
@@ -46,22 +44,26 @@ const CreatePost = () => {
         if (isEdit) {
             const fetchPost = async () => {
                 try{
-                    const response = await axios.get(`/teams/${teamId}/categories/${categoryId}/posts/${postId}`,{
+                    const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`,{
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     });
+                    console.log("get post response:", response.data);
                     const post = response.data;
-                    setTitle(post.title);
-                    setContent(post.content);
-                    setExistingImages(post.images || []); // 기존 이미지 정보 설정
+                    setTitle(post.title || '');
+                    setContent(post.content || '');
                 } catch(error) {
                     console.error('게시글 로드 실패: ', error);
                     alert('게시글을 불러오는 데 실패했습니다.');
                     navigate(-1);
+                } finally{
+                    setIsLoading(false);
                 }
             };
             fetchPost();
+        } else {
+            setIsLoading(false);
         }
 
         const fetchCategories = async () => {
@@ -98,19 +100,14 @@ const CreatePost = () => {
         };
     }, [teamId, categoryId, postId, isEdit]);
 
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     const handleCategorySelect = (categoryId, categoryName) => {
         setSelectedCategoryId(categoryId);
         setSelectedCategoryName(categoryName);
         setIsDropdownOpen(false);
         setError('');
-    };
-    const handleImageChange = (e) => {
-        setImages([...e.target.files]);
-    };
-
-    const handleExistingImageDelete = (imageId) => {
-        setDeleteImageIds([...deleteImageIds, imageId]);
-        setExistingImages(existingImages.filter(img => img.id !== imageId));
     };
 
     const handleSubmit = async (e) => {
@@ -121,11 +118,9 @@ const CreatePost = () => {
 
         try{
             if (isEdit) {
-                await axios.put(`/api/teams/${teamId}/category/${categoryId}/posts/${postId}`, FormData,
-                    formData,
+                await axios.put(`/api/teams/${teamId}/category/${categoryId}/posts/${postId}`, postData,
                     {
                         headers: {
-                            'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     }
@@ -134,7 +129,6 @@ const CreatePost = () => {
             } else{
                             //글 작성
             const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
-
 
             await axios.post(url, {
                 title,
@@ -209,8 +203,16 @@ const CreatePost = () => {
                 <div className="form-group">
                     <CKEditor
                         editor={ClassicEditor}
-                        data={content}
-                        config={editorConfiguration}
+                        data={content || ''}
+                        config={
+                            editorConfiguration
+                        //     {simpleUpload: {
+                        //     uploadUrl: `/api/teams/${teamId}/categories/${categoryId}/upload-image`,
+                        //     headers: {
+                        //         'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        //     }
+                        // }}
+                    }
                         onChange={(event, editor) => {
                             const data = editor.getData();
                             setContent(data);
