@@ -30,6 +30,7 @@ const CreatePost = () => {
             'bulletedList',
             'numberedList',
             '|',
+            'imageUpload',
             'outdent',
             'indent',
             '|',
