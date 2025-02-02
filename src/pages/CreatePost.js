@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Image, ImageUpload, ImageToolbar, ImageStyle, ImageResizeEditing, ImageResizeHandles } from '@ckeditor/ckeditor5-image';
 import axios from 'axios';
 import '../styles/CreatePost.css';
 
@@ -9,6 +10,7 @@ const CreatePost = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [categories, setCategories] = useState([]);
+    const [tempImageUrls, setTempImageUrls] = useState([]);
     const { teamId, categoryId, postId } = useParams();
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -21,6 +23,14 @@ const CreatePost = () => {
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
+        plugins: [
+            Image,
+            ImageToolbar,
+            ImageUpload,
+            ImageStyle,
+            ImageResizeEditing,
+            ImageResizeHandles
+        ],
         toolbar: [
             'heading',
             '|',
@@ -38,7 +48,50 @@ const CreatePost = () => {
             'insertTable',
             'undo',
             'redo'
-        ]
+        ],
+        image: {
+            toolbar: [
+                'imageStyle:inline',
+                'imageStyle:block',
+                'imageStyle:side',
+                '|',
+                'toggleImageCaption',
+                'imageTextAlternative',
+                '|',
+                'resizeImage'
+            ],
+            resizeOptions: [
+                {
+                    name: 'resizeImage:original',
+                    value: null,
+                    label: 'Original'
+                },
+                {
+                    name: 'resizeImage:50',
+                    value: '50',
+                    label: '50%'
+                },
+                {
+                    name: 'resizeImage:75',
+                    value: '75',
+                    label: '75%'
+                }
+            ],
+            styles: [
+                'full',
+                'side',
+                'alignLeft',
+                'alignCenter',
+                'alignRight'
+            ]
+        },
+        simpleUpload: {
+            uploadUrl: `teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'multipart/form-data'
+            }
+          }
     };
 
     useEffect(() => {
@@ -109,6 +162,27 @@ const CreatePost = () => {
         setSelectedCategoryName(categoryName);
         setIsDropdownOpen(false);
         setError('');
+    };
+
+    const handleImageUpload = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try{
+            const response = await axios.post(`teams/${teamId}/images/temp-upload`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data'
+                  }
+            }
+            );
+            const tempUrl = response.data;
+            setTempImageUrls(prev => [...prev, tempUrl]);
+            return {default: tempUrl};
+        } catch (error){
+            console.error('이미지 업로드 실패: ', error);
+            throw new Error('이미지 업로드에 실패했습니다.');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -211,6 +285,12 @@ const CreatePost = () => {
                         onChange={(event, editor) => {
                             const data = editor.getData();
                             setContent(data);
+                        }}
+                        onReady={editor => {
+                            // 이미지 업로드 어댑터 오버라이드
+                            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => ({
+                                upload: () => loader.file.then(file => handleImageUpload(file))
+                            });
                         }}
                     />
                 </div>

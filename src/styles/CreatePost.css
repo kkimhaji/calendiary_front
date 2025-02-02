@@ -1,7 +1,10 @@
 .create-post-container {
-    max-width: 50vw;
+    max-width: 800px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .create-post-container h2 {
@@ -182,4 +185,13 @@
     color: #ff4444;
     font-size: 0.9rem;
     margin-top: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1.1rem;
 }
