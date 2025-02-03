@@ -1244,7 +1244,7 @@
     "@ckeditor/ckeditor5-utils" "44.1.0"
     ckeditor5 "44.1.0"
 
-"@ckeditor/ckeditor5-core@>=37.0.0", "@ckeditor/ckeditor5-core@44.1.0":
+"@ckeditor/ckeditor5-core@44.1.0":
   version "44.1.0"
   resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-core/-/ckeditor5-core-44.1.0.tgz"
   integrity sha512-vBxHT/g37uWM5QKj0i7++clGd85htX9rPtlqzjz3I26NJQvcKCmT39Szv3oPFzAJKuUaqKso5iLq+Sw+VtQRBg==
@@ -1324,7 +1324,7 @@
     ckeditor5 "44.1.0"
     lodash-es "4.17.21"
 
-"@ckeditor/ckeditor5-engine@>=37.0.0", "@ckeditor/ckeditor5-engine@44.1.0":
+"@ckeditor/ckeditor5-engine@44.1.0":
   version "44.1.0"
   resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-engine/-/ckeditor5-engine-44.1.0.tgz"
   integrity sha512-+149hsqfZX+Q+ho7P64XUrIpkLqX2jGBuEWjC2ZZYujv1ZIOWOMihkpJL8jE6Vcplee6vsTXGSj2sIHNoOp+3g==
@@ -1432,7 +1432,7 @@
     ckeditor5 "44.1.0"
     lodash-es "4.17.21"
 
-"@ckeditor/ckeditor5-image@44.1.0":
+"@ckeditor/ckeditor5-image@^44.1.0", "@ckeditor/ckeditor5-image@44.1.0":
   version "44.1.0"
   resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-image/-/ckeditor5-image-44.1.0.tgz"
   integrity sha512-8BbS0y1YSGnQAiA6rTps05DIJ8CcdbGYb+1XFb8QOUCzJenFzNGAe4gnlEPw0zW1C8ZjdahRY1K2Fcb16/q7TQ==
@@ -1459,6 +1459,11 @@
     "@ckeditor/ckeditor5-ui" "44.1.0"
     "@ckeditor/ckeditor5-utils" "44.1.0"
     ckeditor5 "44.1.0"
+
+"@ckeditor/ckeditor5-integrations-common@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-integrations-common/-/ckeditor5-integrations-common-2.2.2.tgz"
+  integrity sha512-SKGBBrwFFmSEZawR8P9tHGRq/l2OoqoJxy9f7j0HbDGEwIpSOsCSgH0xudD6lcEbWG4QWrCS28p5n8lgPA5elQ==
 
 "@ckeditor/ckeditor5-language@44.1.0":
   version "44.1.0"
@@ -1579,11 +1584,12 @@
     "@ckeditor/ckeditor5-engine" "44.1.0"
     ckeditor5 "44.1.0"
 
-"@ckeditor/ckeditor5-react@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-react/-/ckeditor5-react-6.0.0.tgz"
-  integrity sha512-Yw0MlWfUXelGJ7qcFCYlaRlDEsEr0Lh7Wa2NGDT4+kscwcck9x8F1qm7xmjwJZ9bj79GC9rnCxsIqmq2etmZFA==
+"@ckeditor/ckeditor5-react@^9.4.0":
+  version "9.4.0"
+  resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-react/-/ckeditor5-react-9.4.0.tgz"
+  integrity sha512-8PU7YUV0ZKYP10akKgarT8nq5QxEDPmuj6Wn5dl/DJ7qroDx6VuC/ysCYcgljseimbDNYDjPQKhatNEcsMd7Ew==
   dependencies:
+    "@ckeditor/ckeditor5-integrations-common" "^2.2.2"
     prop-types "^15.7.2"
 
 "@ckeditor/ckeditor5-remove-format@44.1.0":
@@ -1720,7 +1726,7 @@
     "@ckeditor/ckeditor5-core" "44.1.0"
     "@ckeditor/ckeditor5-utils" "44.1.0"
 
-"@ckeditor/ckeditor5-utils@>=37.0.0", "@ckeditor/ckeditor5-utils@44.1.0":
+"@ckeditor/ckeditor5-utils@44.1.0":
   version "44.1.0"
   resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-utils/-/ckeditor5-utils-44.1.0.tgz"
   integrity sha512-PILjaPvEMuQ0qlnPAFeNTTQcLuXgGionSxaxF8HGnZolaqWnsJ11xGYxqUslNOGtdZNp/88/FC9TjCY/ksiibg==
@@ -1728,7 +1734,7 @@
     "@ckeditor/ckeditor5-ui" "44.1.0"
     lodash-es "4.17.21"
 
-"@ckeditor/ckeditor5-watchdog@>=37.0.0", "@ckeditor/ckeditor5-watchdog@44.1.0":
+"@ckeditor/ckeditor5-watchdog@44.1.0":
   version "44.1.0"
   resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-watchdog/-/ckeditor5-watchdog-44.1.0.tgz"
   integrity sha512-fTwYEW1TbbxC7PVmZtfWfwHT5aMREfBTDvH3KQWKpowTcoAiMBlQQKA/lvkRJ1bFMp4AZFjqs1IWZyap/sanAg==
@@ -3887,7 +3893,7 @@ cjs-module-lexer@^1.0.0:
   resolved "https://registry.npmjs.org/cjs-module-lexer/-/cjs-module-lexer-1.4.3.tgz"
   integrity sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==
 
-ckeditor5@44.1.0:
+ckeditor5@^44.1.0, "ckeditor5@>=42.0.0 || ^0.0.0-nightly", ckeditor5@44.1.0:
   version "44.1.0"
   resolved "https://registry.npmjs.org/ckeditor5/-/ckeditor5-44.1.0.tgz"
   integrity sha512-6e1KFUE2giaSI0ZOKfAAFF5Tk7PF5DCyKVROPY9/46tti9AZpUFUzr7NhBsZjyMiMX1eqxqfsSZT7f9tKgcVAQ==
@@ -6090,9 +6096,9 @@ immer@^9.0.7:
   integrity sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==
 
 import-fresh@^3.1.0, import-fresh@^3.2.1:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/import-fresh/-/import-fresh-3.3.0.tgz"
-  integrity sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==
+  version "3.3.1"
+  resolved "https://registry.npmjs.org/import-fresh/-/import-fresh-3.3.1.tgz"
+  integrity sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==
   dependencies:
     parent-module "^1.0.0"
     resolve-from "^4.0.0"
@@ -8880,7 +8886,7 @@ react-scripts@^5.0.1:
   optionalDependencies:
     fsevents "^2.3.2"
 
-"react@^16.13.1 || ^17.0.0 || ^18.0.0", react@^18.0.0, react@^18.3.1, "react@>= 16", react@>=16.8:
+"react@^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0", react@^18.0.0, react@^18.3.1, "react@>= 16", react@>=16.8:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react/-/react-18.3.1.tgz"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
