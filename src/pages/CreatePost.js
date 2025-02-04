@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
+import CustomUploadAdapter from '../constants/CustomUploadAdapter';
+
 import {
     ClassicEditor,
     Autoformat,
@@ -67,6 +69,7 @@ const CreatePost = () => {
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
+        extraPlugins: [CustomUploadAdapter],
         toolbar: {
             items: [
                 'heading',
@@ -169,7 +172,10 @@ const CreatePost = () => {
                 'alignLeft',
                 'alignCenter',
                 'alignRight'
-            ]
+            ],
+            upload: {
+                types: ['jpeg', 'png', 'gif', 'webp']
+            }
         },
         simpleUpload: {
             uploadUrl: `teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
