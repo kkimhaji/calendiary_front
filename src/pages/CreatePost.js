@@ -3,45 +3,45 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import {
-	ClassicEditor,
-	Autoformat,
-	AutoImage,
-	Autosave,
-	BlockQuote,
-	Bold,
-	CloudServices,
-	Essentials,
-	Heading,
-	ImageBlock,
-	ImageCaption,
-	ImageInline,
-	ImageInsert,
-	ImageInsertViaUrl,
-	ImageResize,
-	ImageStyle,
-	ImageTextAlternative,
-	ImageToolbar,
-	ImageUpload,
-	Indent,
-	IndentBlock,
-	Italic,
-	Link,
-	LinkImage,
-	List,
-	ListProperties,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	SimpleUploadAdapter,
-	Table,
-	TableCaption,
-	TableCellProperties,
-	TableColumnResize,
-	TableProperties,
-	TableToolbar,
-	TextTransformation,
-	TodoList,
-	Underline,
+    ClassicEditor,
+    Autoformat,
+    AutoImage,
+    Autosave,
+    BlockQuote,
+    Bold,
+    CloudServices,
+    Essentials,
+    Heading,
+    ImageBlock,
+    ImageCaption,
+    ImageInline,
+    ImageInsert,
+    ImageInsertViaUrl,
+    ImageResize,
+    ImageStyle,
+    ImageTextAlternative,
+    ImageToolbar,
+    ImageUpload,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    LinkImage,
+    List,
+    ListProperties,
+    MediaEmbed,
+    Paragraph,
+    PasteFromOffice,
+    SimpleUploadAdapter,
+    Table,
+    TableCaption,
+    TableCellProperties,
+    TableColumnResize,
+    TableProperties,
+    TableToolbar,
+    TextTransformation,
+    TodoList,
+    Underline,
     ImageResizeEditing,
     ImageResizeHandles
 } from 'ckeditor5';
@@ -63,17 +63,10 @@ const CreatePost = () => {
     const dropdownRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const isEdit = !!postId;
+    const [images, setImages] = useState([]);
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
-        plugins: [
-            Image,
-            ImageToolbar,
-            ImageUpload,
-            ImageStyle,
-            ImageResizeEditing,
-            ImageResizeHandles
-        ],
         toolbar: {
             items: [
                 'heading',
@@ -134,7 +127,13 @@ const CreatePost = () => {
             TableToolbar,
             TextTransformation,
             TodoList,
-            Underline
+            Underline,
+            Image,
+            ImageToolbar,
+            ImageUpload,
+            ImageStyle,
+            ImageResizeEditing,
+            ImageResizeHandles
         ],
         image: {
             toolbar: [
@@ -175,30 +174,31 @@ const CreatePost = () => {
         simpleUpload: {
             uploadUrl: `teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
             headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'multipart/form-data'
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'multipart/form-data'
             }
-          }
+        }
     };
 
     useEffect(() => {
         if (isEdit) {
             const fetchPost = async () => {
-                try{
-                    const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`,{
+                try {
+                    const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'multipart/form-data'
                         }
                     });
                     console.log("get post response:", response.data);
                     const post = response.data;
                     setTitle(post.title || '');
                     setContent(post.content || '');
-                } catch(error) {
+                } catch (error) {
                     console.error('게시글 로드 실패: ', error);
                     alert('게시글을 불러오는 데 실패했습니다.');
                     navigate(-1);
-                } finally{
+                } finally {
                     setIsLoading(false);
                 }
             };
@@ -253,20 +253,20 @@ const CreatePost = () => {
 
     const handleImageUpload = async (file) => {
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', file);    
 
-        try{
+        try {
             const response = await axios.post(`teams/${teamId}/images/temp-upload`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
-                  }
+                }
             }
             );
             const tempUrl = response.data;
             setTempImageUrls(prev => [...prev, tempUrl]);
-            return {default: tempUrl};
-        } catch (error){
+            return { default: tempUrl };
+        } catch (error) {
             console.error('이미지 업로드 실패: ', error);
             throw new Error('이미지 업로드에 실패했습니다.');
         }
@@ -274,37 +274,49 @@ const CreatePost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+
+        if (images.length > 0) {
+            images.forEach(image => {
+                formData.append('images', image);
+            });
+        }
+
         const postData = {
             title, content
         };
 
-        try{
+        try {
             if (isEdit) {
                 await axios.put(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, postData,
                     {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'multipart/form-data'
                         }
                     }
                 );
                 alert('게시글이 수정되었습니다.');
-            } else{
-                            //글 작성
-            const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
+            } else {
+                //글 작성
+                const url = `/teams/${teamId}/category/${selectedCategoryId}/posts`;
 
-            await axios.post(url, {
-                title,
-                content,
-                teamId: parseInt(teamId),
-                categoryId: parseInt(selectedCategoryId)
-            }, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-
-            navigate(`/teams/${teamId}/cateogry/${selectedCategoryId}/recent`);
+                await axios.post(url, {
+                    title,
+                    content,
+                    teamId: parseInt(teamId),
+                    categoryId: parseInt(selectedCategoryId)
+                }, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                alert('게시글이 작성되었습니다.');
+                navigate(`/teams/${teamId}/cateogry/${selectedCategoryId}/recent`);
             }
         } catch (error) {
             console.error('게시글 작성 실패:', error);
@@ -315,7 +327,6 @@ const CreatePost = () => {
             setError('카테고리를 선택해주세요.');
             return;
         }
-
     };
 
     return (
@@ -368,7 +379,7 @@ const CreatePost = () => {
                         data={content || ''}
                         config={
                             editorConfiguration
-                    }
+                        }
                         onChange={(event, editor) => {
                             const data = editor.getData();
                             setContent(data);

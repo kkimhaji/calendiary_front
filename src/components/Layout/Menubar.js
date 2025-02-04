@@ -18,7 +18,6 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             setTeams(response.data || []);
-            console.log('팀 받아오기');
         } catch (error) {
             console.error('팀 목록 조회 실패:', error);
             setTeams([]); // 에러 발생 시 빈 배열로 설정
