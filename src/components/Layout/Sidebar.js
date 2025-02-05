@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Sidebar.css';
+import '../styles/Sidebar.css';
 import { useTeam } from '../../contexts/TeamContext';
 import axios from 'axios';
 

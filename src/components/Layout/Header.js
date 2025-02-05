@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Header.css';
+import '../styles/Header.css';
 import Menubar from './Menubar';
 import { useAuth } from '../../contexts/AuthContext';
 
