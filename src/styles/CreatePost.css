@@ -216,20 +216,3 @@
 	line-height: 1.6;
 	word-break: break-word;
 }
-
-.editor-container_classic-editor .editor-container__editor {
-	min-width: 795px;
-	max-width: 795px;
-}
-.editor-wrapper {
-    min-height: 400px;
-    margin: 20px 0;
-}
-
-.ck-editor__editable {
-    min-height: 300px !important;
-}
-
-.ck.ck-editor {
-    width: 100%;
-}

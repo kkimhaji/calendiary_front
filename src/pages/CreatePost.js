@@ -131,7 +131,8 @@ const CreatePost = () => {
             ImageUpload,
             ImageStyle,
             ImageResizeEditing,
-            ImageResizeHandles
+            ImageResizeHandles,
+            SimpleUploadAdapter
         ],
         image: {
             toolbar: [
@@ -173,7 +174,8 @@ const CreatePost = () => {
             }
         },
         simpleUpload: {
-            uploadUrl: `teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
+            withCredentials: true,
+            uploadUrl: `/teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'multipart/form-data'
@@ -256,16 +258,16 @@ const CreatePost = () => {
         formData.append('file', file);    
 
         try {
-            const response = await axios.post(`teams/${teamId}/images/temp-upload`, formData, {
+            const response = await axios.post(`/teams/${teamId}/images/temp-upload`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             }
             );
-            const tempUrl = response.data;
-            setTempImageUrls(prev => [...prev, tempUrl]);
-            return { default: tempUrl };
+            // const tempUrl = response.data;
+            // setTempImageUrls(prev => [...prev, tempUrl]);
+            return { default: response.data };
         } catch (error) {
             console.error('이미지 업로드 실패: ', error);
             throw new Error('이미지 업로드에 실패했습니다.');
