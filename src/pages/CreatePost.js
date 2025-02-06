@@ -1,7 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import CustomCKEditor from '../components/CustomCKEditor';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import {
+    ClassicEditor,
+    Autoformat,
+    AutoImage,
+    Autosave,
+    BlockQuote,
+    Bold,
+    CloudServices,
+    Essentials,
+    Heading,
+    ImageBlock,
+    ImageCaption,
+    ImageInline,
+    ImageInsert,
+    ImageInsertViaUrl,
+    ImageResize,
+    ImageStyle,
+    ImageTextAlternative,
+    ImageToolbar,
+    ImageUpload,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    LinkImage,
+    List,
+    ListProperties,
+    MediaEmbed,
+    Paragraph,
+    PasteFromOffice,
+    SimpleUploadAdapter,
+    Table,
+    TableCaption,
+    TableCellProperties,
+    TableColumnResize,
+    TableProperties,
+    TableToolbar,
+    TextTransformation,
+    TodoList,
+    Underline,
+    ImageResizeEditing,
+    ImageResizeHandles
+} from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import '../styles/CreatePost.css';
 
@@ -20,7 +63,123 @@ const CreatePost = () => {
     const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
     const isEdit = !!postId;
     const [images, setImages] = useState([]);
-
+    const editorConfiguration = {
+        licenseKey: 'GPL', // GPL 라이선스 키 추가
+        toolbar: {
+            items: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'underline',
+                '|',
+                'link',
+                'insertImage',
+                'mediaEmbed',
+                'insertTable',
+                'blockQuote',
+                '|',
+                'bulletedList',
+                'numberedList',
+                'todoList',
+                'outdent',
+                'indent'
+            ],
+            shouldNotGroupWhenFull: false
+        },
+        plugins: [
+            Autoformat,
+            AutoImage,
+            Autosave,
+            BlockQuote,
+            Bold,
+            CloudServices,
+            Essentials,
+            Heading,
+            ImageBlock,
+            ImageCaption,
+            ImageInline,
+            ImageInsert,
+            ImageInsertViaUrl,
+            ImageResize,
+            ImageStyle,
+            ImageTextAlternative,
+            ImageToolbar,
+            ImageUpload,
+            Indent,
+            IndentBlock,
+            Italic,
+            Link,
+            LinkImage,
+            List,
+            ListProperties,
+            MediaEmbed,
+            Paragraph,
+            PasteFromOffice,
+            SimpleUploadAdapter,
+            Table,
+            TableCaption,
+            TableCellProperties,
+            TableColumnResize,
+            TableProperties,
+            TableToolbar,
+            TextTransformation,
+            TodoList,
+            Underline,
+            Image,
+            ImageToolbar,
+            ImageUpload,
+            ImageStyle,
+            ImageResizeEditing,
+            ImageResizeHandles
+        ],
+        image: {
+            toolbar: [
+                'imageStyle:inline',
+                'imageStyle:block',
+                'imageStyle:side',
+                '|',
+                'toggleImageCaption',
+                'imageTextAlternative',
+                '|',
+                'resizeImage'
+            ],
+            resizeOptions: [
+                {
+                    name: 'resizeImage:original',
+                    value: null,
+                    label: 'Original'
+                },
+                {
+                    name: 'resizeImage:50',
+                    value: '50',
+                    label: '50%'
+                },
+                {
+                    name: 'resizeImage:75',
+                    value: '75',
+                    label: '75%'
+                }
+            ],
+            styles: [
+                'full',
+                'side',
+                'alignLeft',
+                'alignCenter',
+                'alignRight'
+            ],
+            upload: {
+                types: ['jpeg', 'png', 'gif', 'webp']
+            }
+        },
+        simpleUpload: {
+            uploadUrl: `teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    };
     useEffect(() => {
         if (isEdit) {
             const fetchPost = async () => {
@@ -216,11 +375,23 @@ const CreatePost = () => {
                     {error && <p className="error-message">{error}</p>}
                 </div>
                 <div className="form-group">
-                    <CustomCKEditor
-                        data = {content || ''}
-                        onChange={(data) => setContent(data)}
-                        teamId = {teamId}
-                    />
+                    <CKEditor
+                        editor={ClassicEditor}
+                        data={content || ''}
+                        config={
+                            editorConfiguration
+                        }
+                        onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setContent(data);
+                        }}
+                        onReady={editor => {
+                            // 이미지 업로드 어댑터 오버라이드
+                            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => ({
+                                upload: () => loader.file.then(file => handleImageUpload(file))
+                            });
+                        }}
+                        />
                 </div>
                 <div className="button-group">
                     <button type="submit" className="submit-button" disabled={!selectedCategoryId} // 카테고리 미선택 시 버튼 비활성화

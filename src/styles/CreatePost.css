@@ -221,3 +221,15 @@
 	min-width: 795px;
 	max-width: 795px;
 }
+.editor-wrapper {
+    min-height: 400px;
+    margin: 20px 0;
+}
+
+.ck-editor__editable {
+    min-height: 300px !important;
+}
+
+.ck.ck-editor {
+    width: 100%;
+}
