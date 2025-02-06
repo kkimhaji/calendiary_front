@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Menubar.css';
+import '../../styles/Menubar.css';
 import { useTeam } from '../../contexts/TeamContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';

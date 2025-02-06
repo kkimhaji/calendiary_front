@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import CustomCKEditor from '../components/CustomCKEditor';
 import 'ckeditor5/ckeditor5.css';
@@ -219,7 +218,7 @@ const CreatePost = () => {
                 <div className="form-group">
                     <CustomCKEditor
                         data = {content || ''}
-                        onChange={setContent}
+                        onChange={(data) => setContent(data)}
                         teamId = {teamId}
                     />
                 </div>

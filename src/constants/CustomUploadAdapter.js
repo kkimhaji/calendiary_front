@@ -1,4 +1,6 @@
-class CustomUploadAdapter {
+import axios from "axios";
+
+export default class CustomUploadAdapter {
     constructor(loader) {
         this.loader = loader;
     }
@@ -10,7 +12,7 @@ class CustomUploadAdapter {
                 formData.append('file', file);
                 
                 // 임시 업로드 엔드포인트 호출
-                axios.post('/api/images/temp', formData, {
+                axios.post(`teams/${teamId}/images/temp-upload`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization':`Bearer ${localStorage.getItem('token')}`

@@ -1,6 +1,6 @@
 import React from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CustomUploadAdapter from "../constants/CustomUploadAdapter.js";
 import {
     ClassicEditor,
     Autoformat,
@@ -70,15 +70,15 @@ const CustomCKEditor = ({ data, onChange, teamId }) => {
         }
     };
 
-    function uploadPlugin(editor) {
+    const handleUploadAdapter = (editor) => {
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new CustomUploadAdapter(loader);
+          return new CustomUploadAdapter(loader); // 클래스 인스턴스 생성
         };
-    }
+      };
 
     const editorConfiguration = {
         licenseKey: 'GPL', // GPL 라이선스 키 추가
-        extraPlugins: [uploadPlugin],
+        extraPlugins: [handleUploadAdapter],
         toolbar: {
             items: [
                 'heading',
@@ -199,7 +199,7 @@ const CustomCKEditor = ({ data, onChange, teamId }) => {
     return (
         <CKEditor
             editor={ClassicEditor}
-            data={data || ''}
+            data={data}
             config={
                 editorConfiguration
             }
@@ -207,13 +207,13 @@ const CustomCKEditor = ({ data, onChange, teamId }) => {
                 const data = editor.getData();
                 onChange(data);
             }}
-            onReady={editor => {
-                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-                    ({
-                        upload: () => loader.file.then(file => handleImageUpload(file))
-                    });
-                }
-            }}
+            // onReady={editor => {
+            //     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            //         ({
+            //             upload: () => loader.file.then(file => handleImageUpload(file))
+            //         });
+            //     }
+            // }}
         />
     );
 };
