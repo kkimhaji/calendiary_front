@@ -21,7 +21,7 @@ import React from 'react';
 // }
 
 function App() {
-  const isAuthenticated = localStorage.getItem('token');
+  const isAuthenticated = localStorage.getItem('accessToken');
   return (
     <Router>
       <AuthProvider>

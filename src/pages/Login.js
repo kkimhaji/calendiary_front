@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
 import '../styles/Login.css';
 import { useAuth } from '../contexts/AuthContext';
+import ToggleButton from '../components/ToggleButton';
 
 function Login() {
     const { setAuthTokens } = useAuth();
@@ -23,6 +24,13 @@ function Login() {
         }));
     };
 
+    const handleToggleChange = () => {
+        setLoginData((prev) => ({
+            ...prev,
+            rememberMe: !prev.rememberMe,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -34,6 +42,7 @@ function Login() {
                 refresh: refreshToken,
                 rememberMe: loginData.rememberMe
             });
+
             
             navigate('/boardList');
         } catch (error) {
@@ -95,17 +104,10 @@ function Login() {
                         />
                     </div>
 
-                    <div className="form-group remember-me">
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="rememberMe"
-                                checked={loginData.rememberMe}
-                                onChange={handleChange}
-                            />
-                            로그인 유지
-                        </label>
-                    </div>
+                <div className="remember-me">
+                    <ToggleButton checked={loginData.rememberMe} onChange={handleToggleChange} />
+                    <label>로그인 유지</label>
+                </div>
 
                     <button type="submit" className="login-button">
                         로그인
