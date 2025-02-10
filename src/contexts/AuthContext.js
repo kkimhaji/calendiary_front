@@ -7,54 +7,108 @@ export function AuthProvider({ children }) {
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken'));
     const [refreshToken, setRefreshToken] = useState(localStorage.getItem('refreshToken'));
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+    const [rememberMe, setRememberMe] = useState(
+        localStorage.getItem('rememberMe') === 'true'
+    );
 
     // 토큰 설정 함수 수정
     const setAuthTokens = useCallback(({ access, refresh, rememberMe }) => {
         const storage = rememberMe ? localStorage : sessionStorage;
+        const accessStorage = rememberMe ? localStorage : sessionStorage;
+        const refreshStorage = rememberMe ? localStorage : sessionStorage;
+        
+        accessStorage.setItem('accessToken', access);
+        refreshStorage.setItem('refreshToken', refresh);
+        localStorage.setItem('rememberMe', rememberMe.toString());
 
-        if (access) {
-            storage.setItem('accessToken', access);
-            setAccessToken(access);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-        }
-        if (rememberMe && refresh) {
-            localStorage.setItem('refreshToken', refresh);
-            setRefreshToken(refresh);
-        }
-        setIsLoggedIn(!!access);
+        setAccessToken(access);
+        setRefreshToken(refresh);
+        setRememberMe(rememberMe);
+        setIsLoggedIn(true);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+
+        // if (access) {
+        //     storage.setItem('accessToken', access);
+        //     setAccessToken(access);
+        //     axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+        // }
+        // if (rememberMe && refresh) {
+        //     localStorage.setItem('refreshToken', refresh);
+        //     setRefreshToken(refresh);
+        // }
+        // setIsLoggedIn(!!access);
     }, []);
 
-    // // 토큰 설정 및 검증 함수
-    // const setAuthToken = (newToken) => {
-    //     if (newToken) {
-    //         localStorage.setItem('accessToken', newToken);
-    //         setAccessToken(newToken);
-    //         // setIsAuthenticated(true);
-    //         // axios 기본 헤더 설정
-    //         axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-    //     } else {
-    //         localStorage.removeItem('accessToken');
-    //         setAccessToken(null);
-    //         // setIsAuthenticated(false);
-    //         delete axios.defaults.headers.common['Authorization'];
-    //     }
-    // };
+         // 토큰 자동 갱신 로직
+    const refreshAccessToken = useCallback(async () => {
+        try {
+            const response = await axios.post('/auth/reissue', {
+                refreshToken: refreshToken
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${refreshToken}`
+                }
+            });
+
+            const { accessToken: newAccess, refreshToken: newRefresh } = response.data;
+
+            // 새로운 토큰 저장
+            const storage = rememberMe ? localStorage : sessionStorage;
+            storage.setItem('accessToken', newAccess);
+            storage.setItem('refreshToken', newRefresh);
+
+            setAccessToken(newAccess);
+            setRefreshToken(newRefresh);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${newAccess}`;
+
+            return newAccess;
+        } catch (error) {
+            clearAuthTokens();
+            return null;
+        }
+    }, [refreshToken, rememberMe]);
+        // 초기 토큰 검증 + 자동 갱신
+        const verifyToken = useCallback(async () => {
+            if (!accessToken) return;
+    
+            try {
+                // 1. 액세스 토큰 검증
+                await axios.get('/auth/validate', {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+                setIsLoggedIn(true);
+            } catch (error) {
+                // 2. 액세스 토큰 만료 시 리프레시 토큰으로 갱신 시도
+                if (error.response?.status === 401) {
+                    const newAccessToken = await refreshAccessToken();
+                    if (newAccessToken) {
+                        setIsLoggedIn(true);
+                    } else {
+                        clearAuthTokens();
+                    }
+                }
+            }
+        }, [accessToken, refreshAccessToken]);
 
     // 초기 로드 시 토큰 검증
     useEffect(() => {
-        const verifyToken = async () => {
-            try {
-                if (accessToken) {
-                    await axios.get('/api/auth/validate');
-                    setIsLoggedIn(true);
-                }
-            } catch (error) {
-                clearAuthTokens();
-            }
-        };
         verifyToken();
-    }, [accessToken]);
+        // const verifyToken = async () => {
+        //     try {
+        //         if (accessToken) {
+        //             await axios.get('/auth/validate', {
+        //                 headers: {
+        //                     Authorization: `Bearer ${accessToken}`,
+        //                 },
+        //             });
+        //             setIsLoggedIn(true);
+        //         }
+        //     } catch (error) {
+        //         clearAuthTokens();
+        //     }
+        // };
+        // verifyToken();
+    }, [verifyToken]);
 
     // 앱 시작 시 토큰 유효성 검사
     useEffect(() => {
@@ -76,7 +130,7 @@ export function AuthProvider({ children }) {
 
                     try {
                         // 리프레시 토큰으로 새로운 액세스 토큰 요청
-                        const response = await axios.post('/api/auth/refresh', {}, {
+                        const response = await axios.post('/auth/reissue', {}, {
                             headers: {
                                 'Authorization': `Bearer ${refreshToken}`
                             }
