@@ -14,19 +14,18 @@ import CreateCategory from './pages/CreateCategory';
 import CreatePost from './pages/CreatePost';
 import PostDetail from './pages/PostDetail';
 import React from 'react';
-
+import { useAuth } from './contexts/AuthContext';
 // const PrivateRoute = ({ children }) => {
 //   const isAuthenticated = localStorage.getItem('token');
 //   return isAuthenticated ? children : <Navigate to="/login" />;
 // }
 
 function App() {
-  const isAuthenticated = localStorage.getItem('accessToken');
+  const { isLoggedIn } = useAuth();
   return (
     <Router>
-      <AuthProvider>
         <TeamProvider>
-          {isAuthenticated ? (
+          {isLoggedIn ? (
             <Layout>
               <Routes>
                 <Route path="/teams/:teamId/recent" element={<RecentPosts />} />
@@ -48,7 +47,7 @@ function App() {
             </Routes>
           )}
         </TeamProvider>
-      </AuthProvider>
+
     </Router>
   );
 }
