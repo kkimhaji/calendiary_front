@@ -81,7 +81,6 @@ function Register() {
             // navigate('/login');  // 또는 메인 페이지로 이동
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             // 4. 페이지 리다이렉트
-            // navigate('/boardList', { replace: true });
             window.location.replace('/boardList');
         } catch (error) {
             console.error('Verification failed:', error);

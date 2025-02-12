@@ -26,17 +26,6 @@ export function AuthProvider({ children }) {
         setRememberMe(rememberMe);
         setIsLoggedIn(true);
         axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-
-        // if (access) {
-        //     storage.setItem('accessToken', access);
-        //     setAccessToken(access);
-        //     axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-        // }
-        // if (rememberMe && refresh) {
-        //     localStorage.setItem('refreshToken', refresh);
-        //     setRefreshToken(refresh);
-        // }
-        // setIsLoggedIn(!!access);
     }, []);
 
          // 토큰 자동 갱신 로직
@@ -93,31 +82,10 @@ export function AuthProvider({ children }) {
     // 초기 로드 시 토큰 검증
     useEffect(() => {
         verifyToken();
-        // const verifyToken = async () => {
-        //     try {
-        //         if (accessToken) {
-        //             await axios.get('/auth/validate', {
-        //                 headers: {
-        //                     Authorization: `Bearer ${accessToken}`,
-        //                 },
-        //             });
-        //             setIsLoggedIn(true);
-        //         }
-        //     } catch (error) {
-        //         clearAuthTokens();
-        //     }
-        // };
-        // verifyToken();
     }, [verifyToken]);
 
     // 앱 시작 시 토큰 유효성 검사
     useEffect(() => {
-        // const storedToken = localStorage.getItem('accessToken');
-        // if (storedToken) {
-        //     setAccessToken(storedToken);
-        //     setIsLoggedIn(true);
-        //     axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-        // }
 
         const interceptor = axios.interceptors.response.use(
             response => response,

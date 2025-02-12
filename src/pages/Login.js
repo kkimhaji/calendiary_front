@@ -49,30 +49,6 @@ function Login() {
             setError('로그인에 실패했습니다. 다시 시도해 주세요.');
         }
 
-        //---------------
-        // try {
-        //     const response = await axios.post('/auth/authenticate', loginData);
-        //     console.log('Login response: ', response.data);
-        //     const { accessToken, refresthToken } = response.data;
-            
-        //     if (!accessToken){
-        //         console.error('No token reveived');
-        //         return;
-        //     }
-
-        //     // 로그인 성공 시 토큰을 localStorage에 저장
-        //     localStorage.setItem('token', accessToken);
-        //     login(accessToken);
-        //     //기본 헤더 설정
-        //     axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        //     console.log('token: ', accessToken);
-        //     // // 로그인 성공 시 /boardList로 이동
-        //     // navigate('/boardList', {replace:true});
-        //     window.location.href='/boardList';
-        // } catch (error) {
-        //     setError('아이디 또는 비밀번호가 올바르지 않습니다.');
-        //     console.error('Login error: ', error);
-        // }
     };
 
     return (
