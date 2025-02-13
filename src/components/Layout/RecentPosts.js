@@ -30,7 +30,7 @@ const RecentPosts = () => {
                     sort: 'createdDate,desc'
                 },
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
 

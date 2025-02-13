@@ -25,7 +25,7 @@ function Sidebar() {
                 try {
                     const response = await axios.get(`/teams/${selectedTeamId}/categories`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                         }
                     });
 

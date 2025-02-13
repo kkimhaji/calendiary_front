@@ -15,7 +15,7 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
         try {
             setLoading(true);
             const response = await axios.get('/member/get_teams', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
             });
             setTeams(response.data || []);
         } catch (error) {

@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './pages/Login';
-import BoardList from './pages/BoardList';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Register from './pages/Register';
 import TestConnection from './TestConnection';

@@ -40,7 +40,7 @@ const PostDetail = () => {
             try {
                 await axios.delete(`/teams/${teamId}/category/${categoryId}/posts/delete/${postId}`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
                 navigate(`/teams/${teamId}/category/${categoryId}/recent`);
@@ -59,7 +59,7 @@ const PostDetail = () => {
         try {
             const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
             setPost(response.data);

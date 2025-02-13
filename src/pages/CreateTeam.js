@@ -19,11 +19,11 @@ function CreateTeam() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         try {
             await axios.post('/team/create', teamData, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'application/json'
                 }
             });

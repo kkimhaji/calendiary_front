@@ -177,7 +177,7 @@ const CreatePost = () => {
             withCredentials: true,
             uploadUrl: `/teams/${teamId}/images/temp-upload`, // 서버 업로드 URL
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 'Content-Type': 'multipart/form-data'
             }
         }
@@ -188,7 +188,7 @@ const CreatePost = () => {
                 try {
                     const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -215,7 +215,7 @@ const CreatePost = () => {
                 try {
                     const response = await axios.get(`/teams/${teamId}/categories`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                         }
                     });
 
@@ -260,7 +260,7 @@ const CreatePost = () => {
         try {
             const response = await axios.post(`/teams/${teamId}/images/temp-upload`, formData, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             }
@@ -314,7 +314,7 @@ const CreatePost = () => {
                 }, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
                 alert('게시글이 작성되었습니다.');

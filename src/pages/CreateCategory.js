@@ -18,7 +18,7 @@ const CreateCategory = () => {
             try {
                 const response = await axios.get(`/teams/${teamId}/roles/get_roles`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
                 setTeamRoles(response.data);
@@ -68,7 +68,7 @@ const CreateCategory = () => {
 
             await axios.post(`/teams/${teamId}/categories/create`, requestBody, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
             navigate(`/teams/${teamId}`);
