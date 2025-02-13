@@ -21,6 +21,9 @@ const PostDetail = () => {
                     params: {
                         categoryId: categoryId,
                         postId: postId
+                    },
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
                 setPermissions(response.data);
