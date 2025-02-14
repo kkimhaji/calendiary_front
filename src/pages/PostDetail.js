@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/PostDetail.css';
 import DOMPurify from 'dompurify';
+import CommentForm from '../components/CommentForm';
+import CommentList from '../components/CommentList';
 
 const PostDetail = () => {
     const [post, setPost] = useState(null);
@@ -110,6 +112,9 @@ const PostDetail = () => {
             <div className="post-body" dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(post.content)
             }}>
+                <h3> 댓글 ({post.comments.length})</h3>
+                <CommentForm postId={postId} />
+                <CommentList comments = {post.comments} />
             </div>
             <div className="button-group">
                 <button

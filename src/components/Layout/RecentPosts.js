@@ -85,7 +85,8 @@ const RecentPosts = () => {
                         <div key={post.id} className="post-card" onClick={() => handlePostClick(post)}>
                             <div className='post-main-info'>
                                 <h3 className="post-title">{post.title}</h3>
-                                <div className='post-category'> {post.categoryName} </div>
+                                <div className='post-category'> <span>카테고리: </span>{post.categoryName} </div>
+                                <div className='post-comment-count'>{post.commentCount}</div>
                             </div>
                             <div className='post-meta'>
                                 <span className='post-author'> {post.authorName} </span>
