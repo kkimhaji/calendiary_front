@@ -112,7 +112,10 @@ const PostDetail = () => {
             <div className="post-body" dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(post.content)
             }}>
-                <h3> 댓글 ({post.comments.length})</h3>
+            </div>
+            <hr></hr>
+            <div>
+            <h4> 댓글 ({post.comments.length})</h4>
                 <CommentForm postId={postId} />
                 <CommentList comments = {post.comments} />
             </div>

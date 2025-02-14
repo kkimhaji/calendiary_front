@@ -1,4 +1,5 @@
 import React from 'react';
+import CommentForm from './CommentForm';
 
 function CommentList({ comments, depth = 0 }) {
     return (
