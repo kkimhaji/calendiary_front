@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/RecentPosts.css';
-import { selectedTeamId, setSelectedTeamId, useTeam } from '../../contexts/TeamContext.js';
 import { useLocation, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +11,8 @@ const RecentPosts = () => {
     const { teamId, categoryId } = useParams(); // URL 파라미터 사용
     const location = useLocation();
     const navigate = useNavigate();
+    const [teamName, setTeamName] = useState("");
+    const [categoryName, setCategoryName] = useState("");
 
     const fetchPosts = async (teamId, categoryId) => {
         if (!teamId) return; // teamId가 없으면 요청하지 않음
@@ -33,19 +34,38 @@ const RecentPosts = () => {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
+            const { posts, teamName, categoryName } = response.data;
 
-            if (response.data.content) {
-                const postsData = response.data.content || response.data;
+            // if (response.data.content) {
+            //     const postsData = response.data.content || response.data;
+            //     if (page === 0) {
+            //         setPosts(postsData);
+            //     } else {
+            //         setPosts(prev => [...prev, ...postsData]);
+            //     }
+            //     setHasMore(postsData.length === 20);
+            // }
+            if (posts.content) {
+                const postsData = posts.content;
+                
+                setTeamName(teamName);
+                setCategoryName(categoryName);
+
                 if (page === 0) {
-                    setPosts(postsData);
-                } else {
-                    setPosts(prev => [...prev, ...postsData]);
-                }
-                setHasMore(postsData.length === 20);
+                            setPosts(postsData);
+                        } else {
+                            setPosts(prev => [...prev, ...postsData]);
+                        }
+                        setHasMore(postsData.length === 20);
             }
 
         } catch (error) {
-            console.error('게시물 로딩 실패:', error);
+            if (error.response?.status === 403) {
+                alert("읽기 권한이 없습니다.");
+                navigate(-1); // 이전 페이지로 이동
+            } else {
+                console.error('게시물 로딩 실패:', error);
+            }
         }
     };
 
@@ -73,7 +93,9 @@ const RecentPosts = () => {
     return (
         <div className="recent-posts-container">
             <div className='posts-header'>
-                <h2>{categoryId ? `${categoryId} 게시물`: '팀 게시물'}</h2>
+                <h2>                    {categoryId 
+                        ? `${categoryName} 글 목록` 
+                        : `${teamName} 팀의 글 목록`}</h2>
                 <button className='create-post-button'
                     onClick={handleCreatePost} >
                     글 작성하기

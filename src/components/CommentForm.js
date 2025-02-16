@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
-function CommentForm({ postId, parentId, depth }) {
+function CommentForm({ postId, parentId, depth, teamId }) {
     const [content, setContent] = useState('');
     const { isLoggedIn } = useAuth();
 
@@ -11,8 +11,11 @@ function CommentForm({ postId, parentId, depth }) {
         try {
             await axios.post(`/posts/${postId}/comments`, {
                 content,
-                parentCommentId: parentId,
-                depth: depth + 1 // 현재 댓글 깊이 + 1
+                // parentCommentId: parentId,
+                // depth: depth + 1, // 현재 댓글 깊이 + 1
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
             });
             window.location.reload();
         } catch (error) {
