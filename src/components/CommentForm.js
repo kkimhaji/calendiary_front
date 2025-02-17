@@ -11,7 +11,7 @@ function CommentForm({ postId, parentId, depth, teamId }) {
         try {
             await axios.post(`/posts/${postId}/comments`, {
                 content,
-                parentCommentId: parentId,
+                parentCommentId: parentId || null,
                 // depth: depth + 1, // 현재 댓글 깊이 + 1
             },{
                 headers: {
