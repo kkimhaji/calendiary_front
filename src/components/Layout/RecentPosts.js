@@ -60,12 +60,12 @@ const RecentPosts = () => {
             }
 
         } catch (error) {
-            if (error.response?.status === 403) {
-                alert("읽기 권한이 없습니다.");
-                navigate(-1); // 이전 페이지로 이동
-            } else {
+            // if (error.response?.status === 403) {
+            //     alert("읽기 권한이 없습니다.");
+            //     navigate(-1); // 이전 페이지로 이동
+            // } else {
                 console.error('게시물 로딩 실패:', error);
-            }
+            // }
         }
     };
 
