@@ -146,12 +146,35 @@ export function AuthProvider({ children }) {
         setIsLoggedIn(false);
     };
 
-    const logout = () => {
-        localStorage.removeItem('accessToken');
-        setAccessToken(null);
-        // setIsAuthenticated(false);
-        setIsLoggedIn(false);
-        window.location.href = '/';
+    const logout = async () => {
+        try {
+            // 1. 서버에 로그아웃 요청 (Refresh Token 전송)
+            await axios.post('/auth/logout', {
+                refreshToken: localStorage.getItem('refreshToken')
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
+    
+            // 2. 클라이언트 토큰 삭제
+            [localStorage, sessionStorage].forEach(storage => {
+                storage.removeItem('accessToken');
+                storage.removeItem('refreshToken');
+            });
+            
+            // 3. 상태 초기화
+            setAccessToken(null);
+            setRefreshToken(null);
+            delete axios.defaults.headers.common['Authorization'];
+            setIsLoggedIn(false);
+            
+            // 4. 홈으로 이동
+            window.location.href = '/';
+        } catch (error) {
+            console.error('로그아웃 실패:', error);
+            alert('로그아웃 처리 중 오류가 발생했습니다.');
+        }
     };
 
     return (
