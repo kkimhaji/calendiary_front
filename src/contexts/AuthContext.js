@@ -130,9 +130,9 @@ export function AuthProvider({ children }) {
         setAccessToken(accessToken);
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         // setIsAuthenticated(true);
+        localStorage.setItem('accessToken', accessToken);
         setIsLoggedIn(true);
     }, []);
-
 
     // 로그아웃 시 처리
     const clearAuthTokens = () => {
@@ -183,6 +183,7 @@ export function AuthProvider({ children }) {
             refreshToken,
             isLoggedIn,
             setAuthTokens,
+            login,
             logout: clearAuthTokens }}>
             {children}
         </AuthContext.Provider>

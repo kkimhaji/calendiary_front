@@ -7,6 +7,8 @@ import { useAuth } from '../contexts/AuthContext';
 function Register() {
     const navigate = useNavigate();
     const {login} = useAuth();
+    const auth = useAuth();
+    console.log('auth:', auth);
     const [step, setStep] = useState(1);  // 1: 기본 정보, 2: 인증번호
 
     const [timeLeft, setTimeLeft] = useState(300); // 5분 = 300초
@@ -74,16 +76,16 @@ function Register() {
                 email: formData.email,
                 verificationCode: formData.verificationCode
             });
-            const { accessToken } = response.data;
-            localStorage.setItem('token', accessToken);
+            const accessToken = response.data.accessToken;
+            localStorage.setItem('accessToken', accessToken);
             // 2. Auth 컨텍스트 업데이트
             login(accessToken);
-            // navigate('/login');  // 또는 메인 페이지로 이동
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             // 4. 페이지 리다이렉트
-            window.location.replace('/boardList');
+            navigate('/');
         } catch (error) {
             console.error('Verification failed:', error);
+            console.error('Verification failed:', error.response?.data || error.message);
             alert('인증번호가 올바르지 않습니다.');
         } finally {
             setLoading(false);
