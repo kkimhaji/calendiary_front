@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
+import { useCallback } from 'react';
 
 const TeamContext = createContext();
 
@@ -8,12 +9,10 @@ export function TeamProvider({ children }) {
   const [shouldRefreshTeams, setShouldRefreshTeams] = useState(false);
   const [shouldRefreshCategories, setShouldRefreshCategories] = useState(false);
 
-  // ✅ 팀 목록 갱신 함수
   const refreshTeams = useCallback(() => {
       setShouldRefreshTeams(prev => !prev);
   }, []);
 
-  // ✅ 카테고리 목록 갱신 함수
   const refreshCategories = useCallback(() => {
       setShouldRefreshCategories(prev => !prev);
   }, []);
