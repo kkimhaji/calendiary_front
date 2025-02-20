@@ -15,7 +15,7 @@ function CommentList({ comments, depth = 0 }) {
                             <em>{comment.content}</em>
                         ) : (
                             <>
-                                <span className="author">{comment.author.nickname}</span>
+                                <span className="author">{comment.authorName}</span>
                                 <p>{comment.content}</p>
                                 {comment.depth < 2 && ( // 최대 3단계까지만 허용
                                     <CommentForm 
