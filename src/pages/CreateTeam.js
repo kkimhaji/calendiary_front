@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/CreateTeam.css';
+import { useTeam } from '../contexts/TeamContext';
 
 function CreateTeam() {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ function CreateTeam() {
         teamName: '',
         description: ''
     });
+    const {refreshTeams} = useTeam();
 
     const handleChange = (e) => {
         setTeamData({
@@ -21,17 +23,16 @@ function CreateTeam() {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
         try {
-            await axios.post('/team/create', teamData, {
+            const response = await axios.post('/team/create', teamData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'application/json'
                 }
             });
+            const newTeamId = response.data.teamId;
             alert('팀이 생성되었습니다.');
-            navigate('/boardList', { 
-                replace: true,
-                state: { refresh: true } 
-            });  // 메인 페이지로 이동
+            refreshTeams();
+            navigate(`/teams/${newTeamId}/recent`);
         } catch (error) {
             console.error('팀 생성 실패:', error);
             alert('팀 생성에 실패했습니다.');

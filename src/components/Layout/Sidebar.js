@@ -10,7 +10,9 @@ function Sidebar() {
     const {
         selectedTeamId,
         selectedCategoryId,
-        setSelectedCategoryId
+        setSelectedCategoryId,
+        shouldRefreshCategories, // 갱신 상태 추가
+        refreshCategories // 갱신 함수 추가
     } = useTeam();
 
     const navigate = useNavigate();
@@ -41,7 +43,7 @@ function Sidebar() {
 
         fetchCategories();
 
-    }, [selectedTeamId]);
+    }, [selectedTeamId, shouldRefreshCategories]);
 
     const handleCategorySelect = async (categoryId) => {
         await setSelectedCategoryId(categoryId);

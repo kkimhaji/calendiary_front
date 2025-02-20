@@ -81,6 +81,7 @@ function Register() {
             // 2. Auth 컨텍스트 업데이트
             login(accessToken);
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            alert('회원가입이 완료되었습니다.');
             // 4. 페이지 리다이렉트
             navigate('/');
         } catch (error) {

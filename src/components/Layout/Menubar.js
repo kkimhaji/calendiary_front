@@ -7,7 +7,7 @@ import RecentPosts from './RecentPosts';
 
 function Menubar({ isOpen, setIsOpen, onClose }) {
     const [teams, setTeams] = useState([]);
-    const { selectedTeamId, setSelectedTeamId } = useTeam();
+    const { selectedTeamId, setSelectedTeamId, shouldRefreshTeams, refreshTeams } = useTeam();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
@@ -28,13 +28,8 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
 
     // 팀 목록 가져오기
     useEffect(() => {
-        //     fetch('/api/teams')
-        //         .then(res => res.json())
-        //         .then(data => setTeams(data));
-        // }, []);
-        // API 호출하여 사용자의 팀 목록 가져오기
         fetchTeams();
-    }, []); //페이지 변경 감지
+    }, [shouldRefreshTeams]); //갱신 상태
 
     const handleTeamSelect = (teamId) => {
         setSelectedTeamId(teamId);

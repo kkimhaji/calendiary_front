@@ -3,6 +3,7 @@ import { useNavigate, useParams  } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/CreateCategory.css';
 import { CategoryPermision, getPermissionLabel } from '../constants/CategoryPermission';
+import { useTeam } from '../contexts/TeamContext';
 
 const CreateCategory = () => {
     const [name, setName] = useState('');
@@ -11,6 +12,7 @@ const CreateCategory = () => {
     const [rolePermissions, setRolePermissions] = useState([]);
     const navigate = useNavigate();
     const { teamId } = useParams(); // URL에서 teamId 가져오기
+    const {refreshCategories} = useTeam();
 
     // 팀의 역할 목록 조회
     useEffect(() => {
@@ -66,12 +68,14 @@ const CreateCategory = () => {
                 }))
             };
 
-            await axios.post(`/teams/${teamId}/categories/create`, requestBody, {
+            const response = await axios.post(`/teams/${teamId}/categories/create`, requestBody, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
-            navigate(`/teams/${teamId}`);
+            refreshCategories();
+            const newCategoryId = response.data.id;
+            navigate(`/teams/${teamId}/category/${newCategoryId}/recent`);
         } catch (error) {
             console.error('카테고리 생성 실패:', error);
         }
