@@ -1,5 +1,5 @@
 import React from 'react';
-import CommentForm from './CommentForm';
+import CommentItem from './CommentItem'; // ✅ 분리된 컴포넌트 임포트
 
 function CommentList({ comments, depth = 0 }) {
     return (
@@ -8,25 +8,13 @@ function CommentList({ comments, depth = 0 }) {
                 <div 
                     key={comment.id} 
                     className={`comment depth-${depth}`}
-                    style={{ marginLeft: depth * 30 }} // 들여쓰기
+                    style={{ marginLeft: depth * 30 }}
                 >
-                    <div className="comment-content">
-                        {comment.isDeleted ? (
-                            <em>{comment.content}</em>
-                        ) : (
-                            <>
-                                <span className="author">{comment.authorName}</span>
-                                <p>{comment.content}</p>
-                                {comment.depth < 2 && ( // 최대 3단계까지만 허용
-                                    <CommentForm 
-                                        postId={comment.postId} 
-                                        parentId={comment.id} 
-                                        depth={comment.depth}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </div>
+                    <CommentItem 
+                        comment={comment}
+                        depth={depth}
+                        postId={comment.postId}
+                    />
                     {comment.replies.length > 0 && (
                         <CommentList comments={comment.replies} depth={depth + 1} />
                     )}

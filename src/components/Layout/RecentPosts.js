@@ -94,7 +94,7 @@ const RecentPosts = () => {
         <div className="recent-posts-container">
             <div className='posts-header'>
                 <h2>                    {categoryId 
-                        ? `${categoryName} 글 목록` 
+                        ? `${categoryName} 카테고리의 글 목록` 
                         : `${teamName} 팀의 글 목록`}</h2>
                 <button className='create-post-button'
                     onClick={handleCreatePost} >
