@@ -19,9 +19,8 @@ const PostDetail = () => {
 
         const checkPermissions = async () => {
             try {
-                const response = await axios.get(`/teams/${teamId}/roles/post-edit-delete/check`, {
+                const response = await axios.get(`/roles/post-edit-delete/check`, {
                     params: {
-                        categoryId: categoryId,
                         postId: postId
                     },
                     headers:{
