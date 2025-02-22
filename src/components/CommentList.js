@@ -1,24 +1,46 @@
-import React from 'react';
-import CommentItem from './CommentItem'; // ✅ 분리된 컴포넌트 임포트
+import React, { useState, useEffect } from 'react';
+import CommentItem from './CommentItem';
 
-function CommentList({ comments, depth = 0 }) {
+const CommentList = ({ comments, teamId, categoryId }) => {
+    const [commentPermissions, setCommentPermissions] = useState({});
+
+    // ✅ 각 댓글의 권한 정보 조회
+    const fetchCommentPermissions = async (commentId) => {
+        try {
+            const response = await axios.get(`/teams/${teamId}/roles/comment-edit-delete/check`, {
+                params:{
+                    categoryId: categoryId,
+                    commentId: commentId
+                },
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
+            setCommentPermissions(prev => ({
+                ...prev,
+                [commentId]: response.data
+            }));
+        } catch (error) {
+            console.error('댓글 권한 조회 실패:', error);
+        }
+    };
+
+    useEffect(() => {
+        comments.forEach(comment => {
+            fetchCommentPermissions(comment.id);
+        });
+    }, [comments]);
+
     return (
         <div className="comment-list">
-            {comments.map((comment) => (
-                <div 
-                    key={comment.id} 
-                    className={`comment depth-${depth}`}
-                    style={{ marginLeft: depth * 30 }}
-                >
-                    <CommentItem 
-                        comment={comment}
-                        depth={depth}
-                        postId={comment.postId}
-                    />
-                    {comment.replies.length > 0 && (
-                        <CommentList comments={comment.replies} depth={depth + 1} />
-                    )}
-                </div>
+            {comments.map(comment => (
+                <CommentItem 
+                    key={comment.id}
+                    comment={comment}
+                    permissions={commentPermissions[comment.id] || {}}
+                    teamId={teamId}
+                    categoryId={categoryId}
+                />
             ))}
         </div>
     );
