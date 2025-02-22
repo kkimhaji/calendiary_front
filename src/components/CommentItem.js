@@ -1,14 +1,23 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import CommentForm from "./CommentForm";
+import '../styles/CommentList.css';
+import CommentList from "./CommentList";
 
 // CommentItem.js
-const CommentItem = ({ comment, depth, postId }) => {
+const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
     const [permissions, setPermissions] = useState({
         canEdit: false,
         canDelete: false
     });
-    // ✅ 동일한 DTO 구조로 권한 조회
+    const [showReplyForm, setShowReplyForm] = useState(false); 
+
+    // 답글 작성 버튼 핸들러
+    const handleReplyClick = () => {
+        setShowReplyForm(!showReplyForm);
+    };
+
+
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
@@ -20,7 +29,6 @@ const CommentItem = ({ comment, depth, postId }) => {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
-                // ✅ response.data = { canEdit: boolean, canDelete: boolean }
                 setPermissions(response.data);
             } catch (error) {
                 console.error('댓글 권한 확인 실패:', error);
@@ -31,11 +39,21 @@ const CommentItem = ({ comment, depth, postId }) => {
     const handleEdit = (commentId) => {
         console.log("Edit comment:", commentId);
         // 수정 로직 구현
+        onCommentSubmitted();
     };
 
     const handleDelete = (commentId) => {
         console.log("Delete comment:", commentId);
         // 삭제 로직 구현 (API 호출 추가)
+        onCommentSubmitted();
+
+        //api 호출 전 ui에 즉시 반영
+        //수정 예정
+        // setComments(prev => prev.filter(c => c.id !== commentId));
+        // axios.delete(`/comments/${commentId}`).catch(() => {
+        // // 실패 시 롤백
+        // setComments(prev => [...prev, deletedComment]);
+    // });
     };
     return (
         <div className="comment-content">
@@ -73,6 +91,36 @@ const CommentItem = ({ comment, depth, postId }) => {
                         />
                     )}
                 </>
+            )}
+            {/* 답글 작성 버튼 */}
+            {depth < 2 && ( // 최대 3단계까지만 허용
+                <button 
+                    className="btn-reply"
+                    onClick={handleReplyClick}
+                >
+                    답글 작성
+                </button>
+            )}
+            {/* 답글 작성 폼 */}
+            {showReplyForm && (
+                <CommentForm 
+                    postId={postId} 
+                    parentId={comment.id} 
+                    depth={depth}
+                    onSuccess={() => {
+                        setShowReplyForm(false);
+                        onCommentSubmitted(); // ✅ 상위 컴포넌트에 새로고침 요청
+                    }}
+                />
+            )}
+
+            {/* 대댓글 목록 */}
+            {comment.replies.length > 0 && (
+                <CommentList 
+                    comments={comment.replies} 
+                    depth={depth + 1}
+                    onCommentSubmitted={onCommentSubmitted}
+                />
             )}
         </div>
     );

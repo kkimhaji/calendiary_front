@@ -14,9 +14,18 @@ const PostDetail = () => {
         canEdit: false,
         canDelete: false
     });
+    const [comments, setComments] = useState([]);
+
+    const refreshComments = async () => {
+        try {
+            const response = await axios.get(`/posts/${postId}/comments`);
+            setComments(response.data);
+        } catch (error) {
+            console.error('댓글 목록 조회 실패:', error);
+        }
+    };
 
     useEffect(() => {
-
         const checkPermissions = async () => {
             try {
                 const response = await axios.get(`/roles/post-edit-delete/check`, {
@@ -34,7 +43,7 @@ const PostDetail = () => {
                 setPermissions({ canEdit: false, canDelete: false });
             }
         };
-
+        refreshComments();
         fetchPost();
         checkPermissions();
     }, [teamId, categoryId, postId]);
@@ -116,7 +125,14 @@ const PostDetail = () => {
             <div>
             <h4> 댓글 ({post.comments.length})</h4>
                 <CommentForm postId={postId} />
-                <CommentList comments = {post.comments} />
+                <div>
+                {/* 게시글 내용 */}
+                <CommentList 
+                    comments={comments} 
+                    depth={0}
+                    onCommentSubmitted={refreshComments} // ✅ 새로고침 함수 전달
+                />
+            </div>
             </div>
             <div className="button-group">
                 <button

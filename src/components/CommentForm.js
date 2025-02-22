@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
-function CommentForm({ postId, parentId, depth, teamId }) {
+function CommentForm({ postId, parentId, depth, onSuccess }) {
     const [content, setContent] = useState('');
     const { isLoggedIn } = useAuth();
 
@@ -12,13 +12,14 @@ function CommentForm({ postId, parentId, depth, teamId }) {
             await axios.post(`/posts/${postId}/comments`, {
                 content,
                 parentCommentId: parentId || null,
-                // depth: depth + 1, // 현재 댓글 깊이 + 1
+                depth: depth + 1, // 현재 댓글 깊이 + 1
             },{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
-            window.location.reload();
+            if (onSuccess) onSuccess();
+            setContent('');
         } catch (error) {
             console.error('댓글 작성 실패:', error);
         }
