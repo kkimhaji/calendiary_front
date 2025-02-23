@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import '../styles/CommentList.css';
 
-function CommentList({ comments, depth = 0, onCommentSubmitted }) {
+function CommentList({ comments = [], depth = 0, onCommentSubmitted }) {
     return (
         <div className="comment-list">
             {comments.map((comment) => (

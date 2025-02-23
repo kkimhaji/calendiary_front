@@ -11,7 +11,6 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
         canDelete: false
     });
     const [showReplyForm, setShowReplyForm] = useState(false); 
-
     // 답글 작성 버튼 핸들러
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
@@ -35,7 +34,10 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             }
         };
         fetchPermissions();
-    }, [comment.id]);
+    }, [comment]);
+
+    if (!comment) return null;
+
     const handleEdit = (commentId) => {
         console.log("Edit comment:", commentId);
         // 수정 로직 구현

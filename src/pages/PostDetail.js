@@ -19,8 +19,9 @@ const PostDetail = () => {
     const refreshComments = async () => {
         try {
             const response = await axios.get(`/posts/${postId}/comments`);
-            setComments(response.data);
+            setComments(response.data || []);
         } catch (error) {
+            setComments(null);
             console.error('댓글 목록 조회 실패:', error);
         }
     };
@@ -79,6 +80,7 @@ const PostDetail = () => {
             // 현재 로그인한 사용자와 게시글 작성자 비교
 
         } catch (error) {
+            setPost(null);
             if (error.response?.status === 403){
                 alert('게시글 조회 권한이 없습니다.');
             } else{
@@ -126,12 +128,18 @@ const PostDetail = () => {
             <h4> 댓글 ({post.comments.length})</h4>
                 <CommentForm postId={postId} />
                 <div>
-                {/* 게시글 내용 */}
+                <CommentList comments={comments} onCommentSubmitted={refreshComments} />
+            {/* {Array.isArray(comments) && (
                 <CommentList 
+                    comments={comments}
+                    onCommentSubmitted={refreshComments}
+                />
+            )} */}
+                {/* <CommentList 
                     comments={comments} 
                     depth={0}
                     onCommentSubmitted={refreshComments} // ✅ 새로고침 함수 전달
-                />
+                /> */}
             </div>
             </div>
             <div className="button-group">
