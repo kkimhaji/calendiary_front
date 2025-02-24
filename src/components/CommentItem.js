@@ -117,7 +117,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             )}
 
             {/* 대댓글 목록 */}
-            {comment.replies.length > 0 && (
+            {(comment.replies || []).length > 0 && (
                 <CommentList 
                     comments={comment.replies} 
                     depth={depth + 1}

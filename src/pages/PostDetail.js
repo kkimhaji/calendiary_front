@@ -21,7 +21,7 @@ const PostDetail = () => {
             const response = await axios.get(`/posts/${postId}/comments`);
             setComments(response.data || []);
         } catch (error) {
-            setComments(null);
+            setComments([]);
             console.error('댓글 목록 조회 실패:', error);
         }
     };
@@ -96,7 +96,7 @@ const PostDetail = () => {
         navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`);
     };
 
-    if (!post) return <div>로딩 중...</div>;
+    if (!post|| !post.title) return <div>로딩 중...</div>;
 
     return (
         <div className="post-detail-container">
@@ -125,7 +125,7 @@ const PostDetail = () => {
             </div>
             <hr></hr>
             <div>
-            <h4> 댓글 ({post.comments.length})</h4>
+            <h4> 댓글 ({comments.length})</h4>
                 <CommentForm postId={postId} />
                 <div>
                 <CommentList comments={comments} onCommentSubmitted={refreshComments} />

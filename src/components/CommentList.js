@@ -17,7 +17,7 @@ function CommentList({ comments = [], depth = 0, onCommentSubmitted }) {
                         postId={comment.postId}
                         onCommentSubmitted={onCommentSubmitted}
                     />
-                    {comment.replies.length > 0 && (
+                    {(comment.replies || []).length > 0 && (
                         <CommentList comments={comment.replies} depth={depth + 1} />
                     )}
                 </div>
