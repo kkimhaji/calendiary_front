@@ -18,7 +18,11 @@ const PostDetail = () => {
 
     const refreshComments = async () => {
         try {
-            const response = await axios.get(`/posts/${postId}/comments`);
+            const response = await axios.get(`/posts/${postId}/comments`,{
+                headers: {
+                    'Authorization':`Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
             setComments(response.data || []);
         } catch (error) {
             setComments([]);
@@ -78,7 +82,7 @@ const PostDetail = () => {
             });
             setPost(response.data);
             // 현재 로그인한 사용자와 게시글 작성자 비교
-
+            
         } catch (error) {
             setPost(null);
             if (error.response?.status === 403){
