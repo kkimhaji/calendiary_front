@@ -110,7 +110,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                     depth={depth}
                     onSuccess={() => {
                         setShowReplyForm(false);
-                        onCommentSubmitted(); // ✅ 상위 컴포넌트에 새로고침 요청
+                        onCommentSubmitted(); // 상위 컴포넌트에 새로고침 요청
                     }}
                 />
             )}
@@ -118,6 +118,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             {/* 대댓글 목록 */}
             {(comment.replies || []).length > 0 && (
                 <CommentList 
+                    postId={postId}
                     comments={comment.replies} 
                     depth={depth + 1}
                     onCommentSubmitted={onCommentSubmitted}
