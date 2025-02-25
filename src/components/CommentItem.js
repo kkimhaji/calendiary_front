@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import CommentForm from "./CommentForm";
-import '../styles/CommentList.css';
+import '../styles/CommentItem.css';
 import CommentList from "./CommentList";
 
 // CommentItem.js
@@ -15,7 +15,6 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
     };
-
 
     useEffect(() => {
         const fetchPermissions = async () => {
@@ -106,7 +105,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             {/* 답글 작성 폼 */}
             {showReplyForm && (
                 <CommentForm 
-                    postId={postId} 
+                    postId={postId}
                     parentId={comment.id} 
                     depth={depth}
                     onSuccess={() => {

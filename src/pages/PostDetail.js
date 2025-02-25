@@ -23,6 +23,7 @@ const PostDetail = () => {
                     'Authorization':`Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
+            console.log("comment", response.data);
             setComments(response.data || []);
         } catch (error) {
             setComments([]);
@@ -132,18 +133,7 @@ const PostDetail = () => {
             <h4> 댓글 ({comments.length})</h4>
                 <CommentForm postId={postId} />
                 <div>
-                <CommentList comments={comments} onCommentSubmitted={refreshComments} />
-            {/* {Array.isArray(comments) && (
-                <CommentList 
-                    comments={comments}
-                    onCommentSubmitted={refreshComments}
-                />
-            )} */}
-                {/* <CommentList 
-                    comments={comments} 
-                    depth={0}
-                    onCommentSubmitted={refreshComments} // ✅ 새로고침 함수 전달
-                /> */}
+                <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} />
             </div>
             </div>
             <div className="button-group">

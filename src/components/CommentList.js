@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import '../styles/CommentList.css';
 
-function CommentList({ comments = [], depth = 0, onCommentSubmitted }) {
+function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted }) {
     return (
         <div className="comment-list">
             {comments.map((comment) => (
@@ -14,12 +14,9 @@ function CommentList({ comments = [], depth = 0, onCommentSubmitted }) {
                     <CommentItem 
                         comment={comment}
                         depth={depth}
-                        postId={comment.postId}
+                        postId={postId}
                         onCommentSubmitted={onCommentSubmitted}
                     />
-                    {(comment.replies || []).length > 0 && (
-                        <CommentList comments={comment.replies} depth={depth + 1} />
-                    )}
                 </div>
             ))}
         </div>
