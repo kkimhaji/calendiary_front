@@ -64,6 +64,10 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                 <>
                     <div className="comment-header">
                         <span className="author">{comment.authorName}</span>
+                        <span className="comment-time">
+        {new Date(comment.createdDate).toLocaleDateString()} 
+        {new Date(comment.createdDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+    </span>
                         <div className="comment-actions">
                             {permissions.canEdit && (
                                 <button 

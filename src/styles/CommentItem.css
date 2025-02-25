@@ -10,3 +10,19 @@
 .btn-reply:hover {
     text-decoration: underline;
 }
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.author {
+    color: #333;
+}
+
+.comment-time {
+    font-size: 0.9em;
+    color: #666; /* 회색 계열 */
+    font-weight: 400;
+}
