@@ -33,6 +33,15 @@
 .post-body {
     margin: 20px 0;
     line-height: 1.6;
+    /* overflow-x: auto; 가로 스크롤 활성화 */
+}
+
+.post-body img {
+    max-width: 100%; /* 컨테이너 너비에 맞춤 */
+    height: auto;
+    display: block;
+    margin: 10px 0;
+    border-radius: 4px;
 }
 
 .button-group {
