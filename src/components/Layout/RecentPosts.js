@@ -36,27 +36,18 @@ const RecentPosts = () => {
             });
             const { posts, teamName, categoryName } = response.data;
 
-            // if (response.data.content) {
-            //     const postsData = response.data.content || response.data;
-            //     if (page === 0) {
-            //         setPosts(postsData);
-            //     } else {
-            //         setPosts(prev => [...prev, ...postsData]);
-            //     }
-            //     setHasMore(postsData.length === 20);
-            // }
             if (posts.content) {
                 const postsData = posts.content;
-                
+
                 setTeamName(teamName);
                 setCategoryName(categoryName);
 
                 if (page === 0) {
-                            setPosts(postsData);
-                        } else {
-                            setPosts(prev => [...prev, ...postsData]);
-                        }
-                        setHasMore(postsData.length === 20);
+                    setPosts(postsData);
+                } else {
+                    setPosts(prev => [...prev, ...postsData]);
+                }
+                setHasMore(postsData.length === 20);
             }
 
         } catch (error) {
@@ -64,7 +55,7 @@ const RecentPosts = () => {
             //     alert("읽기 권한이 없습니다.");
             //     navigate(-1); // 이전 페이지로 이동
             // } else {
-                console.error('게시물 로딩 실패:', error);
+            console.error('게시물 로딩 실패:', error);
             // }
         }
     };
@@ -86,16 +77,32 @@ const RecentPosts = () => {
         navigate(`/teams/${teamId}/posts/create`);
     }
 
-    const handlePostClick = (post) =>{
+    const handlePostClick = (post) => {
         navigate(`/teams/${teamId}/category/${post.categoryId}/posts/${post.id}`);
     }
 
     return (
         <div className="recent-posts-container">
             <div className='posts-header'>
-                <h2>                    {categoryId 
-                        ? `${categoryName} 카테고리의 글 목록` 
-                        : `${teamName} 팀의 글 목록`}</h2>
+                <h2>                    {categoryId
+                    ? `${categoryName} 카테고리의 글 목록`
+                    : `${teamName} 팀의 글 목록`}</h2>
+                {/* 팀/카테고리 정보 버튼 */}
+                {!categoryId ? (
+                    <button
+                        className='team-info-button'
+                        onClick={() => navigate(`/teams/${teamId}/info`)}
+                    >
+                        팀 정보 보기
+                    </button>
+                ) : (
+                    <button
+                        className='category-info-button'
+                        onClick={() => navigate(`/category/${categoryId}/info`)}
+                    >
+                        카테고리 정보
+                    </button>
+                )}
                 <button className='create-post-button'
                     onClick={handleCreatePost} >
                     글 작성하기
@@ -106,9 +113,10 @@ const RecentPosts = () => {
                     posts.map(post => (
                         <div key={post.id} className="post-card" onClick={() => handlePostClick(post)}>
                             <div className='post-main-info'>
-                                <h3 className="post-title">{post.title}</h3>
                                 <div className='post-category'> {post.categoryName} </div>
-                                <div className='post-comment-count'>{post.commentCount}</div>
+
+                                <h3 className="post-title">{post.title}</h3>
+                                <div className='post-comment-count'>{post.commentCount}댓글</div>
                             </div>
                             <div className='post-meta'>
                                 <span className='post-author'> {post.authorName} </span>

@@ -14,6 +14,7 @@ import CreatePost from './pages/CreatePost';
 import PostDetail from './pages/PostDetail';
 import React from 'react';
 import { useAuth } from './contexts/AuthContext';
+import TeamInfo from './pages/TeamInfo';
 
 function App() {
   const { isLoggedIn } = useAuth();
@@ -32,6 +33,8 @@ function App() {
                 <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
                 <Route path="/teams/:teamId/category/:categoryId/posts/:postId" element={<PostDetail />} />
                 <Route path='/teams/:teamId/category/:categoryId/posts/:postId/edit' element={<CreatePost />} />
+                <Route path="/teams/:teamId/info" element={<TeamInfo />} />
+{/* <Route path="/category/:categoryId/info" element={<CategoryInfo />} />  */}
               </Routes>
             </Layout>
           ) : (

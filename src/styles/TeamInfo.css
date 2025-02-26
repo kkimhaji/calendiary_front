@@ -1,0 +1,74 @@
+/* TeamInfo.css */
+.team-info-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .team-basic-info h1 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
+  
+  .team-description {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  
+  .metadata {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .role-toggle-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .role-toggle-button:hover {
+    background: #2980b9;
+  }
+  
+  .role-list {
+    margin-top: 2rem;
+  }
+  
+  .role-item {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  
+  .role-item h4 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+  }
+  
+  .permissions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .permission-tag {
+    background: #e8f4fd;
+    color: #3498db;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+  }
+  
