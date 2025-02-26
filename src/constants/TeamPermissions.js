@@ -13,6 +13,11 @@ export const TeamPermission = {
         key: 'MANAGE_CATEGORIES',
         label: '팀 카테고리 관리',
         position: 2
+    },
+    MANAGE_TEAM:{
+        key: 'MANAGE_TEAM',
+        labe: '팀 관리',
+        position: 3
     }
 };
 
