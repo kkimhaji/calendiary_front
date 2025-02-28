@@ -19,7 +19,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
-                const response = await axios.get(`/roles/comment-edit-delete/check`, {
+                const response = await axios.get(`/edit-delete-check/comment`, {
                     params:{
                         commentId: comment.id
                     },

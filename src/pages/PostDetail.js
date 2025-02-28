@@ -34,7 +34,7 @@ const PostDetail = () => {
     useEffect(() => {
         const checkPermissions = async () => {
             try {
-                const response = await axios.get(`/roles/post-edit-delete/check`, {
+                const response = await axios.get(`/edit-delete-check/post`, {
                     params: {
                         postId: postId
                     },
