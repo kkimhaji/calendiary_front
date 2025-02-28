@@ -72,3 +72,23 @@
     font-size: 0.85rem;
   }
   
+  .btn-edit-team {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-edit-team:hover {
+    background: #45a049;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}

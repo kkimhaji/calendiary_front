@@ -34,6 +34,7 @@ function App() {
                 <Route path="/teams/:teamId/category/:categoryId/posts/:postId" element={<PostDetail />} />
                 <Route path='/teams/:teamId/category/:categoryId/posts/:postId/edit' element={<CreatePost />} />
                 <Route path="/teams/:teamId/info" element={<TeamInfo />} />
+                <Route path='/teams/:teamId/edit' element = {<CreateTeam/>} />
 {/* <Route path="/category/:categoryId/info" element={<CategoryInfo />} />  */}
               </Routes>
             </Layout>

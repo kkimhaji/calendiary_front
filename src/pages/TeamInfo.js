@@ -10,7 +10,9 @@ const TeamInfo = () => {
   const [showRoles, setShowRoles] = useState(false);
   const [roleDetails, setRoleDetails] = useState([]); // 역할 상세 정보 상태
   const [loadingRoles, setLoadingRoles] = useState(false); // 로딩 상태
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // 에러 상태
+  const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -28,43 +30,82 @@ const TeamInfo = () => {
   // 역할 목록 조회 (showRoles가 true일 때만 실행)
   useEffect(() => {
     const fetchRoleDetails = async () => {
-        if (!showRoles) return;
-        setLoadingRoles(true);
-        setError(null);
-        try {
-            console.log("역할 목록 받아오기 ");
+      if (!showRoles) return;
+      setLoadingRoles(true);
+      setError(null);
+      try {
+        console.log("역할 목록 받아오기 ");
 
-            const response = await axios.get(`/roles/teams/${teamId}/get`,{
-                headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
-            console.log(response);
-            setRoleDetails(response.data);
-        } catch (error) {
-            setError('역할 목록을 불러오는데 실패했습니다.');
-        } finally {
-            setLoadingRoles(false);
-        }
+        const response = await axios.get(`/roles/teams/${teamId}/get`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        console.log(response);
+        setRoleDetails(response.data);
+      } catch (error) {
+        setError('역할 목록을 불러오는데 실패했습니다.');
+      } finally {
+        setLoadingRoles(false);
+      }
     };
     fetchRoleDetails();
-}, [showRoles, teamId]); // showRoles 변경 시마다 재조회
+  }, [showRoles, teamId]); // showRoles 변경 시마다 재조회
+
+  useEffect(() => {
+    const checkPermission = async () => {
+      try {
+        const response = await axios.get('/permission-check', {
+          params: {
+            permission: 'MANAGE_TEAM',
+            targetId: teamId
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        setHasManageTeamPermission(response.data);
+      } catch (err) {
+        setError('권한 확인에 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkPermission();
+  }, [teamId]);
+
+  const handleEdit = () =>{
+    navigate(`/teams/${teamId}/edit`);
+  }
+
+  if (loading) return <div>권한 확인 중...</div>;
 
   if (!teamData) return <div className="loading">로딩 중...</div>;
 
   return (
     <div className="team-info-container">
       <div className="team-basic-info">
-        <h1>{teamData.name}</h1>
-        <p className="team-description">{teamData.description}</p>
+        <div className='team-header'>
+          <h1>{teamData.name}</h1>
+          {hasManageTeamPermission && (
+                      <button 
+                          className="btn-edit-team"
+                          onClick={handleEdit}
+                      >
+                          팀 정보 수정
+                      </button>
+                  )}
+        </div>
         
+        <p className="team-description">{teamData.description}</p>
+
         <div className="metadata">
           <span>생성일: {new Date(teamData.createdAt).toLocaleDateString()}</span>
           <span>멤버 수: {teamData.memberCount}명</span>
           <span>만든 사람: {teamData.created_by}</span>
         </div>
 
-        <button 
+        <button
           className="role-toggle-button"
           onClick={() => setShowRoles(!showRoles)}
         >
@@ -75,29 +116,29 @@ const TeamInfo = () => {
       {showRoles && (
         <div className="role-list">
           <h3>역할 목록</h3>
-{loadingRoles ? (
-                        <div className="loading">역할 목록을 불러오는 중...</div>
-                    ) : error ? (
-                        <div className="error-message">{error}</div>
-                    ) : (
-                        roleDetails.map(role => (
-                            <div key={role.id} className="role-item">
-                                <h4>{role.name}</h4>
-                                <div className="permissions">
-                                    {role.permissions.map((perm, idx) => (
-                                        <span key={idx} className="permission-tag">
-                                            {perm}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="member-count">
-                                    멤버 수: {role.memberCount}
-                                </div>
-                            </div>
-                        ))
-                    )}
+          {loadingRoles ? (
+            <div className="loading">역할 목록을 불러오는 중...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : (
+            roleDetails.map(role => (
+              <div key={role.id} className="role-item">
+                <h4>{role.name}</h4>
+                <div className="permissions">
+                  {role.permissions.map((perm, idx) => (
+                    <span key={idx} className="permission-tag">
+                      {perm}
+                    </span>
+                  ))}
                 </div>
-            )}
+                <div className="member-count">
+                  멤버 수: {role.memberCount}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 };

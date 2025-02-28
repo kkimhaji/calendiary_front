@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/CreateTeam.css';
 import { useTeam } from '../contexts/TeamContext';
@@ -11,6 +11,29 @@ function CreateTeam() {
         description: ''
     });
     const {refreshTeams} = useTeam();
+    const {teamId} = useParams();
+    
+    useEffect(() => {
+        const loadTeamData = async () => {
+            if (!teamId) return;
+            
+            try {
+                const response = await axios.get(`/team/${teamId}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+                setTeamData({
+                    name: response.data.name,
+                    description: response.data.description
+                });
+            } catch (error) {
+                alert('팀 정보 로딩 실패');
+                navigate(-1);
+            }
+        };
+        loadTeamData();
+    }, [teamId, navigate]);
 
     const handleChange = (e) => {
         setTeamData({
@@ -22,35 +45,50 @@ function CreateTeam() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
+        
         try {
-            const response = await axios.post('/team/create', teamData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const newTeamId = response.data.teamId;
-            alert('팀이 생성되었습니다.');
+            if (teamId) {
+                // 수정 요청
+                await axios.put(`/team/${teamId}`, teamData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                alert('팀 정보가 수정되었습니다');
+            } else {
+                // 생성 요청
+                const response = await axios.post('/team/create', teamData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                alert('팀 생성이 완료되었습니다');
+                navigate(`/teams/${response.data.id}`);
+            }
             refreshTeams();
-            navigate(`/teams/${newTeamId}/recent`);
+            navigate(teamId ? `/team/${teamId}` : '/teams');
         } catch (error) {
-            console.error('팀 생성 실패:', error);
-            alert('팀 생성에 실패했습니다.');
+            console.error(teamId ? '수정 실패' : '생성 실패', error);
+            alert(error.response?.data?.message || '요청 처리 중 오류 발생');
         }
     };
 
     return (
         <div className="create-team-container">
-            <h2>새 팀 만들기</h2>
+            <h2>{teamId ? '팀 정보 수정' : '새 팀 만들기'}</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>팀 이름</label>
                     <input
                         type="text"
-                        name="teamName"
-                        value={teamData.teamName}
+                        name="name"
+                        value={teamData.name}
                         onChange={handleChange}
                         required
+                        minLength={2}
+                        maxLength={50}
                     />
                 </div>
                 <div className="form-group">
@@ -59,10 +97,22 @@ function CreateTeam() {
                         name="description"
                         value={teamData.description}
                         onChange={handleChange}
-                        required
+                        maxLength={200}
+                        rows={4}
                     />
                 </div>
-                <button type="submit">팀 생성하기</button>
+                <div className="button-group">
+                    <button type="submit" className="submit-btn">
+                        {teamId ? '수정 완료' : '팀 생성'}
+                    </button>
+                    <button 
+                        type="button" 
+                        onClick={() => navigate(-1)}
+                        className="cancel-btn"
+                    >
+                        취소
+                    </button>
+                </div>
             </form>
         </div>
     );
