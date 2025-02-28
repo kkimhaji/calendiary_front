@@ -142,7 +142,7 @@ function Register() {
                             required
                         />
                     </div>
-                    <button type="submit" disabled={loading}>
+                    <button type="register-submit" disabled={loading}>
                         {loading ? '처리중...' : '회원가입'}
                     </button>
                 </form>

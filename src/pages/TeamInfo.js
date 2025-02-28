@@ -131,6 +131,7 @@ const TeamInfo = () => {
                     </span>
                   ))}
                 </div>
+                <hr></hr>
                 <div className="member-count">
                   멤버 수: {role.memberCount}
                 </div>
