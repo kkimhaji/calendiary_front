@@ -18,6 +18,7 @@ const CategoryInfo = () => {
                         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
+                console.log("category info: ", response);
                 setCategory(response.data);
             } catch (err) {
                 setError('카테고리 정보를 불러오는데 실패했습니다');

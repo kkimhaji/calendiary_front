@@ -98,7 +98,7 @@ const RecentPosts = () => {
                 ) : (
                     <button
                         className='category-info-button'
-                        onClick={() => navigate(`/category/${categoryId}/info`)}
+                        onClick={() => navigate(`/teams/${teamId}/category/${categoryId}/info`)}
                     >
                         카테고리 정보
                     </button>
