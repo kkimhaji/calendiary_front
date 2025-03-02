@@ -74,7 +74,7 @@ const TeamInfo = () => {
     checkPermission();
   }, [teamId]);
 
-  const handleEdit = () =>{
+  const handleEdit = () => {
     navigate(`/teams/${teamId}/edit`);
   }
 
@@ -88,15 +88,21 @@ const TeamInfo = () => {
         <div className='team-header'>
           <h1>{teamData.name}</h1>
           {hasManageTeamPermission && (
-                      <button 
-                          className="btn-edit-team"
-                          onClick={handleEdit}
-                      >
-                          팀 정보 수정
-                      </button>
-                  )}
+            <button
+              className="btn-edit-team"
+              onClick={handleEdit}
+            >
+              팀 정보 수정
+            </button>
+          )}
+          {/* <button
+            className="btn-back"
+            onClick={() => navigate(-1)}
+          >
+            글 목록
+          </button> */}
         </div>
-        
+
         <p className="team-description">{teamData.description}</p>
 
         <div className="metadata">

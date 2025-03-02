@@ -41,7 +41,7 @@ const CategoryInfo = () => {
                     className="btn-back"
                     onClick={() => navigate(-1)}
                 >
-                    목록으로
+                    글 목록
                 </button>
             </div>
             
