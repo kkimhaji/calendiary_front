@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TeamInfo.css';
+import { Link } from 'react-router-dom';
 
 const TeamInfo = () => {
   const { teamId } = useParams();
@@ -12,6 +13,8 @@ const TeamInfo = () => {
   const [loadingRoles, setLoadingRoles] = useState(false); // 로딩 상태
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // 에러 상태
+  const [showMembers, setShowMembers] = useState(false);
+  const [members, setMembers] = useState([]);
   const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
 
   useEffect(() => {
@@ -74,6 +77,19 @@ const TeamInfo = () => {
     checkPermission();
   }, [teamId]);
 
+  const loadMembers = async () => {
+    if (!members.length && !loading) {
+      setLoading(true);
+      try {
+        const response = await axios.get(`/team/${teamId}/members`);
+        setMembers(response.data);
+      } catch (error) {
+        console.error('멤버 불러오기 실패:', error);
+      }
+      setLoading(false);
+    }
+  };
+
   const handleEdit = () => {
     navigate(`/teams/${teamId}/edit`);
   }
@@ -129,6 +145,11 @@ const TeamInfo = () => {
           ) : (
             roleDetails.map(role => (
               <div key={role.id} className="role-item">
+                <Link
+                  key={role.id}
+                  to={`/teams/${teamId}/roles/${role.id}/edit`}
+                  className="role-item"
+                ></Link>
                 <h4>{role.name}</h4>
                 <div className="permissions">
                   {role.permissions.map((perm, idx) => (
@@ -146,6 +167,37 @@ const TeamInfo = () => {
           )}
         </div>
       )}
+
+      <div className="members-section">
+        <div
+          className="toggle-header"
+          onClick={() => {
+            setShowMembers(!showMembers);
+            if (!members.length) loadMembers();
+          }}
+        >
+          <h3>멤버 목록 ({members.length})</h3>
+          <span>{showMembers ? '▲' : '▼'}</span>
+        </div>
+
+        {showMembers && (
+          <div className="member-list">
+            {loading ? (
+              <div className="loading">로딩 중...</div>
+            ) : (
+              members.map(member => (
+                <div key={member.email} className="member-item">
+                  <div className="member-info">
+                    <span className="nickname">{member.teamNickname}</span>
+                    <span className="email">{member.email}</span>
+                  </div>
+                  <span className="role">{member.roleName}</span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
