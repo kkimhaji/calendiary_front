@@ -16,37 +16,42 @@ import React from 'react';
 import { useAuth } from './contexts/AuthContext';
 import TeamInfo from './pages/TeamInfo';
 import CategoryInfo from './pages/CategoryInfo';
+import EditRole from './pages/EditRole';
 
 function App() {
   const { isLoggedIn } = useAuth();
   return (
     <Router>
-        <TeamProvider>
-          {isLoggedIn ? (
-            <Layout>
-              <Routes>
-                <Route path="/teams/:teamId/recent" element={<RecentPosts />} />
-                <Route path="/teams/:teamId/category/:categoryId/recent" element={<RecentPosts />} />
-                <Route path='/test' element={<TestConnection />} />
-                <Route path="*" element={<Navigate to="/teams/:teamId/recent" replace />} />
-                <Route path="/create-team" element={<CreateTeam />} />
-                <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
-                <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
-                <Route path="/teams/:teamId/category/:categoryId/posts/:postId" element={<PostDetail />} />
-                <Route path='/teams/:teamId/category/:categoryId/posts/:postId/edit' element={<CreatePost />} />
-                <Route path="/teams/:teamId/info" element={<TeamInfo />} />
-                <Route path='/teams/:teamId/edit' element = {<CreateTeam/>} />
-                <Route path="/teams/:teamId/category/:categoryId/info" element={<CategoryInfo />} /> 
-              </Routes>
-            </Layout>
-          ) : (
+      <TeamProvider>
+        {isLoggedIn ? (
+          <Layout>
             <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="/teams/:teamId/recent" element={<RecentPosts />} />
+              <Route path="/teams/:teamId/category/:categoryId/recent" element={<RecentPosts />} />
+              <Route path='/test' element={<TestConnection />} />
+              <Route path="*" element={<Navigate to="/teams/:teamId/recent" replace />} />
+              <Route path="/create-team" element={<CreateTeam />} />
+              <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
+              <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
+              <Route path="/teams/:teamId/category/:categoryId/posts/:postId" element={<PostDetail />} />
+              <Route path='/teams/:teamId/category/:categoryId/posts/:postId/edit' element={<CreatePost />} />
+              <Route path="/teams/:teamId/info" element={<TeamInfo />} />
+              <Route path='/teams/:teamId/edit' element={<CreateTeam />} />
+              <Route path="/teams/:teamId/category/:categoryId/info" element={<CategoryInfo />} />
+              <Route
+                path="/teams/:teamId/roles/:roleId/edit"
+                element={<EditRole />}
+              />
             </Routes>
-          )}
-        </TeamProvider>
+          </Layout>
+        ) : (
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        )}
+      </TeamProvider>
 
     </Router>
   );

@@ -46,6 +46,11 @@
   }
   
   .role-item {
+    display: block; /* Link가 block 요소로 동작하도록 */
+    text-decoration: none;
+    color: inherit;
+  }
+  .role-content {
     background: #f8f9fa;
     padding: 1.5rem;
     border-radius: 8px;
