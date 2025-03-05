@@ -23,9 +23,7 @@ const EditRole = () => {
         })
             .then(res => {
                 setRole(res.data);
-                const initialPermissions = new Set(
-                    res.data.permissions.map(p => TeamPermission[p] || p)
-                );
+                const initialPermissions = new Set(res.data.permissions);
                 setFormData({
                     name: res.data.roleName,
                     description: res.data.description,
@@ -37,9 +35,11 @@ const EditRole = () => {
     // 폼 제출 핸들러
     const handleSubmit = (e) => {
         e.preventDefault();
-        const permissionsToSend = Array.from(formData.permissions)
-            .map(p => typeof p === 'object' ? p.key : p);
+        const permissionsToSend = Array.from(formData.permissions); 
         axios.put(`/roles/teams/${teamId}/roles/${roleId}`, {
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            },
             roleName: formData.name,
             description: formData.description,
             permissions: permissionsToSend
@@ -48,12 +48,11 @@ const EditRole = () => {
 
     const handlePermissionChange = (permKey) => {
         const newPermissions = new Set(formData.permissions);
-        const perm = TeamPermission[permKey] || permKey;
-
-        if (newPermissions.has(perm)) {
-            newPermissions.delete(perm);
+        // ✅ 문자열 기반으로 직접 추가/제거
+        if (newPermissions.has(permKey)) { 
+            newPermissions.delete(permKey);
         } else {
-            newPermissions.add(perm);
+            newPermissions.add(permKey);
         }
         setFormData({ ...formData, permissions: newPermissions });
     };
@@ -76,13 +75,14 @@ const EditRole = () => {
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     />
                 </div>
+                <h3>권한 설정</h3>
                 <div className="permissions-section">
-                    <h3>권한 설정</h3>
                     {Object.values(TeamPermission).map(perm => (
                         <label key={perm.key}>
                             <input
                                 type="checkbox"
-                                checked={formData.permissions.has(perm.key)}
+                                // ✅ 권한 키(문자열)로 체크 여부 확인
+                                checked={formData.permissions.has(perm.key)} 
                                 onChange={() => handlePermissionChange(perm.key)}
                             />
                             {perm.label}
