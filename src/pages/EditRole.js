@@ -77,7 +77,7 @@ const EditRole = () => {
                     />
                 </div>
                 <h3>권한 설정</h3>
-                <div className="permissions-section">
+                <div className="role-edit-permissions-section">
                     {Object.values(TeamPermission).map(perm => (
                         <label key={perm.key}>
                             <input
