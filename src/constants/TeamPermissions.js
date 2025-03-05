@@ -16,7 +16,7 @@ export const TeamPermission = {
     },
     MANAGE_TEAM:{
         key: 'MANAGE_TEAM',
-        labe: '팀 관리',
+        label: '팀 관리',
         position: 3
     }
 };
