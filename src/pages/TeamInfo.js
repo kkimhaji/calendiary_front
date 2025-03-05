@@ -39,7 +39,7 @@ const TeamInfo = () => {
       try {
         console.log("역할 목록 받아오기 ");
 
-        const response = await axios.get(`/roles/teams/${teamId}/get`, {
+        const response = await axios.get(`/teams/${teamId}/roles/get`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
           }

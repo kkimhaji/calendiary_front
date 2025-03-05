@@ -16,7 +16,7 @@ const EditRole = () => {
 
     // 역할 정보 불러오기
     useEffect(() => {
-        axios.get(`/roles/teams/${teamId}/${roleId}`, {
+        axios.get(`/teams/${teamId}/roles/${roleId}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }

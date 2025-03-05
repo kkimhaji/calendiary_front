@@ -18,7 +18,7 @@ const CreateCategory = () => {
     useEffect(() => {
         const fetchTeamRoles = async () => {
             try {
-                const response = await axios.get(`/roles/teams/${teamId}/get_roles`, {
+                const response = await axios.get(`/teams/${teamId}/roles/get_roles`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
