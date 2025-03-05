@@ -36,13 +36,14 @@ const EditRole = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const permissionsToSend = Array.from(formData.permissions); 
-        axios.put(`/roles/teams/${teamId}/roles/${roleId}`, {
-            headers:{
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            },
+        axios.put(`/teams/${teamId}/roles/${roleId}/update`, {
             roleName: formData.name,
             description: formData.description,
             permissions: permissionsToSend
+        }, {
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            },
         }).then(() => navigate(`/teams/${teamId}/info`));
     };
 
