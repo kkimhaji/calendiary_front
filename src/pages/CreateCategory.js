@@ -1,83 +1,114 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams  } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/CreateCategory.css';
-import { CategoryPermision, getPermissionLabel } from '../constants/CategoryPermission';
+import { CategoryPermission, getPermissionLabel } from '../constants/CategoryPermission';
 import { useTeam } from '../contexts/TeamContext';
 
 const CreateCategory = () => {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [teamRoles, setTeamRoles] = useState([]);
     const [rolePermissions, setRolePermissions] = useState([]);
     const navigate = useNavigate();
-    const { teamId } = useParams(); // URL에서 teamId 가져오기
-    const {refreshCategories} = useTeam();
-
+    const { teamId, categoryId } = useParams(); // URL에서 teamId 가져오기
+    const { refreshCategories } = useTeam();
+    const isEditMode = !!categoryId;
+    const [formData, setFormData] = useState({
+        name: '',
+        description: ''
+    });
+    const [loading, setLoading] = useState(true);
     // 팀의 역할 목록 조회
     useEffect(() => {
-        const fetchTeamRoles = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(`/teams/${teamId}/roles/get_roles`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
-                setTeamRoles(response.data);
-                // 초기 rolePermissions 설정
-                setRolePermissions(response.data.map(role => ({
-                    roleId: role.id,
-                    permissions: new Set()
-                })));
+                let rolesData = [];
+                let categoryData = {};
+
+                // 1. 수정 모드: 카테고리 정보와 권한을 한 번에 조회
+                if (isEditMode) {
+                    const categoryRes = await axios.get(`/teams/${teamId}/categories/${categoryId}`, {
+                        headers:{
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                        }
+                    });
+                    categoryData = categoryRes.data;
+                    rolesData = categoryData.rolePermissions.map(rp => ({
+                        roleId: rp.roleId,
+                        roleName: rp.roleName,
+                        permissions: new Set([...rp.permissions])
+                    }));
+                    setFormData({
+                        name: categoryData.name,
+                        description: categoryData.description || ''
+                    });
+                } 
+                // 2. 생성 모드: 역할 목록만 별도 조회
+                else {
+                    const rolesRes = await axios.get(`/teams/${teamId}/roles/get_roles`, {
+                        headers:{
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                        }
+                    });
+                    rolesData = rolesRes.data.map(role => ({
+                        roleId: role.id,
+                        roleName: role.name,
+                        permissions: new Set() // 초기 빈 권한
+                    }));
+                }
+
+                setRolePermissions(rolesData);
+                
             } catch (error) {
-                console.error('역할 목록 조회 실패:', error);
+                console.error('데이터 불러오기 실패:', error);
+                navigate(-1);
+            } finally {
+                setLoading(false);
             }
         };
+        fetchData();
+    }, [teamId, categoryId, isEditMode]);
 
-        if (teamId) {
-            fetchTeamRoles();
-        }
-    }, [teamId]);
-
-    const handlePermissionChange = (roleId, permission) => {
-        setRolePermissions(prevPermissions => {
-            return prevPermissions.map(rp => {
-                if (rp.roleId === roleId) {
-                    const newPermissions = new Set(rp.permissions);
-                    if (newPermissions.has(permission.key)) {
-                        newPermissions.delete(permission.key);
-                    } else {
-                        newPermissions.add(permission.key);
-                    }
-                    return { ...rp, permissions: newPermissions };
+    const handlePermissionChange = (roleId, permissionKey) => {
+        setRolePermissions(prev => 
+            prev.map(role => {
+                if (role.roleId === roleId) {
+                    //완전히 새로운 Set 생성 (Deep Copy)
+                    const updatedPermissions = new Set(role.permissions);
+                    updatedPermissions.has(permissionKey) 
+                    ? updatedPermissions.delete(permissionKey)
+                    : updatedPermissions.add(permissionKey);
+                return { ...role, permissions: updatedPermissions };
                 }
-                return rp;
-            });
-        });
+                return role;
+            })
+        );
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const requestBody = {
-                name,
-                description,
+            const payload = {
+                ...formData,
                 rolePermissions: rolePermissions.map(rp => ({
                     roleId: rp.roleId,
                     permissions: Array.from(rp.permissions)
                 }))
             };
 
-            const response = await axios.post(`/teams/${teamId}/categories/create`, requestBody, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
+            const endpoint = isEditMode 
+                ? `/teams/${teamId}/categories/${categoryId}/update`
+                : `/teams/${teamId}/categories/create`;
+
+            const method = isEditMode ? 'put' : 'post';
+            const response = await axios[method](endpoint, payload, {
+                headers:
+                {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}
             });
+            
             refreshCategories();
-            const newCategoryId = response.data.id;
-            navigate(`/teams/${teamId}/category/${newCategoryId}/recent`);
+            navigate(`/teams/${teamId}/categories/${response.data.id}/recent`);
         } catch (error) {
-            console.error('카테고리 생성 실패:', error);
+            console.error('저장 실패:', error);
         }
     };
 
@@ -86,57 +117,61 @@ const CreateCategory = () => {
     }
 
     return (
-        <div className="create-category-container">
-            <h2>새 카테고리 생성</h2>
+        <div className="category-form-container">
+            <h2>{isEditMode ? '카테고리 수정' : '새 카테고리 생성'}</h2>
             <form onSubmit={handleSubmit}>
+                {/* 기본 정보 입력 섹션 */}
                 <div className="form-group">
                     <label>카테고리 이름</label>
                     <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
                         required
                     />
                 </div>
                 <div className="form-group">
                     <label>설명</label>
                     <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={formData.description}
+                        onChange={e => setFormData({ ...formData, description: e.target.value })}
                     />
                 </div>
-                <div className="permissions-section">
+
+                {/* 역할별 권한 설정 섹션 */}
+                <div className="role-permissions-section">
                     <h3>역할별 권한 설정</h3>
-                    {teamRoles.length > 0 ? (
-                        teamRoles.map(role => (
-                            <div key={role.id} className="role-permissions">
-                                <h4>{role.name}</h4>
-                                <div className="permissions-grid">
-                                    {Object.values(CategoryPermision).map(permission => (
-                                        <label key={permission.key} className="permission-checkbox">
-                                            <input
-                                                type="checkbox"
-                                                checked={rolePermissions
-                                                    .find(rp => rp.roleId === role.id)
-                                                    ?.permissions.has(permission.key)}
-                                                onChange={() => handlePermissionChange(role.id, permission)}
-                                            />
-                                            {permission.label}
-                                        </label>
-                                    ))}
-                                </div>
+                    {rolePermissions.map(role => (
+                        <div key={role.roleId} className="role-permissions">
+                            <h4>{role.roleName}</h4>
+                            <div className="permissions-grid">
+                                {Object.values(CategoryPermission).map(permission => (
+                                    <label key={permission.key} className="permission-checkbox">
+                                        <input
+                                            type="checkbox"
+                                            checked={role.permissions.has(permission.key)}
+                                            onChange={() => handlePermissionChange(role.roleId, permission.key)}
+                                        />
+                                        {permission.label}
+                                    </label>
+                                ))}
                             </div>
-                        ))
-                    ) : (
-                        <p>역할 정보를 불러오는 중...</p>
-                    )}
+                        </div>
+                    ))}
                 </div>
-                <button type="submit" className="submit-button">
-                    카테고리 생성
+
+                <button type="submit" className="submit-btn">
+                    {isEditMode ? '수정 완료' : '카테고리 생성'}
                 </button>
             </form>
         </div>
     );
+};
+
+// Set.prototype.toggle 확장
+Set.prototype.toggle = function (value) {
+    const newSet = new Set(this);
+    newSet.has(value) ? newSet.delete(value) : newSet.add(value);
+    return newSet;
 };
 
 export default CreateCategory;

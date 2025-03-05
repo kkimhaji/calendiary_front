@@ -15,7 +15,23 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 1rem;
 }
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+.btn-edit {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
 
+.btn-edit:hover {
+    background: #45a049;
+}
 .btn-back {
     background: #6c757d;
     color: white;

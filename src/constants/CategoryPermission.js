@@ -1,4 +1,4 @@
-export const CategoryPermision = {
+export const CategoryPermission = {
     VIEW_POST: {
         key: 'VIEW_POST',
         label: '게시글 조회',
@@ -27,11 +27,11 @@ export const CategoryPermision = {
 };
 
 export const getPermissionLabel = (permission) => {
-    return CategoryPermision[permission]?.label || permission;
+    return CategoryPermission[permission]?.label || permission;
 };
 
 export const sortPermissions = (permissions) => {
     return [...permissions].sort((a, b) => 
-        CategoryPermision[a].position - CategoryPermision[b].position
+        CategoryPermission[a].position - CategoryPermission[b].position
     );
 };

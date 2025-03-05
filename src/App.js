@@ -42,6 +42,7 @@ function App() {
                 path="/teams/:teamId/roles/:roleId/edit"
                 element={<EditRole />}
               />
+              <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
             </Routes>
           </Layout>
         ) : (
