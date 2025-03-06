@@ -16,6 +16,26 @@ const TeamInfo = () => {
   const [showMembers, setShowMembers] = useState(false);
   const [members, setMembers] = useState([]);
   const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
+  const [hasManageRolesPermission, setHasManageRolesPermission] = useState(false);
+  useEffect(() => {
+    const checkRolesPermission = async () => {
+      try {
+        const response = await axios.get('/permission-check', {
+          params: {
+            permission: 'MANAGE_ROLES',
+            targetId: teamId
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        setHasManageRolesPermission(response.data);
+      } catch (err) {
+        setError('권한 확인에 실패했습니다.');
+      }
+    };
+    checkRolesPermission();
+  }, [teamId]);
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -136,38 +156,42 @@ const TeamInfo = () => {
       </div>
 
       {showRoles && (
-  <div className="role-list">
-    <h3>역할 목록</h3>
-    {loadingRoles ? (
-      <div className="loading">역할 목록을 불러오는 중...</div>
-    ) : error ? (
-      <div className="error-message">{error}</div>
-    ) : (
-      roleDetails.map(role => (
-        <Link
-          key={role.id}
-          to={`/teams/${teamId}/roles/${role.id}/edit`}
-          className="role-item"
-        >
-          <div className="role-content">
-            <h4>{role.name}</h4>
-            <div className="permissions">
-              {role.permissions.map((perm, idx) => (
-                <span key={idx} className="permission-tag">
-                  {perm} {/* ✅ 문자열 배열 가정 (DTO 확인 필수) */}
-                </span>
-              ))}
-            </div>
-            <hr />
-            <div className="member-count">
-              멤버 수: {role.memberCount}
-            </div>
-          </div>
-        </Link>
-      ))
-    )}
-  </div>
-)}
+        <div className="role-list">
+          <h3>역할 목록</h3>
+          {loadingRoles ? (
+            <div className="loading">역할 목록을 불러오는 중...</div>
+          ) : error ? (
+            <div className="error-message">{error}</div>
+          ) : (
+            roleDetails.map(role => (
+              <div
+                key={role.id}
+                className={`role-item ${hasManageRolesPermission ? 'clickable' : 'disabled'}`}
+                onClick={() => {
+                  if (hasManageRolesPermission) {
+                    navigate(`/teams/${teamId}/roles/${role.id}/edit`);
+                  }
+                }}
+              >
+                <div className="role-content">
+                  <h4>{role.name}</h4>
+                  <div className="permissions">
+                    {role.permissions.map((perm, idx) => (
+                      <span key={idx} className="permission-tag">
+                        {perm} {/* ✅ 문자열 배열 가정 (DTO 확인 필수) */}
+                      </span>
+                    ))}
+                  </div>
+                  <hr />
+                  <div className="member-count">
+                    멤버 수: {role.memberCount}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
       <div className="members-section">
         <div
           className="toggle-header"
