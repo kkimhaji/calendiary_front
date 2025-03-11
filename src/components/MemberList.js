@@ -14,7 +14,7 @@ const MemberList = ({ teamId, roleId,}) => {
         try {
             setLoading(true);
             const endpoint = roleId 
-                ? `/team/${teamId}/roles/${roleId}/members`
+                ? `/teams/${teamId}/roles/${roleId}/members`
                 : `/team/${teamId}/get-members`;
 
             const response = await axios.get(endpoint, {
