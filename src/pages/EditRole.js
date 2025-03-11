@@ -27,7 +27,7 @@ const EditRole = () => {
                 });
                 setRole(roleRes.data);
                 setFormData({
-                    name: roleRes.data.roleName,
+                    name: roleRes.data.name,
                     description: roleRes.data.description,
                     permissions: new Set(roleRes.data.permissions)
                 });
