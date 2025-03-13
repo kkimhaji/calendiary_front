@@ -17,6 +17,40 @@ const TeamInfo = () => {
   const [members, setMembers] = useState([]);
   const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
   const [hasManageRolesPermission, setHasManageRolesPermission] = useState(false);
+
+  const [inviteLink, setInviteLink] = useState(null);
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteError, setInviteError] = useState(null);
+  const handleCreateInvite = async () => {
+    try {
+      setInviteLoading(true);
+      setInviteError(null);
+      
+      const response = await axios.post(
+        `/teams/${teamId}/invites`, 
+        {}, // 빈 요청 본문 (필요 시 파라미터 추가)
+        {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        }
+      );
+      
+      setInviteLink(response.data.inviteLink);
+    } catch (error) {
+      setInviteError('초대 링크 생성 실패: ' + error.response?.data?.message || error.message);
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(inviteLink)
+      .then(() => alert('링크가 복사되었습니다!'))
+      .catch(() => alert('복사에 실패했습니다.'));
+  };
+
+  
   useEffect(() => {
     const checkRolesPermission = async () => {
       try {
@@ -138,6 +172,36 @@ const TeamInfo = () => {
             글 목록
           </button> */}
         </div>
+        {hasManageTeamPermission && (
+        <div className="invite-section">
+          <button 
+            className="btn-generate-invite"
+            onClick={handleCreateInvite}
+            disabled={inviteLoading}
+          >
+            {inviteLoading ? '생성 중...' : '멤버 초대 링크 생성'}
+          </button>
+          
+          {inviteError && <div className="error-message">{inviteError}</div>}
+          
+          {inviteLink && (
+            <div className="invite-link-box">
+              <input 
+                type="text" 
+                value={inviteLink} 
+                readOnly 
+                className="invite-link-input"
+              />
+              <button 
+                className="btn-copy-link"
+                onClick={copyToClipboard}
+              >
+                복사
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
         <p className="team-description">{teamData.description}</p>
 
@@ -178,7 +242,7 @@ const TeamInfo = () => {
                   <div className="permissions">
                     {role.permissions.map((perm, idx) => (
                       <span key={idx} className="permission-tag">
-                        {perm} {/* ✅ 문자열 배열 가정 (DTO 확인 필수) */}
+                        {perm}
                       </span>
                     ))}
                   </div>
