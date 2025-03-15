@@ -17,7 +17,7 @@ const TeamInfo = () => {
   const [members, setMembers] = useState([]);
   const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
   const [hasManageRolesPermission, setHasManageRolesPermission] = useState(false);
-
+  const [hasManageMembersPermission, setHasManageMembersPermission] = useState(false);
   const [inviteLink, setInviteLink] = useState(null);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState(null);
@@ -75,7 +75,26 @@ const TeamInfo = () => {
       .catch(() => alert('복사에 실패했습니다.'));
   };
 
-  
+  useEffect(() => {
+    const checkMembersPermission = async () => {
+      try {
+        const response = await axios.get('/permission-check', {
+          params: {
+            permission: 'MANAGE_MEMBERS',
+            targetId: teamId
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        setHasManageMembersPermission(response.data);
+      } catch (err) {
+        setError('권한 확인에 실패했습니다.');
+      }
+    };
+    checkMembersPermission();
+  }, [teamId]);
+
   useEffect(() => {
     const checkRolesPermission = async () => {
       try {
@@ -191,7 +210,7 @@ const TeamInfo = () => {
             </button>
           )}
         </div>
-        {hasManageTeamPermission && (
+        {hasManageMembersPermission && (
         <div className="invite-section">
           {!showInviteForm && !inviteLink && (
             <button 
