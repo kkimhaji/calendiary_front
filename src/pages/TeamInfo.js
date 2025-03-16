@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TeamInfo.css';
-import { Link } from 'react-router-dom';
+import { usePermissions } from '../hooks/usePermissions';
 
 const TeamInfo = () => {
   const { teamId } = useParams();
@@ -15,9 +15,6 @@ const TeamInfo = () => {
   const [error, setError] = useState(null); // 에러 상태
   const [showMembers, setShowMembers] = useState(false);
   const [members, setMembers] = useState([]);
-  const [hasManageTeamPermission, setHasManageTeamPermission] = useState(false);
-  const [hasManageRolesPermission, setHasManageRolesPermission] = useState(false);
-  const [hasManageMembersPermission, setHasManageMembersPermission] = useState(false);
   const [inviteLink, setInviteLink] = useState(null);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState(null);
@@ -26,6 +23,12 @@ const TeamInfo = () => {
     expiresIn: 7, // 기본 7일
     maxUses: 1    // 기본 1회
   });
+  const [permissions, permissionsLoading, permissionsError] = usePermissions(
+    ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
+    teamId
+  );
+
+  console.log("manage team permission: ", permissions['MANAGE_TEAM']);
 
   const handleCreateInvite = async () => {
     try {
@@ -76,46 +79,6 @@ const TeamInfo = () => {
   };
 
   useEffect(() => {
-    const checkMembersPermission = async () => {
-      try {
-        const response = await axios.get('/permission-check', {
-          params: {
-            permission: 'MANAGE_MEMBERS',
-            targetId: teamId
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        setHasManageMembersPermission(response.data);
-      } catch (err) {
-        setError('권한 확인에 실패했습니다.');
-      }
-    };
-    checkMembersPermission();
-  }, [teamId]);
-
-  useEffect(() => {
-    const checkRolesPermission = async () => {
-      try {
-        const response = await axios.get('/permission-check', {
-          params: {
-            permission: 'MANAGE_ROLES',
-            targetId: teamId
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        setHasManageRolesPermission(response.data);
-      } catch (err) {
-        setError('권한 확인에 실패했습니다.');
-      }
-    };
-    checkRolesPermission();
-  }, [teamId]);
-
-  useEffect(() => {
     const fetchTeamData = async () => {
       try {
         const response = await axios.get(`/team/${teamId}`);
@@ -153,28 +116,6 @@ const TeamInfo = () => {
     fetchRoleDetails();
   }, [showRoles, teamId]); // showRoles 변경 시마다 재조회
 
-  useEffect(() => {
-    const checkPermission = async () => {
-      try {
-        const response = await axios.get('/permission-check', {
-          params: {
-            permission: 'MANAGE_TEAM',
-            targetId: teamId
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        setHasManageTeamPermission(response.data);
-      } catch (err) {
-        setError('권한 확인에 실패했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkPermission();
-  }, [teamId]);
-
   const loadMembers = async () => {
     if (!members.length && !loading) {
       setLoading(true);
@@ -192,7 +133,7 @@ const TeamInfo = () => {
     navigate(`/teams/${teamId}/edit`);
   }
 
-  if (loading) return <div>권한 확인 중...</div>;
+  if (permissionsLoading) return <div>권한 확인 중...</div>;
 
   if (!teamData) return <div className="loading">로딩 중...</div>;
 
@@ -201,7 +142,7 @@ const TeamInfo = () => {
       <div className="team-basic-info">
         <div className='team-header'>
           <h1>{teamData.name}</h1>
-          {hasManageTeamPermission && (
+          {permissions['MANAGE_TEAM'] && (
             <button
               className="btn-edit-team"
               onClick={handleEdit}
@@ -210,7 +151,7 @@ const TeamInfo = () => {
             </button>
           )}
         </div>
-        {hasManageMembersPermission && (
+        {permissions['MANAGE_MEMBERS'] && (
         <div className="invite-section">
           {!showInviteForm && !inviteLink && (
             <button 
@@ -338,9 +279,9 @@ const TeamInfo = () => {
             roleDetails.map(role => (
               <div
                 key={role.id}
-                className={`role-item ${hasManageRolesPermission ? 'clickable' : 'disabled'}`}
+                className={`role-item ${permissions['MANAGE_ROLES'] ? 'clickable' : 'disabled'}`}
                 onClick={() => {
-                  if (hasManageRolesPermission) {
+                  if (permissions['MANAGE_ROLES']) {
                     navigate(`/teams/${teamId}/roles/${role.id}/edit`);
                   }
                 }}
