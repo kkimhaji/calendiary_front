@@ -310,3 +310,45 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.invite-join-banner {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invite-message h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.invite-message p {
+  margin: 0.5rem 0 0;
+  opacity: 0.9;
+}
+
+.btn-join-team {
+  background: white;
+  color: #6e8efb;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-join-team:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.btn-join-team:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

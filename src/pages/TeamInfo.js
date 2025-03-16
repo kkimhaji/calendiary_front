@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TeamInfo.css';
 import { usePermissions } from '../hooks/usePermissions';
 
-const TeamInfo = () => {
+const TeamInfo = ({readOnly = false}) => {
   const { teamId } = useParams();
   const navigate = useNavigate();
   const [teamData, setTeamData] = useState(null);
@@ -15,6 +15,7 @@ const TeamInfo = () => {
   const [error, setError] = useState(null); // 에러 상태
   const [showMembers, setShowMembers] = useState(false);
   const [members, setMembers] = useState([]);
+  const [loadingMembers, setLoadingMembers] = useState(false); 
   const [inviteLink, setInviteLink] = useState(null);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState(null);
@@ -24,11 +25,60 @@ const TeamInfo = () => {
     maxUses: 1    // 기본 1회
   });
   const [permissions, permissionsLoading, permissionsError] = usePermissions(
-    ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
+    readOnly ? [] : ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
     teamId
   );
+  const [isValidInvite, setIsValidInvite] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const [searchParams] = useSearchParams();
 
-  console.log("manage team permission: ", permissions['MANAGE_TEAM']);
+  const inviteCode = searchParams.get('code');
+
+  //초대 코드 검증
+  useEffect(() => {
+    const validateInvite = async () => {
+      if (!readOnly || !inviteCode) return;
+      
+      try {
+        const response = await axios.get('/invite/validate', {
+          params: { code: inviteCode }
+        });
+        
+        if (response.data.isValid && response.data.teamId.toString() === teamId) {
+          setIsValidInvite(true);
+        } else {
+          setError(response.data.message || '유효하지 않은 초대 코드입니다.');
+        }
+      } catch (err) {
+        setError('초대 코드 검증 중 오류가 발생했습니다.');
+        console.error('초대 코드 검증 실패:', err);
+      }
+    };
+    
+    validateInvite();
+  }, [readOnly, inviteCode, teamId]);
+
+     // 팀 가입 핸들러
+     const handleJoinTeam = async () => {
+      if (!inviteCode) return;
+      
+      try {
+        setJoining(true);
+        await axios.post(`/team/${teamId}/join`, 
+          { code: inviteCode },
+          { headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }}
+        );
+
+              // 가입 성공 시 일반 팀 페이지로 리다이렉트
+      navigate(`/team/${teamId}`);
+    } catch (error) {
+      console.error('팀 가입 실패:', error);
+      alert('팀 가입에 실패했습니다. ' + (error.response?.data?.message || ''));
+    } finally {
+      setJoining(false);
+    }
+  };
+
 
   const handleCreateInvite = async () => {
     try {
@@ -86,6 +136,8 @@ const TeamInfo = () => {
       } catch (error) {
         console.error('팀 정보 조회 실패:', error);
         navigate(-1);
+      }finally{
+        setLoading(false)
       }
     };
     fetchTeamData();
@@ -98,14 +150,11 @@ const TeamInfo = () => {
       setLoadingRoles(true);
       setError(null);
       try {
-        console.log("역할 목록 받아오기 ");
-
         const response = await axios.get(`/teams/${teamId}/roles/get`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
           }
         });
-        console.log(response);
         setRoleDetails(response.data);
       } catch (error) {
         setError('역할 목록을 불러오는데 실패했습니다.');
@@ -117,15 +166,29 @@ const TeamInfo = () => {
   }, [showRoles, teamId]); // showRoles 변경 시마다 재조회
 
   const loadMembers = async () => {
-    if (!members.length && !loading) {
-      setLoading(true);
-      try {
-        const response = await axios.get(`/team/${teamId}/members`);
+    if (loadingMembers || (members.length > 0)) return;
+    
+    setLoadingMembers(true);
+    
+    try {
+      const response = await axios.get(`/team/${teamId}/members`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      
+      // 응답 데이터 검증
+      if (Array.isArray(response.data)) {
         setMembers(response.data);
-      } catch (error) {
-        console.error('멤버 불러오기 실패:', error);
+      } else {
+        console.error('예상치 못한 응답 형식:', response.data);
+        setError('멤버 데이터를 불러오는데 문제가 발생했습니다.');
       }
-      setLoading(false);
+    } catch (error) {
+      console.error('멤버 불러오기 실패:', error);
+      setError('멤버 목록을 불러오는데 실패했습니다.');
+    } finally {
+      setLoadingMembers(false); // ✅ 항상 로딩 상태 해제
     }
   };
 
@@ -133,16 +196,32 @@ const TeamInfo = () => {
     navigate(`/teams/${teamId}/edit`);
   }
 
-  if (permissionsLoading) return <div>권한 확인 중...</div>;
-
+  if (!readOnly && permissionsLoading) return <div>권한 확인 중...</div>;
   if (!teamData) return <div className="loading">로딩 중...</div>;
 
   return (
     <div className="team-info-container">
+      {/* 초대 모드일 때만 표시하는 가입 배너 */}
+      {readOnly && isValidInvite && (
+        <div className="invite-join-banner">
+          <div className="invite-message">
+            <h2>팀 초대</h2>
+            <p>이 팀에 가입하시겠습니까?</p>
+          </div>
+          <button 
+            className="btn-join-team"
+            onClick={handleJoinTeam}
+            disabled={joining}
+          >
+            {joining ? '가입 중...' : '팀 가입하기'}
+          </button>
+        </div>
+      )}
+      
       <div className="team-basic-info">
         <div className='team-header'>
           <h1>{teamData.name}</h1>
-          {permissions['MANAGE_TEAM'] && (
+          {!readOnly && permissions['MANAGE_TEAM'] && (
             <button
               className="btn-edit-team"
               onClick={handleEdit}
@@ -151,7 +230,7 @@ const TeamInfo = () => {
             </button>
           )}
         </div>
-        {permissions['MANAGE_MEMBERS'] && (
+        {!readOnly && permissions['MANAGE_MEMBERS'] && (
         <div className="invite-section">
           {!showInviteForm && !inviteLink && (
             <button 
@@ -279,9 +358,9 @@ const TeamInfo = () => {
             roleDetails.map(role => (
               <div
                 key={role.id}
-                className={`role-item ${permissions['MANAGE_ROLES'] ? 'clickable' : 'disabled'}`}
+                className={`role-item ${!readOnly &&permissions['MANAGE_ROLES'] ? 'clickable' : 'disabled'}`}
                 onClick={() => {
-                  if (permissions['MANAGE_ROLES']) {
+                  if (!readOnly &&permissions['MANAGE_ROLES']) {
                     navigate(`/teams/${teamId}/roles/${role.id}/edit`);
                   }
                 }}

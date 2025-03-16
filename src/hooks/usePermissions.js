@@ -33,7 +33,7 @@ export const usePermissions = (permissions, targetId) => {
               .join('&');
           }
         });
-        console.log("permission results: ", response.data);
+
         setPermissionResults(response.data);
         setError(null);
       } catch (err) {
