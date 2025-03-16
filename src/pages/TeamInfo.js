@@ -41,7 +41,10 @@ const TeamInfo = ({readOnly = false}) => {
       
       try {
         const response = await axios.get('/invite/validate', {
-          params: { code: inviteCode }
+          params: { code: inviteCode },
+          headers:{
+            'Authorization' : `Bearer ${localStorage.getItem('accessToken')}`
+          }
         });
         
         if (response.data.isValid && response.data.teamId.toString() === teamId) {
@@ -131,7 +134,11 @@ const TeamInfo = ({readOnly = false}) => {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        const response = await axios.get(`/team/${teamId}`);
+        const response = await axios.get(`/team/${teamId}`,{
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
         setTeamData(response.data);
       } catch (error) {
         console.error('팀 정보 조회 실패:', error);

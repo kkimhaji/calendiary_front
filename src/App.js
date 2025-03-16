@@ -17,6 +17,7 @@ import { useAuth } from './contexts/AuthContext';
 import TeamInfo from './pages/TeamInfo';
 import CategoryInfo from './pages/CategoryInfo';
 import EditRole from './pages/EditRole';
+import TeamJoinPage from './pages/TeamJoinPage';
 
 function App() {
   const { isLoggedIn } = useAuth();
@@ -43,6 +44,7 @@ function App() {
                 element={<EditRole />}
               />
               <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
+              <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
             </Routes>
           </Layout>
         ) : (

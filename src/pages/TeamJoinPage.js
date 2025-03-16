@@ -14,13 +14,17 @@ const TeamJoinPage = () => {
   const [validationError, setValidationError] = useState(null);
   const [joining, setJoining] = useState(false);
 
+  console.log("join team page");
   // 초대 코드 유효성 검증
   useEffect(() => {
     const validateInvite = async () => {
       try {
         setValidationLoading(true);
-        const response = await axios.get('/api/invites/validate', {
-          params: { code: inviteCode }
+        const response = await axios.get('/team/invite/validate', {
+            params: { code: inviteCode },
+            headers:{
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            }
         });
         
         // 다른 팀의 초대 코드인 경우 리다이렉트
@@ -54,7 +58,7 @@ const TeamJoinPage = () => {
   const handleJoinTeam = async () => {
     try {
       setJoining(true);
-      await axios.post(`/api/teams/${teamId}/join`, 
+      await axios.post(`/teams/${teamId}/join`, 
         { code: inviteCode },
         { headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }}
       );
