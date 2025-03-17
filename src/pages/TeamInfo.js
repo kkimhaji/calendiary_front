@@ -34,6 +34,16 @@ const TeamInfo = ({readOnly = false}) => {
 
   const inviteCode = searchParams.get('code');
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // 현재 URL을 저장하고 로그인 페이지로 리다이렉트
+      const currentPath = `${location.pathname}${location.search}`;
+      navigate(`/login?redirectUrl=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+
+  }, [isAuthenticated, teamId, location, navigate]);
+  
   //초대 코드 검증
   useEffect(() => {
     const validateInvite = async () => {

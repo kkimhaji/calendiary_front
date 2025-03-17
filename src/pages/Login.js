@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from '../api/axios';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../store/authSlice';
 import '../styles/Login.css';
-import { useAuth } from '../contexts/AuthContext';
 import ToggleButton from '../components/ToggleButton';
 
 function Login() {
-    const { setAuthTokens } = useAuth();
-
+    const dispatch = useDispatch();
+    const { loading, error: authError } = useSelector(state => state.auth);
+    
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -15,6 +16,11 @@ function Login() {
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // URL에서 리다이렉트 URL 가져오기
+    const params = new URLSearchParams(location.search);
+    const redirectUrl = params.get('redirectUrl') || '/boardList';
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -33,29 +39,31 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/auth/authenticate', loginData);
-            const { accessToken, refreshToken } = response.data;
-            
-            setAuthTokens({
-                access: accessToken,
-                refresh: refreshToken,
-                rememberMe: loginData.rememberMe
-            });
-
+        setError('');
         
-            navigate('/boardList');
-        } catch (error) {
+        const result = await dispatch(loginUser(loginData));
+        
+        if (result.success) {
+            // 리다이렉트 URL로 이동 (초대 링크가 있으면 해당 링크로)
+            navigate(redirectUrl);
+        } else {
             setError('로그인에 실패했습니다. 다시 시도해 주세요.');
         }
-
     };
 
     return (
         <div className="login-container">
             <div className="login-box">
                 <h2>로그인</h2>
-                {error && <div className="error-message">{error}</div>}
+                {(error || authError) && <div className="error-message">{error || authError}</div>}
+                
+                {/* 리다이렉트 URL이 있는 경우 안내 메시지 표시 */}
+                {redirectUrl !== '/boardList' && (
+                    <div className="alert-message">
+                        계속하려면 로그인이 필요합니다.
+                    </div>
+                )}
+                
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>이메일</label>
@@ -80,13 +88,13 @@ function Login() {
                         />
                     </div>
 
-                <div className="remember-me">
-                    <ToggleButton checked={loginData.rememberMe} onChange={handleToggleChange} />
-                    <label>로그인 유지</label>
-                </div>
+                    <div className="remember-me">
+                        <ToggleButton checked={loginData.rememberMe} onChange={handleToggleChange} />
+                        <label>로그인 유지</label>
+                    </div>
 
-                    <button type="submit" className="login-button">
-                        로그인
+                    <button type="submit" className="login-button" disabled={loading}>
+                        {loading ? '로그인 중...' : '로그인'}
                     </button>
                 </form>
                 <div className="register-link">
