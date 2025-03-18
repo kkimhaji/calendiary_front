@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TeamInfo.css';
 import { usePermissions } from '../hooks/usePermissions';
+import { useSelector } from 'react-redux';
+import { isAuthenticated, selectIsAuthenticated } from '../store/authSlice';
 
 const TeamInfo = ({readOnly = false}) => {
   const { teamId } = useParams();
@@ -31,18 +33,17 @@ const TeamInfo = ({readOnly = false}) => {
   const [isValidInvite, setIsValidInvite] = useState(false);
   const [joining, setJoining] = useState(false);
   const [searchParams] = useSearchParams();
-
+  const location = useLocation(); // useLocation 훅 사용
+  const isAuthenticated = useSelector(selectIsAuthenticated); // Redux 선택자 사용
   const inviteCode = searchParams.get('code');
-
+  
   useEffect(() => {
     if (!isAuthenticated) {
       // 현재 URL을 저장하고 로그인 페이지로 리다이렉트
       const currentPath = `${location.pathname}${location.search}`;
       navigate(`/login?redirectUrl=${encodeURIComponent(currentPath)}`);
-      return;
     }
-
-  }, [isAuthenticated, teamId, location, navigate]);
+  }, [isAuthenticated, location, navigate]);
   
   //초대 코드 검증
   useEffect(() => {

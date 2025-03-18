@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '../store/authSlice';
 
 function CommentForm({ postId, parentId, depth, onSuccess }) {
     const [content, setContent] = useState('');
-    const { isLoggedIn } = useAuth();
+    const isLoggedIn = useSelector(selectIsAuthenticated);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

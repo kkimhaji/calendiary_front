@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../store/authSlice';
 import '../styles/Register.css';
-import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import axios from '../api/axios';
 
 function Register() {
     const navigate = useNavigate();
-    const {login} = useAuth();
-    const auth = useAuth();
-    console.log('auth:', auth);
+    const dispatch = useDispatch(); // Redux dispatch 사용
+    
     const [step, setStep] = useState(1);  // 1: 기본 정보, 2: 인증번호
-
     const [timeLeft, setTimeLeft] = useState(300); // 5분 = 300초
     const [timerActive, setTimerActive] = useState(false);
 
@@ -76,13 +75,23 @@ function Register() {
                 email: formData.email,
                 verificationCode: formData.verificationCode
             });
-            const accessToken = response.data.accessToken;
+            
+            const { accessToken, refreshToken } = response.data;
+            
+            // Redux store에 인증 정보 저장
+            dispatch(setCredentials({
+                access: accessToken,
+                refresh: refreshToken,
+                rememberMe: true
+            }));
+            
+            // 로컬 스토리지에도 토큰 저장 (Redux Persist와 함께 작동)
             localStorage.setItem('accessToken', accessToken);
-            // 2. Auth 컨텍스트 업데이트
-            login(accessToken);
+            
+            // axios 기본 헤더 설정
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            
             alert('회원가입이 완료되었습니다.');
-            // 4. 페이지 리다이렉트
             navigate('/');
         } catch (error) {
             console.error('Verification failed:', error);
@@ -149,7 +158,6 @@ function Register() {
             ) : (
                 <form onSubmit={handleVerification}>
                     <div className="verification-info">
-
                         <div className="form-group">
                             <input
                                 type="text"
@@ -161,7 +169,6 @@ function Register() {
 
                         <p>인증 메일은 5분 동안 유효합니다.</p>
                         <p className="timer">남은 시간: {formatTime(timeLeft)}</p>
-
 
                         <div className="form-group verification-group">
                             <input

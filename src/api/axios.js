@@ -1,38 +1,41 @@
 import axios from 'axios';
-import { store } from '../stroe';
-import { logout } from '../stroe/authSlice';
 
-const api = axios.create({
-    baseURL: 'http://localhost:8080',
-    headers: {
-        'Content-Type': 'application/json',
-    },
+// API 클라이언트 설정
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',
+  withCredentials: true,
+  timeout: 10000,
 });
 
-api.interceptors.request.use(
-    (config) => {
-        const token = store.getState().auth.token;
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+// 요청 인터셉터 (토큰 추가)
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken') || 
+                  sessionStorage.getItem('accessToken');
+    if (token) {
+        if (!config.headers) {
+            config.headers = {};
+          }
+      config.headers.Authorization = `Bearer ${token}`;
     }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
-// 응답 인터셉터 - 401 오류 시 로그아웃
-api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response && error.response.status === 401) {
-        // 인증 만료 시 로그아웃
-        store.dispatch(logout());
-        window.location.href = '/login';
-      }
-      return Promise.reject(error);
-    }
-  );
+// 함수 정의만 하고 실제 로직은 외부에서 주입받도록 설정
+let logoutCallback = null;
 
-export default axios;
+// 로그아웃 콜백 설정 함수
+export const setLogoutCallback = (callback) => {
+  logoutCallback = callback;
+};
+
+// 로그아웃 함수
+export const handleLogout = () => {
+  if (logoutCallback) {
+    logoutCallback();
+  }
+};
+
+export default instance;

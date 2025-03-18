@@ -2,21 +2,46 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Header.css';
 import Menubar from './Menubar';
-import { useAuth } from '../../contexts/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectIsAuthenticated, logoutUser, clearCredentials } from '../../store/authSlice';
+import { persistor } from '../../store';
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
-    const { isLoggedIn, logout } = useAuth();
+    const isLoggedIn = useSelector(selectIsAuthenticated);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const toggleMenubar = () => {
         setIsOpen(!isOpen);
     };
 
     const handleLogout = () => {
-        logout();
-        navigate('/');
-    }
+        try {
+            // 1. 직접 로컬/세션 스토리지에서 토큰 제거
+            localStorage.removeItem('accessToken');
+            sessionStorage.removeItem('accessToken');
+            
+            // 2. Redux 상태 초기화 (동기적으로 먼저 처리)
+            dispatch(clearCredentials());
+            
+            // 3. 로컬 스토리지의 Redux 상태 초기화
+            persistor.purge();
+            
+            // 4. 서버 로그아웃 요청 (백그라운드로 처리)
+            dispatch(logoutUser()).catch(error => {
+                console.error('서버 로그아웃 요청 실패:', error);
+                // 실패해도 UI는 이미 로그아웃 상태
+            });
+            
+            // 5. 로그인 페이지로 리다이렉트
+            navigate('/login');
+        } catch (error) {
+            console.error('로그아웃 처리 중 오류 발생:', error);
+            alert('로그아웃 처리 중 오류가 발생했습니다.');
+        }
+    };
+
 
     const handleAuth = () => {
         if (isLoggedIn) {

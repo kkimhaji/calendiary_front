@@ -6,21 +6,45 @@ import Register from './pages/Register';
 import TestConnection from './TestConnection';
 import { TeamProvider } from './contexts/TeamContext';
 import Layout from './components/Layout/Layout';
-import { AuthProvider } from './contexts/AuthContext';
 import CreateTeam from './pages/CreateTeam';
 import RecentPosts from './components/Layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
 import CreatePost from './pages/CreatePost';
 import PostDetail from './pages/PostDetail';
 import React from 'react';
-import { useAuth } from './contexts/AuthContext';
 import TeamInfo from './pages/TeamInfo';
 import CategoryInfo from './pages/CategoryInfo';
 import EditRole from './pages/EditRole';
 import TeamJoinPage from './pages/TeamJoinPage';
+import authService from './services/authService';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from './store/authSlice';
 
 function App() {
-  const { isLoggedIn } = useAuth();
+  const isLoggedIn = useSelector(selectIsAuthenticated);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const attemptAutoLogin = async () => {
+      try {
+        const success = await authService.attemptAutoLogin();
+        setIsAuthenticated(success);
+      } catch (error) {
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    attemptAutoLogin();
+  }, []);
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Router>
       <TeamProvider>
