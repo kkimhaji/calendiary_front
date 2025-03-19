@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Header.css';
 import Menubar from './Menubar';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsAuthenticated, logoutUser, clearCredentials } from '../../store/authSlice';
+import { selectIsAuthenticated, logoutUser, clearCredentials, fetchUserInfo, selectCurrentUser } from '../../store/authSlice';
 import { persistor } from '../../store';
+import axios from '../../api/axios';
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const isLoggedIn = useSelector(selectIsAuthenticated);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
+
+    // 컴포넌트 마운트 시 사용자 정보 가져오기
+    useEffect(() => {
+        if (isLoggedIn && (!currentUser || !currentUser.nickname)) {
+            dispatch(fetchUserInfo());
+        }
+    }, [isLoggedIn, currentUser, dispatch]);
 
     const toggleMenubar = () => {
         setIsOpen(!isOpen);
@@ -64,6 +73,10 @@ function Header() {
                 <nav className="nav">
                     <ul>
                     {isLoggedIn && (
+                        <>
+                        <li className="user-greeting">
+                            {currentUser?.nickname ? `${currentUser.nickname}님` : '사용자님'}
+                        </li>
                             <li>
                                 <Link 
                                     to="/account" 
@@ -72,6 +85,7 @@ function Header() {
                                     계정 정보
                                 </Link>
                             </li>
+                            </>
                         )}
                         <li>
                             <button

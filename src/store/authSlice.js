@@ -40,6 +40,19 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// 사용자 정보 가져오기 액션
+export const fetchUserInfo = createAsyncThunk(
+  'auth/fetchUserInfo',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get('/user/me'); // 또는 실제 사용자 정보 API 경로
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || '사용자 정보를 가져오는데 실패했습니다.');
+    }
+  }
+);
+
 // 로그아웃 액션 (비동기)
 export const logoutUser = createAsyncThunk(
   'auth/logout',
