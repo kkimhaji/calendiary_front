@@ -7,10 +7,10 @@ import axios from '../api/axios';
 
 function Register() {
     const navigate = useNavigate();
-    const dispatch = useDispatch(); // Redux dispatch 사용
+    const dispatch = useDispatch();
     
-    const [step, setStep] = useState(1);  // 1: 기본 정보, 2: 인증번호
-    const [timeLeft, setTimeLeft] = useState(300); // 5분 = 300초
+    const [step, setStep] = useState(1);
+    const [timeLeft, setTimeLeft] = useState(300);
     const [timerActive, setTimerActive] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -56,9 +56,9 @@ function Register() {
                 nickname: formData.nickname,
                 password: formData.password
             });
-            setStep(2);  // 인증번호 입력 단계로 전환
-            setTimeLeft(300);  // 타이머 초기화
-            setTimerActive(true);  // 타이머 시작
+            setStep(2);
+            setTimeLeft(300);
+            setTimerActive(true);
         } catch (error) {
             console.error('Registration failed:', error);
             alert('회원가입 중 오류가 발생했습니다.');
@@ -85,10 +85,7 @@ function Register() {
                 rememberMe: true
             }));
             
-            // 로컬 스토리지에도 토큰 저장 (Redux Persist와 함께 작동)
             localStorage.setItem('accessToken', accessToken);
-            
-            // axios 기본 헤더 설정
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             
             alert('회원가입이 완료되었습니다.');
@@ -107,8 +104,8 @@ function Register() {
             await axios.post('/auth/resend', {
                 email: formData.email
             });
-            setTimeLeft(300);  // 타이머 재설정
-            setTimerActive(true);  // 타이머 재시작
+            setTimeLeft(300);
+            setTimerActive(true);
             alert('인증 메일이 재전송되었습니다.');
         } catch (error) {
             console.error('Resend failed:', error);
@@ -118,81 +115,102 @@ function Register() {
 
     return (
         <div className="register-container">
-            <h2>회원가입</h2>
-            {step === 1 ? (
-                <form onSubmit={handleInitialSubmit}>
-                    <div className="form-group">
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="이메일"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            name="nickname"
-                            placeholder="닉네임"
-                            value={formData.nickname}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="비밀번호"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="register-submit" disabled={loading}>
-                        {loading ? '처리중...' : '회원가입'}
-                    </button>
-                </form>
-            ) : (
-                <form onSubmit={handleVerification}>
-                    <div className="verification-info">
-                        <div className="form-group">
+            <div className="register-box">
+                <h2 className="register-title">회원가입</h2>
+                {step === 1 ? (
+                    <form onSubmit={handleInitialSubmit} className="register-form">
+                        <div className="register-form-group">
+                            <label className="register-label">이메일</label>
                             <input
-                                type="text"
+                                type="email"
+                                name="email"
+                                placeholder="이메일"
                                 value={formData.email}
-                                disabled
-                                className="disabled-input"
-                            />
-                        </div>
-
-                        <p>인증 메일은 5분 동안 유효합니다.</p>
-                        <p className="timer">남은 시간: {formatTime(timeLeft)}</p>
-
-                        <div className="form-group verification-group">
-                            <input
-                                type="text"
-                                name="verificationCode"
-                                placeholder="인증번호"
-                                value={formData.verificationCode}
                                 onChange={handleChange}
+                                className="register-input"
                                 required
                             />
-                            <button
-                                type="button"
-                                onClick={handleResendCode}
-                                className="resend-button"
+                        </div>
+                        <div className="register-form-group">
+                            <label className="register-label">닉네임</label>
+                            <input
+                                type="text"
+                                name="nickname"
+                                placeholder="닉네임"
+                                value={formData.nickname}
+                                onChange={handleChange}
+                                className="register-input"
+                                required
+                            />
+                        </div>
+                        <div className="register-form-group">
+                            <label className="register-label">비밀번호</label>
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="비밀번호"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="register-input"
+                                required
+                            />
+                        </div>
+                        <button 
+                            type="submit" 
+                            className="register-submit-button"
+                            disabled={loading}
+                        >
+                            {loading ? '처리중...' : '회원가입'}
+                        </button>
+                    </form>
+                ) : (
+                    <form onSubmit={handleVerification} className="register-form">
+                        <div className="register-verification-info">
+                            <div className="register-form-group">
+                                <label className="register-label">이메일</label>
+                                <input
+                                    type="text"
+                                    value={formData.email}
+                                    disabled
+                                    className="register-disabled-input"
+                                />
+                            </div>
+
+                            <p className="register-info-text">인증 메일은 5분 동안 유효합니다.</p>
+                            <p className="register-timer">남은 시간: {formatTime(timeLeft)}</p>
+
+                            <div className="register-form-group register-verification-group">
+                                <label className="register-label">인증 코드</label>
+                                <div className="register-code-container">
+                                    <input
+                                        type="text"
+                                        name="verificationCode"
+                                        placeholder="인증번호"
+                                        value={formData.verificationCode}
+                                        onChange={handleChange}
+                                        className="register-input register-code-input"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleResendCode}
+                                        className="register-resend-button"
+                                    >
+                                        재전송
+                                    </button>
+                                </div>
+                            </div>
+                            <button 
+                                type="submit" 
+                                className="register-submit-button"
+                                disabled={loading}
                             >
-                                재전송
+                                {loading ? '인증중...' : '인증 완료'}
                             </button>
                         </div>
-                        <button type="submit" disabled={loading}>
-                            {loading ? '인증중...' : '인증 완료'}
-                        </button>
-                    </div>
-                </form>
-            )}
+                    </form>
+                )}
+            </div>
         </div>
     );
 }

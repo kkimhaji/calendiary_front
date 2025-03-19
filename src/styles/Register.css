@@ -1,91 +1,130 @@
 .register-container {
-    max-width: 400px;
-    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     padding: 20px;
-    background: white;
+    background-color: #f5f5f5;
+  }
+  
+  .register-box {
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+    background-color: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.register-container h2 {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .register-title {
     text-align: center;
     margin-bottom: 30px;
     color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
+    font-size: 24px;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .register-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .register-input {
+    width:100%;
+    margin-right: auto;
+    padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-.disabled-input {
-    background-color: #f5f5f5;
-    color: #666;
-}
-
-.verification-group {
-    display: flex;
-    gap: 10px;
-}
-
-.verification-group input {
-    flex: 1;
-}
-
-.resend-button {
-    padding: 10px 15px;
-    background-color: #f0f0f0;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .register-input:focus {
+    border-color: #4a90e2;
+    outline: none;
+  }
+  
+  .register-submit-button {
+    padding: 12px;
+    background-color: #4a90e2;
+    color: white;
     border: none;
     border-radius: 4px;
+    font-size: 16px;
     cursor: pointer;
-    white-space: nowrap;
-}
-
-.resend-button:hover {
-    background-color: #e0e0e0;
-}
-
-.register-submit {
+    transition: background-color 0.3s;
+  }
+  
+  .register-submit-button:hover {
+    background-color: #3a80d2;
+  }
+  
+  .register-submit-button:disabled {
+    background-color: #a9a9a9;
+    cursor: not-allowed;
+  }
+  
+  .register-verification-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-info-text {
+    margin-bottom: 10px;
+    color: #666;
+  }
+  
+  .register-timer {
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 20px;
+  }
+  
+  .register-disabled-input {
     width: 100%;
     padding: 12px;
-    background-color: #007bff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #666;
+    cursor: not-allowed;
+  }
+  
+  .register-verification-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .register-code-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .register-code-input {
+    flex: 1;
+  }
+  
+  .register-resend-button {
+    padding: 0 15px;
+    background-color: #6c757d;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-button[type="submit"]:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-/* Register.css에 추가 */
-.verification-info {
-    margin-bottom: 20px;
-}
-
-.timer {
-    color: #ff4444;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-.verification-info p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #666;
-}
+    transition: background-color 0.3s;
+  }
+  
+  .register-resend-button:hover {
+    background-color: #5a6268;
+  }
+  
