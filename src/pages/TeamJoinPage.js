@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TeamInfo from './TeamInfo'; // 기존 TeamInfo 컴포넌트 재사용
+import '../styles/TeamJoinPage.css';
 
 const TeamJoinPage = () => {
   const { teamId } = useParams();
@@ -58,7 +59,7 @@ const TeamJoinPage = () => {
   const handleJoinTeam = async () => {
     try {
       setJoining(true);
-      await axios.post(`/teams/${teamId}/join`, 
+      await axios.post(`/team/${teamId}/join`, 
         { code: inviteCode },
         { headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }}
       );
