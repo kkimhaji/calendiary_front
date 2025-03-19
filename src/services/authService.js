@@ -7,18 +7,27 @@ const api = axios.create({
 });
 
 // Access Token을 localStorage에 저장
-const setAccessToken = (token) => {
+const setAccessToken = (token, rememberMe) => {
   if (token) {
-    localStorage.setItem('accessToken', token);
+    // rememberMe에 따라 다른 스토리지 사용
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem('accessToken', token);
+
+    // 로그인 유지 설정 저장
+    localStorage.setItem('rememberMe', rememberMe.toString());
+
+    // Authorization 헤더 설정
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
     localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
+    localStorage.removeItem('rememberMe');
     delete api.defaults.headers.common['Authorization'];
   }
 };
 
-// 초기 토큰 설정
-const token = localStorage.getItem('accessToken');
+// 초기 토큰 설정 (localStorage 또는 sessionStorage에서 복원)
+const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 if (token) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
@@ -41,14 +50,15 @@ api.interceptors.response.use(
         
         // 새 Access Token 저장
         const newAccessToken = refreshResponse.data.accessToken;
-        setAccessToken(newAccessToken);
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        setAccessToken(newAccessToken, rememberMe);
         
         // 원래 요청 재시도
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
       } catch (refreshError) {
         // 토큰 갱신 실패 - 로그아웃 처리
-        setAccessToken(null);
+        setAccessToken(null, false);
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
@@ -60,24 +70,22 @@ api.interceptors.response.use(
 
 const authService = {
   // 일반 로그인
-  login: async (email, password) => {
-    const response = await api.post('auth/authenticate', { email, password });
-    setAccessToken(response.data.accessToken);
+  login: async (email, password, rememberMe = false) => {
+    const response = await api.post('auth/authenticate', { email, password, rememberMe });
+    setAccessToken(response.data.accessToken, rememberMe);
     return response.data;
   },
   
   // 자동 로그인 옵션으로 로그인
   loginWithRememberMe: async (email, password) => {
-    const response = await api.post('/auth/authenticate/auto-login', { email, password });
-    setAccessToken(response.data.accessToken);
-    return response.data;
+    return authService.login(email, password, true);
   },
   
   // 자동 로그인 시도 (페이지 로드 시)
   attemptAutoLogin: async () => {
     try {
       const response = await api.post('/auth/auto-login');
-      setAccessToken(response.data.accessToken);
+      setAccessToken(response.data.accessToken, true);
       return true;
     } catch (error) {
       return false;
@@ -86,14 +94,18 @@ const authService = {
   
   // 로그아웃
   logout: async () => {
-    await api.post('/auth/logout');
-    setAccessToken(null);
+    try{
+      await api.post('/auth/logout');
+    } finally{
+      setAccessToken(null, false);
+    }
   },
   
   // 액세스 토큰 갱신
   refreshToken: async () => {
     const response = await api.post('/auth/refresh-token');
-    setAccessToken(response.data.accessToken);
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    setAccessToken(response.data.accessToken, rememberMe);
     return response.data;
   },
   

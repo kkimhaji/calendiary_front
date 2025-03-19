@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../api/axios';
 
+const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+const rememberMe = localStorage.getItem('rememberMe') === 'true';
+
 const initialState = {
-  accessToken: localStorage.getItem('accessToken') || null,
+  accessToken: accessToken,
   refreshToken: null,
-  isLoggedIn: !!localStorage.getItem('accessToken'),
-  rememberMe: localStorage.getItem('rememberMe') === 'true',
+  isLoggedIn: !!accessToken,
+  rememberMe: rememberMe,
   loading: false,
   error: null
 };
@@ -15,10 +18,14 @@ export const loginUser = createAsyncThunk(
   'auth/authenticate',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/auth/authenticate', loginData);
+      const response = await axios.post('/auth/authenticate', {
+        email: loginData.email,
+        password: loginData.password,
+        rememberMe: loginData.rememberMe
+      });
       const { accessToken, refreshToken } = response.data;
       
-      // 스토리지에 토큰 저장
+      // rememberMe에 따라 저장소 선택
       const storage = loginData.rememberMe ? localStorage : sessionStorage;
       storage.setItem('accessToken', accessToken);
       localStorage.setItem('rememberMe', loginData.rememberMe.toString());
@@ -44,12 +51,18 @@ export const logoutUser = createAsyncThunk(
       // 스토리지에서 토큰 제거
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('rememberMe');
       
       // 인증 헤더 제거
       delete axios.defaults.headers.common['Authorization'];
       
       return true;
     } catch (error) {
+       // 서버 오류가 있어도 로컬 상태는 정리
+       localStorage.removeItem('accessToken');
+       sessionStorage.removeItem('accessToken');
+       localStorage.removeItem('rememberMe');
+       delete axios.defaults.headers.common['Authorization'];
       return rejectWithValue(error.response?.data?.message || '로그아웃에 실패했습니다.');
     }
   }
@@ -89,6 +102,11 @@ const authSlice = createSlice({
       state.refreshToken = refresh;
       state.isLoggedIn = true;
       state.rememberMe = rememberMe;
+
+      // 스토리지에 저장
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('accessToken', access);
+      localStorage.setItem('rememberMe', rememberMe.toString());
       
       // 인증 헤더 설정 (리듀서 외부에서도 처리 필요)
       axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
@@ -103,9 +121,13 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
       state.isLoggedIn = false;
+      state.rememberMe = false;
+
       // localStorage와 sessionStorage에서 직접 제거 (사이드 이펙트지만 필요한 경우)
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('rememberMe');
+
       // 인증 헤더 제거 (리듀서 외부에서도 처리 필요)
       delete axios.defaults.headers.common['Authorization'];
     }
@@ -134,6 +156,7 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.isLoggedIn = false;
+        state.rememberMe = false;
       })
       
       // 토큰 갱신 처리

@@ -45,12 +45,9 @@ function Login() {
             // Redux 액션 디스패치
             const resultAction = await dispatch(loginUser(loginData));
             
-            // Redux Toolkit의 unwrap() 메서드를 사용하여 결과 확인
-            // fulfilled 상태일 경우 payload를 반환, rejected 상태일 경우 에러 throw
-            const result = resultAction.payload;
-            
-            // 로그인 성공 시 리다이렉트
-            navigate(redirectUrl);
+            if (!resultAction.error){
+                navigate(redirectUrl);
+            }
         } catch (err) {
             setError('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
             console.error('Login error:', err);

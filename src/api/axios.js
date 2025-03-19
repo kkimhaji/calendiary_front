@@ -17,6 +17,9 @@ instance.interceptors.request.use(
             config.headers = {};
           }
       config.headers.Authorization = `Bearer ${token}`;
+    }else {
+      // 토큰이 없으면 헤더 제거 (null 방지)
+      delete config.headers.Authorization;
     }
     return config;
   },
