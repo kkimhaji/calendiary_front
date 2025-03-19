@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/CreateCategory.css';
 import { CategoryPermission, getPermissionLabel } from '../constants/CategoryPermission';
 import { useTeam } from '../contexts/TeamContext';
@@ -25,11 +25,7 @@ const CreateCategory = () => {
 
                 // 1. 수정 모드: 카테고리 정보와 권한을 한 번에 조회
                 if (isEditMode) {
-                    const categoryRes = await axios.get(`/teams/${teamId}/categories/${categoryId}`, {
-                        headers:{
-                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                        }
-                    });
+                    const categoryRes = await axios.get(`/teams/${teamId}/categories/${categoryId}`);
                     categoryData = categoryRes.data;
                     rolesData = categoryData.rolePermissions.map(rp => ({
                         roleId: rp.roleId,
@@ -43,11 +39,7 @@ const CreateCategory = () => {
                 } 
                 // 2. 생성 모드: 역할 목록만 별도 조회
                 else {
-                    const rolesRes = await axios.get(`/teams/${teamId}/roles/get_roles`, {
-                        headers:{
-                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                        }
-                    });
+                    const rolesRes = await axios.get(`/teams/${teamId}/roles/get_roles`);
                     rolesData = rolesRes.data.map(role => ({
                         roleId: role.id,
                         roleName: role.name,
@@ -100,10 +92,7 @@ const CreateCategory = () => {
                 : `/teams/${teamId}/categories/create`;
 
             const method = isEditMode ? 'put' : 'post';
-            const response = await axios[method](endpoint, payload, {
-                headers:
-                {'Authorization': `Bearer ${localStorage.getItem('accessToken')}`}
-            });
+            const response = await axios[method](endpoint, payload);
             
             refreshCategories();
             navigate(`/teams/${teamId}/categories/${response.data.id}/recent`);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
     ClassicEditor,
@@ -188,7 +188,6 @@ const CreatePost = () => {
                 try {
                     const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     });
@@ -213,11 +212,7 @@ const CreatePost = () => {
             if (teamId) {
                 // 선택된 팀의 카테고리 목록 가져오기
                 try {
-                    const response = await axios.get(`/teams/${teamId}/categories`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                        }
-                    });
+                    const response = await axios.get(`/teams/${teamId}/categories`);
 
                     console.log('API Response:', response.data);
 
@@ -260,7 +255,6 @@ const CreatePost = () => {
         try {
             const response = await axios.post(`/teams/${teamId}/images/temp-upload`, formData, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                     'Content-Type': 'multipart/form-data'
                 }
             }
@@ -296,7 +290,6 @@ const CreatePost = () => {
                 await axios.put(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, postData,
                     {
                         headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`,
                             'Content-Type': 'multipart/form-data'
                         }
                     }
@@ -314,7 +307,6 @@ const CreatePost = () => {
                 }, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
                 alert('게시글이 작성되었습니다.');

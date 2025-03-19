@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
+import axios from '../api/axios';
 import CommentForm from "./CommentForm";
 import '../styles/CommentItem.css';
 import CommentList from "./CommentList";
@@ -22,11 +22,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                 const response = await axios.get(`/edit-delete-check/comment`, {
                     params:{
                         commentId: comment.id
-                    },
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
+                    }});
                 setPermissions(response.data);
             } catch (error) {
                 console.error('댓글 권한 확인 실패:', error);

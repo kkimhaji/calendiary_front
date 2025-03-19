@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import TeamInfo from './TeamInfo'; // 기존 TeamInfo 컴포넌트 재사용
 import '../styles/TeamJoinPage.css';
 
@@ -23,9 +23,6 @@ const TeamJoinPage = () => {
         setValidationLoading(true);
         const response = await axios.get('/team/invite/validate', {
             params: { code: inviteCode },
-            headers:{
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
         });
         
         // 다른 팀의 초대 코드인 경우 리다이렉트
@@ -61,7 +58,6 @@ const TeamJoinPage = () => {
       setJoining(true);
       await axios.post(`/team/${teamId}/join`, 
         { code: inviteCode },
-        { headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }}
       );
       
       // 가입 성공 시 일반 팀 페이지로 리다이렉트

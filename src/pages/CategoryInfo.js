@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/CategoryInfo.css';
 
 const CategoryInfo = () => {
@@ -18,11 +18,7 @@ const CategoryInfo = () => {
                     params: {
                         permission: 'MANAGE_CATEGORIES',
                         targetId: teamId
-                    },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
+                    }});
                 setHasManageCategoryPermission(response.data);
                 console.log("categoryPermission: ", response.data);
             } catch (err) {
@@ -34,11 +30,7 @@ const CategoryInfo = () => {
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const response = await axios.get(`/teams/${teamId}/categories/${categoryId}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
+                const response = await axios.get(`/teams/${teamId}/categories/${categoryId}`);
                 console.log("category info: ", response);
                 setCategory(response.data);
             } catch (err) {

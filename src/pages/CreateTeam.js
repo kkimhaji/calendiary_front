@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/CreateTeam.css';
 import { useTeam } from '../contexts/TeamContext';
 
@@ -18,11 +18,7 @@ function CreateTeam() {
             if (!teamId) return;
             
             try {
-                const response = await axios.get(`/team/${teamId}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
+                const response = await axios.get(`/team/${teamId}`);
                 setTeamData({
                     name: response.data.name,
                     description: response.data.description
@@ -51,7 +47,6 @@ function CreateTeam() {
                 // 수정 요청
                 await axios.put(`/team/${teamId}`, teamData, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -60,7 +55,6 @@ function CreateTeam() {
                 // 생성 요청
                 const response = await axios.post('/team/create', teamData, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });

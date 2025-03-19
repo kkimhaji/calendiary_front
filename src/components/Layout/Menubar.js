@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Menubar.css';
 import { useTeam } from '../../contexts/TeamContext';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import RecentPosts from './RecentPosts';
 
@@ -14,9 +14,7 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
     const fetchTeams = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('/member/get_teams', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
-            });
+            const response = await axios.get('/member/get_teams');
             setTeams(response.data || []);
         } catch (error) {
             console.error('팀 목록 조회 실패:', error);

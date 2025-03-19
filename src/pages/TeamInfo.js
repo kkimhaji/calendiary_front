@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/TeamInfo.css';
 import { usePermissions } from '../hooks/usePermissions';
 import { useSelector } from 'react-redux';
@@ -52,10 +52,7 @@ const TeamInfo = ({readOnly = false}) => {
       
       try {
         const response = await axios.get('/invite/validate', {
-          params: { code: inviteCode },
-          headers:{
-            'Authorization' : `Bearer ${localStorage.getItem('accessToken')}`
-          }
+          params: { code: inviteCode }
         });
         
         if (response.data.isValid && response.data.teamId.toString() === teamId) {
@@ -79,9 +76,7 @@ const TeamInfo = ({readOnly = false}) => {
       try {
         setJoining(true);
         await axios.post(`/team/${teamId}/join`, 
-          { code: inviteCode },
-          { headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }}
-        );
+          { code: inviteCode }        );
 
               // 가입 성공 시 일반 팀 페이지로 리다이렉트
       navigate(`/team/${teamId}`);
@@ -109,11 +104,6 @@ const TeamInfo = ({readOnly = false}) => {
          teamId: parseInt(teamId),
          expiresAt: expiresAt,
          maxUses: inviteSettings.maxUses
-       },
-       {
-         headers: {
-           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-         }
        }
      );
      
@@ -145,11 +135,7 @@ const TeamInfo = ({readOnly = false}) => {
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        const response = await axios.get(`/team/${teamId}`,{
-          headers:{
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const response = await axios.get(`/team/${teamId}`);
         setTeamData(response.data);
       } catch (error) {
         console.error('팀 정보 조회 실패:', error);
@@ -168,11 +154,7 @@ const TeamInfo = ({readOnly = false}) => {
       setLoadingRoles(true);
       setError(null);
       try {
-        const response = await axios.get(`/teams/${teamId}/roles/get`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
+        const response = await axios.get(`/teams/${teamId}/roles/get`);
         setRoleDetails(response.data);
       } catch (error) {
         setError('역할 목록을 불러오는데 실패했습니다.');
@@ -189,11 +171,7 @@ const TeamInfo = ({readOnly = false}) => {
     setLoadingMembers(true);
     
     try {
-      const response = await axios.get(`/team/${teamId}/members`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
+      const response = await axios.get(`/team/${teamId}/members`);
       
       // 응답 데이터 검증
       if (Array.isArray(response.data)) {

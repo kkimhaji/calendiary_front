@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Sidebar.css';
 import { useTeam } from '../../contexts/TeamContext';
-import axios from 'axios';
+import axios from '../../api/axios';
 
 //팀의 카테고리
 function Sidebar() {
@@ -25,11 +25,7 @@ function Sidebar() {
             if (selectedTeamId) {
                 // 선택된 팀의 카테고리 목록 가져오기
                 try {
-                    const response = await axios.get(`/teams/${selectedTeamId}/categories`, {
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                        }
-                    });
+                    const response = await axios.get(`/teams/${selectedTeamId}/categories`);
 
                     console.log('API Response:', response.data);
 

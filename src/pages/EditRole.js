@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/EditRole.css';
 import { TeamPermission } from '../constants/TeamPermissions';
 import MemberList from '../components/MemberList';
@@ -22,9 +22,7 @@ const EditRole = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const roleRes = await axios.get(`/teams/${teamId}/roles/${roleId}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-                });
+                const roleRes = await axios.get(`/teams/${teamId}/roles/${roleId}`);
                 setRole(roleRes.data);
                 setFormData({
                     name: roleRes.data.name,
@@ -32,9 +30,7 @@ const EditRole = () => {
                     permissions: new Set(roleRes.data.permissions)
                 });
 
-                const membersRes = await axios.get(`/team/${teamId}/members`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
-                });
+                const membersRes = await axios.get(`/team/${teamId}/members`);
                 setAllMembers(membersRes.data);
             } catch (error) {
                 console.error('데이터 불러오기 실패:', error);
@@ -51,21 +47,14 @@ const EditRole = () => {
             roleName: formData.name,
             description: formData.description,
             permissions: permissionsToSend
-        }, {
-            headers:{
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            },
-        }).then(() => navigate(`/teams/${teamId}/info`));
+        },
+    ).then(() => navigate(`/teams/${teamId}/info`));
     };
 
 // 멤버 제거 핸들러
 const handleRemoveMember = async (memberId) => {
     try {
-        await axios.delete(`/teams/${teamId}/roles/${roleId}/members/${memberId}`, {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}` 
-            }
-        });
+        await axios.delete(`/teams/${teamId}/roles/${roleId}/members/${memberId}`);
         // ✅ 멤버 목록 업데이트
         setRole(prev => ({
             ...prev,
@@ -85,18 +74,9 @@ const handleRemoveMember = async (memberId) => {
                 roleId: roleId,
                 memberIds: Array.from(selectedMembers) 
             },
-            { 
-                headers: { 
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}` 
-                } 
-            }
         );
         // ✅ 업데이트된 멤버 목록 다시 불러오기
-        const res = await axios.get(`/teams/${teamId}/roles/${roleId}`, {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('accessToken')}` 
-            }
-        });
+        const res = await axios.get(`/teams/${teamId}/roles/${roleId}`);
         setRole(res.data);
         setShowAddMemberModal(false);
         setSelectedMembers(new Set());

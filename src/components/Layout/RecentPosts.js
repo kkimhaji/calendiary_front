@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import '../../styles/RecentPosts.css';
 import { useLocation, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -29,9 +29,6 @@ const RecentPosts = () => {
                     page: 0,
                     size: 20,
                     sort: 'createdDate,desc'
-                },
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             });
             const { posts, teamName, categoryName } = response.data;

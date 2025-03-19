@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';
 
@@ -14,10 +14,6 @@ function CommentForm({ postId, parentId, depth, onSuccess }) {
                 content,
                 parentCommentId: parentId || null,
                 depth: depth + 1, // 현재 댓글 깊이 + 1
-            },{
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
             });
             if (onSuccess) onSuccess();
             setContent('');

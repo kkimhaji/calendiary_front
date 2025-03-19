@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/PostDetail.css';
 import DOMPurify from 'dompurify';
 import CommentForm from '../components/CommentForm';
@@ -18,11 +18,7 @@ const PostDetail = () => {
 
     const refreshComments = async () => {
         try {
-            const response = await axios.get(`/posts/${postId}/comments`,{
-                headers: {
-                    'Authorization':`Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+            const response = await axios.get(`/posts/${postId}/comments`);
             console.log("comment", response.data);
             setComments(response.data || []);
         } catch (error) {
@@ -38,9 +34,6 @@ const PostDetail = () => {
                     params: {
                         postId: postId
                     },
-                    headers:{
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
                 });
                 setPermissions(response.data);
                 console.log("권한 확인 response: ", response.data);
@@ -57,11 +50,7 @@ const PostDetail = () => {
     const handleDelete = async () => {
         if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`/teams/${teamId}/category/${categoryId}/posts/delete/${postId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                    }
-                });
+                await axios.delete(`/teams/${teamId}/category/${categoryId}/posts/delete/${postId}`);
                 navigate(`/teams/${teamId}/category/${categoryId}/recent`);
             } catch (error) {
                 if (error.response?.status === 403) {
@@ -76,11 +65,7 @@ const PostDetail = () => {
 
     const fetchPost = async () => {
         try {
-            const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+            const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`);
             setPost(response.data);
             // 현재 로그인한 사용자와 게시글 작성자 비교
             

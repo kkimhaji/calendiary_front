@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import '../styles/MemberList.css';
 
 const MemberList = ({ teamId, roleId,}) => {
@@ -22,11 +22,7 @@ const MemberList = ({ teamId, roleId,}) => {
                     page: currentPage,
                     size: pageSize,
                     keyword
-                },
-                headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+                }});
             
             setMembers(response.data.content);
             setTotalPages(response.data.totalPages);
