@@ -117,14 +117,37 @@
     color: #4a90e2;
   }
   
-  /* 모바일 화면에서도 잘 보이도록 미디어 쿼리 추가 */
+/* Header.css에 추가 */
+.user-nickname-link {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #4a90e2;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  .user-nickname-link:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+    color: #2a70c2;
+    text-decoration: none;
+  }
+  
+  /* 이미 있던 property 클래스와 스타일 연결 */
+  .nav ul {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav li {
+    margin-left: 15px;
+  }
+  
+  /* 모바일 대응 */
   @media (max-width: 768px) {
-    .nav ul {
-      flex-wrap: wrap;
-    }
-    
-    .user-greeting {
-      margin-right: 10px;
+    .user-nickname-link {
+      padding: 6px 8px;
       font-size: 14px;
     }
   }

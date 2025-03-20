@@ -73,19 +73,11 @@ function Header() {
                 <nav className="nav">
                     <ul>
                     {isLoggedIn && (
-                        <>
-                        <li className="user-greeting">
+                        <li>
+                            <Link to="/account" className='user-nickname-link'>
                             {currentUser?.nickname ? `${currentUser.nickname}님` : '사용자님'}
+                            </Link>
                         </li>
-                            <li>
-                                <Link 
-                                    to="/account" 
-                                    className="property"
-                                >
-                                    계정 정보
-                                </Link>
-                            </li>
-                            </>
                         )}
                         <li>
                             <button

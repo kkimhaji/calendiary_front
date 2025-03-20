@@ -10,7 +10,8 @@ const initialState = {
   isLoggedIn: !!accessToken,
   rememberMe: rememberMe,
   loading: false,
-  error: null
+  error: null,
+  user:null
 };
 
 // 로그인 액션 (비동기)
@@ -185,6 +186,7 @@ const authSlice = createSlice({
 
       .addCase(fetchUserInfo.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchUserInfo.fulfilled, (state, action) => {
         state.loading = false;
