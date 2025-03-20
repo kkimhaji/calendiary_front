@@ -45,7 +45,7 @@ export const fetchUserInfo = createAsyncThunk(
   'auth/fetchUserInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/user/me'); // 또는 실제 사용자 정보 API 경로
+      const response = await axios.get('/member/get-info');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || '사용자 정보를 가져오는데 실패했습니다.');
@@ -181,6 +181,18 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.isLoggedIn = false;
+      })
+
+      .addCase(fetchUserInfo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   }
 });
@@ -193,5 +205,4 @@ export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isLoggedIn;
 export const selectAccessToken = (state) => state.auth.accessToken;
 export const selectRefreshToken = (state) => state.auth.refreshToken;
-
 export default authSlice.reducer;
