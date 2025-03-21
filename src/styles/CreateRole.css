@@ -1,4 +1,4 @@
-.role-edit-container {
+.create-role-container {
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;
@@ -7,14 +7,14 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.role-edit-permissions-section {
+.role-permissions-section {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
     margin: 2rem 0;
 }
 
-.role-edit-permissions-section label {
+.role-permissions-section label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -24,7 +24,7 @@
     cursor: pointer;
 }
 
-.role-edit-permissions-section input[type="checkbox"] {
+.role-permissions-section input[type="checkbox"] {
     margin: 0;
 }
 

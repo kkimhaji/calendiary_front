@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/EditRole.css';
+import '../styles/CreateRole.css';
 import { TeamPermission } from '../constants/TeamPermissions';
 import MemberList from '../components/MemberList';
 
-const EditRole = () => {
+const CreateRole = () => {
     const { teamId, roleId } = useParams();
     const navigate = useNavigate();
     const [role, setRole] = useState(null);
@@ -17,9 +17,12 @@ const EditRole = () => {
     const [showAddMemberModal, setShowAddMemberModal] = useState(false);
     const [allMembers, setAllMembers] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState(new Set());
+    const isEditMode = !!roleId;
 
     // 역할 정보 불러오기
     useEffect(() => {
+        if (!isEditMode) return;
+
         const fetchData = async () => {
             try {
                 const roleRes = await axios.get(`/teams/${teamId}/roles/${roleId}`);
@@ -37,25 +40,36 @@ const EditRole = () => {
             }
         };
         fetchData();
-    }, [teamId, roleId]);
+    }, [teamId, roleId, isEditMode]);
 
     // 폼 제출 핸들러
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const permissionsToSend = Array.from(formData.permissions); 
-        axios.put(`/teams/${teamId}/roles/${roleId}/update`, {
+        const payload = {
             roleName: formData.name,
             description: formData.description,
             permissions: permissionsToSend
-        },
-    ).then(() => navigate(`/teams/${teamId}/info`));
-    };
+        };
+        
+        try{
+            if (isEditMode){
+                await axios.put(`/teams/${teamId}/roles/${roleId}/update`, payload);
+            } else{
+                const response = await axios.post(`teams/${teamId}/roles/manage/create`, payload);
+            }
+            navigate(`/teams/${teamId}/info`)
+
+        }catch (error){
+            console.error(error);
+        }
+};
 
 // 멤버 제거 핸들러
 const handleRemoveMember = async (memberId) => {
     try {
         await axios.delete(`/teams/${teamId}/roles/${roleId}/members/${memberId}`);
-        // ✅ 멤버 목록 업데이트
+        // 멤버 목록 업데이트
         setRole(prev => ({
             ...prev,
             members: prev.members.filter(m => m.id !== memberId)
@@ -75,7 +89,7 @@ const handleRemoveMember = async (memberId) => {
                 memberIds: Array.from(selectedMembers) 
             },
         );
-        // ✅ 업데이트된 멤버 목록 다시 불러오기
+        // 업데이트된 멤버 목록 다시 불러오기
         const res = await axios.get(`/teams/${teamId}/roles/${roleId}`);
         setRole(res.data);
         setShowAddMemberModal(false);
@@ -88,7 +102,7 @@ const handleRemoveMember = async (memberId) => {
 
     const handlePermissionChange = (permKey) => {
         const newPermissions = new Set(formData.permissions);
-        // ✅ 문자열 기반으로 직접 추가/제거
+        // 문자열 기반으로 직접 추가/제거
         if (newPermissions.has(permKey)) { 
             newPermissions.delete(permKey);
         } else {
@@ -98,7 +112,7 @@ const handleRemoveMember = async (memberId) => {
     };
 
     return (
-        <div className="role-edit-container">
+        <div className="create-role-container">
              {showAddMemberModal && (
                 <div className="modal-overlay">
                     <div className="member-select-modal">
@@ -139,12 +153,12 @@ const handleRemoveMember = async (memberId) => {
                     />
                 </div>
                 <h3>권한 설정</h3>
-                <div className="role-edit-permissions-section">
+                <div className="role-permissions-section">
                     {Object.values(TeamPermission).map(perm => (
                         <label key={perm.key}>
                             <input
                                 type="checkbox"
-                                // ✅ 권한 키(문자열)로 체크 여부 확인
+                                // 권한 키(문자열)로 체크 여부 확인
                                 checked={formData.permissions.has(perm.key)} 
                                 onChange={() => handlePermissionChange(perm.key)}
                             />
@@ -166,7 +180,7 @@ const handleRemoveMember = async (memberId) => {
                     </div>
                     <MemberList
                         teamId={teamId}
-                        roleId={roleId} // ✅ 역할별 멤버 필터링을 위해 전달
+                        roleId={roleId} // 역할별 멤버 필터링을 위해 전달
                         onRemoveMember={handleRemoveMember}
                         showActions={true}
                     />
@@ -177,4 +191,4 @@ const handleRemoveMember = async (memberId) => {
     );
 };
 
-export default EditRole;
+export default CreateRole;

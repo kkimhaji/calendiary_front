@@ -14,7 +14,7 @@ import PostDetail from './pages/PostDetail';
 import React from 'react';
 import TeamInfo from './pages/TeamInfo';
 import CategoryInfo from './pages/CategoryInfo';
-import EditRole from './pages/EditRole';
+import CreateRole from './pages/CreateRole';
 import TeamJoinPage from './pages/TeamJoinPage';
 import authService from './services/authService';
 import { useState, useEffect } from 'react';
@@ -65,10 +65,11 @@ function App() {
               <Route path="/teams/:teamId/category/:categoryId/info" element={<CategoryInfo />} />
               <Route
                 path="/teams/:teamId/roles/:roleId/edit"
-                element={<EditRole />}
+                element={<CreateRole />}
               />
               <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
+              <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
             </Routes>
           </Layout>
         ) : (

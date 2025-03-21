@@ -88,6 +88,9 @@ const TeamInfo = ({readOnly = false}) => {
     }
   };
 
+  const handleAddRole = () => {
+    navigate(`/teams/${teamId}/create-role`);
+  };
 
   const handleCreateInvite = async () => {
     try {
@@ -345,6 +348,12 @@ const TeamInfo = ({readOnly = false}) => {
       {showRoles && (
         <div className="role-list">
           <h3>역할 목록</h3>
+          <button 
+            className="add-role-button"
+            onClick={handleAddRole}
+          >
+            + 역할 추가
+          </button>
           {loadingRoles ? (
             <div className="loading">역할 목록을 불러오는 중...</div>
           ) : error ? (
