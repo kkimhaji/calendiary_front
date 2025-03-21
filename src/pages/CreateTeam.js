@@ -7,7 +7,7 @@ import { useTeam } from '../contexts/TeamContext';
 function CreateTeam() {
     const navigate = useNavigate();
     const [teamData, setTeamData] = useState({
-        teamName: '',
+        name: '',
         description: ''
     });
     const {refreshTeams} = useTeam();
