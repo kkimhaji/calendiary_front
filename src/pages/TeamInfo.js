@@ -117,7 +117,7 @@ const TeamInfo = ({readOnly = false}) => {
    }
  };
 
- // ✅ 초대 설정 변경 핸들러
+ // 초대 설정 변경 핸들러
  const handleInviteSettingsChange = (e) => {
    const { name, value } = e.target;
    setInviteSettings({
@@ -184,7 +184,7 @@ const TeamInfo = ({readOnly = false}) => {
       console.error('멤버 불러오기 실패:', error);
       setError('멤버 목록을 불러오는데 실패했습니다.');
     } finally {
-      setLoadingMembers(false); // ✅ 항상 로딩 상태 해제
+      setLoadingMembers(false); // 항상 로딩 상태 해제
     }
   };
 
@@ -197,7 +197,6 @@ const TeamInfo = ({readOnly = false}) => {
 
   return (
     <div className="team-info-container">
-      {/* 초대 모드일 때만 표시하는 가입 배너 */}
       {readOnly && isValidInvite && (
         <div className="invite-join-banner">
           <div className="invite-message">
@@ -388,7 +387,7 @@ const TeamInfo = ({readOnly = false}) => {
             if (!members.length) loadMembers();
           }}
         >
-          <h3>멤버 목록 ({members.length})</h3>
+          <h3>멤버 목록 ({teamData.memberCount})</h3>
           <span>{showMembers ? '▲' : '▼'}</span>
         </div>
 
