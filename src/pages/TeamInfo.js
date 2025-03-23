@@ -362,7 +362,7 @@ const TeamInfo = ({readOnly = false}) => {
             roleDetails.map(role => (
               <div
                 key={role.id}
-                className={`role-item ${!readOnly &&permissions['MANAGE_ROLES'] ? 'clickable' : 'disabled'}`}
+                className={`role-item ${!readOnly && permissions['MANAGE_ROLES'] ? 'clickable' : 'disabled'}`}
                 onClick={() => {
                   if (!readOnly &&permissions['MANAGE_ROLES']) {
                     navigate(`/teams/${teamId}/roles/${role.id}/edit`);

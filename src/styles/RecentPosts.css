@@ -4,96 +4,16 @@
   padding: 20px;
 }
 
-.posts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.post-card {
-  cursor: pointer;
-  padding: 1.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  background: white;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.post-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.post-main-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.post-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-  color: #333;
-  flex-grow: 1;
-}
-
-.post-category {
-  padding: 0.3rem 0.8rem;
-  background-color: #f0f0f0;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.post-author {
-  font-weight: 500;
-}
-
-.post-meta {
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  color: #666;
-  gap: 1rem;
-}
-
-.post-views {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.post-views i {
-  font-size: 0.8rem;
-}
-
-.post-date {
-  color: #888;
-}
-
-.load-more-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 20px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s ease;
-}
-
-.load-more-btn:hover {
-  background-color: #e0e0e0;
-}
-
 .header-buttons {
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+
+.posts-header{
+  margin: 1rem;
+  padding: 0.5rem;
+  display: flex;
 }
 
 .team-info-button,
