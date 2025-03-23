@@ -20,7 +20,6 @@ const CategoryInfo = () => {
                         targetId: teamId
                     }});
                 setHasManageCategoryPermission(response.data);
-                console.log("categoryPermission: ", response.data);
             } catch (err) {
                 console.error('권한 확인 실패:', err);
             }
@@ -31,7 +30,6 @@ const CategoryInfo = () => {
         const fetchCategory = async () => {
             try {
                 const response = await axios.get(`/teams/${teamId}/categories/${categoryId}`);
-                console.log("category info: ", response);
                 setCategory(response.data);
             } catch (err) {
                 setError('카테고리 정보를 불러오는데 실패했습니다');
@@ -51,7 +49,6 @@ const CategoryInfo = () => {
             <div className="category-header">
                 <h1>{category.name}</h1>
 <div className="button-group">
-                    {/* ✅ 수정 버튼 추가 */}
                     {hasManageCategoryPermission && (
                         <button 
                             className="btn-edit"

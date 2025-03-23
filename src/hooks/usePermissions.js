@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 
 export const usePermissions = (permissions, targetId) => {
   const [permissionResults, setPermissionResults] = useState({});
@@ -19,9 +19,6 @@ export const usePermissions = (permissions, targetId) => {
           params: {
             permissions: permissions,
             targetId: targetId
-          },
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
           },
           paramsSerializer: params => {
             return Object.entries(params)
