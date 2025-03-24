@@ -6,71 +6,71 @@
     margin-bottom: 1rem;
     background: white;
     transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .post-card:hover {
+}
+
+.post-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
+}
+
 .posts-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
-  }
-  
-  .post-main-info {
+}
+
+.post-main-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
-  }
-  
-  .post-title {
+}
+
+.post-title {
     font-size: 1.2rem;
     font-weight: 600;
     margin: 0.3rem;
     padding-left: 0.5rem;
     color: #333;
     flex-grow: 1;
-  }
-  
-  .post-category {
+}
+
+.post-category {
     padding: 0.3rem 0.8rem;
     background-color: #f0f0f0;
     border-radius: 15px;
     font-size: 0.9rem;
     color: #666;
-  }
-  
-  .post-author {
+}
+
+.post-author {
     font-weight: 500;
-  }
-  
-  .post-meta {
+}
+
+.post-meta {
     display: flex;
     align-items: center;
     font-size: 0.9rem;
     color: #666;
     gap: 1rem;
-  }
-  
-  .post-views {
+}
+
+.post-views {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-  }
-  
-  .post-views i {
-    font-size: 0.8rem;
-  }
-  
-  .post-date {
-    color: #888;
-  }
+}
 
-  .post-comment-count{
+.post-views i {
+    font-size: 0.8rem;
+}
+
+.post-date {
+    color: #888;
+}
+
+.post-comment-count {
     padding: 0.3rem;
     color: #666;
     font-size: 0.9rem;
-  }
+}

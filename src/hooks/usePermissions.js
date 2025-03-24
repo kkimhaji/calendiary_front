@@ -12,7 +12,7 @@ export const usePermissions = (permissions, targetId) => {
         setLoading(false);
         return;
       }
-      
+
       try {
         setLoading(true);
         const response = await axios.get('/permissions-check', {
@@ -23,7 +23,7 @@ export const usePermissions = (permissions, targetId) => {
           paramsSerializer: params => {
             return Object.entries(params)
               .flatMap(([key, values]) => {
-                return Array.isArray(values) 
+                return Array.isArray(values)
                   ? values.map(value => `${key}=${value}`)
                   : [`${key}=${values}`];
               })
@@ -36,7 +36,7 @@ export const usePermissions = (permissions, targetId) => {
       } catch (err) {
         console.error('권한 확인 실패:', err);
         setError('권한 확인에 실패했습니다');
-        
+
         // 실패 시 모든 권한을 false로 설정
         const failedResults = {};
         permissions.forEach(perm => {

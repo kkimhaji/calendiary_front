@@ -20,6 +20,7 @@ import authService from './services/authService';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from './store/authSlice';
+import SearchResults from './pages/SearchResults';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -67,6 +68,7 @@ function App() {
                 path="/teams/:teamId/roles/:roleId/edit"
                 element={<CreateRole />}
               />
+              <Route path='/teams/:teamId/posts/search' element={<SearchResults />}/>
               <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />

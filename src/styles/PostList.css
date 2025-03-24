@@ -3,13 +3,13 @@
     margin: 0 auto;
     padding: 20px;
 }
-  
+
 .posts-grid {
     display: block;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
-  
+
 .load-more-btn {
     width: 100%;
     padding: 12px;
@@ -21,7 +21,7 @@
     font-size: 16px;
     transition: background-color 0.2s ease;
 }
-  
+
 .load-more-btn:hover {
     background-color: #e0e0e0;
 }
