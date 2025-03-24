@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/SearchBar.css'
+import { useNavigate, useParams } from 'react-router-dom';
+import '../styles/SearchBar.css';
 
 const SearchBar = () => {
   const [keyword, setKeyword] = useState('');
   const navigate = useNavigate();
+  const {teamId} = useParams();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/team/${teamId}/posts/search?q=${encodeURIComponent(keyword)}`);
+    navigate(`/teams/${teamId}/posts/search?q=${encodeURIComponent(keyword)}`);
   };
 
   return (

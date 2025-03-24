@@ -1,0 +1,12 @@
+.search-results-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+.search-results-page h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 1.5em;
+}
+  
