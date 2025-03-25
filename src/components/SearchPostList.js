@@ -46,6 +46,7 @@ const SearchPostList = ({ keyword }) => {
         <PostItem 
           key={post.id} 
           post={post}
+          teamId={teamId}
           highlight={keyword}  // 하이라이트 기능 활성화
         />
       ))
