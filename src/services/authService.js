@@ -58,8 +58,11 @@ api.interceptors.response.use(
         return axios(originalRequest);
       } catch (refreshError) {
         // 토큰 갱신 실패 - 로그아웃 처리
+        if (refreshError.response?.data?.code === 'REFRESH_TOKEN_EXPIRED') {
+          await authService.logout();
+          window.location.href = '/login?reason=session_expired';
+        }
         setAccessToken(null, false);
-        window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
@@ -97,7 +100,12 @@ const authService = {
     try{
       await api.post('/auth/logout');
     } finally{
-      setAccessToken(null, false);
+      localStorage.clear();
+      sessionStorage.clear();
+      delete api.defaults.headers.common['Authorization'];
+      
+      // 페이지 리로드로 상태 완전 초기화
+      window.location.href = '/login';
     }
   },
   

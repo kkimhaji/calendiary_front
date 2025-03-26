@@ -17,6 +17,7 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
+    const errorReason = params.get('reason');
     
     // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
@@ -105,6 +106,11 @@ function Login() {
                     <Link to="/register" className="register-button">회원가입</Link>
                 </div>
             </div>
+            {errorReason === 'session_expired' && (
+                <div className="alert-message">
+                    세션이 만료되어 자동 로그아웃 되었습니다
+                </div>
+            )}
         </div>
     );
 }
