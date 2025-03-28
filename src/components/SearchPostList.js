@@ -20,7 +20,12 @@ const SearchPostList = ({ keyword }) => {
                 sort: 'createdDate,desc'
                } }
           );
-          setResults(response.data.content || []);
+          setResults({
+            content: response.data.content,
+            totalPages: response.data.totalPages,
+            currentPage: page
+          }
+          );
       } catch (error) {
           console.error('검색 실패:', error);
         } finally {
