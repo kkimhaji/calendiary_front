@@ -17,10 +17,10 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    const errorReason = params.get('reason');
     
     // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
+    const errorReason = params.get('reason');
     const redirectUrl = params.get('redirectUrl') || '/boardList';
 
     const handleChange = (e) => {
