@@ -6,7 +6,7 @@ import PostItem from './PostItem';
 const SearchPostList = ({ keyword }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {teamId} = useParams();
+  const {teamId, categoryId} = useParams();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -15,16 +15,13 @@ const SearchPostList = ({ keyword }) => {
               `/teams/${teamId}/posts/search`,
               { params: { 
                 q: keyword,
+                categoryId: categoryId || null,
                 page: 0,
                 size: 20,
                 sort: 'createdDate,desc'
                } }
           );
-          setResults({
-            content: response.data.content,
-            totalPages: response.data.totalPages,
-            currentPage: page
-          }
+          setResults(response.data.content || []
           );
       } catch (error) {
           console.error('검색 실패:', error);
@@ -39,7 +36,7 @@ const SearchPostList = ({ keyword }) => {
   }, 300);
 
   return () => clearTimeout(debounceTimer);
-}, [teamId, keyword]);
+}, [teamId, keyword, categoryId]);
 
 
   return (

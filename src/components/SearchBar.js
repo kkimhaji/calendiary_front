@@ -5,11 +5,15 @@ import '../styles/SearchBar.css';
 const SearchBar = () => {
   const [keyword, setKeyword] = useState('');
   const navigate = useNavigate();
-  const {teamId} = useParams();
+  const {teamId, categoryId} = useParams();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/teams/${teamId}/posts/search?q=${encodeURIComponent(keyword)}`);
+    const basePath = categoryId 
+    ? `/teams/${teamId}/category/${categoryId}/search` 
+    : `/teams/${teamId}/search`;
+
+navigate(`${basePath}?q=${encodeURIComponent(keyword)}`);
   };
 
   return (
