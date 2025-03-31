@@ -72,6 +72,7 @@ function App() {
               <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
+              <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />
             </Routes>
           </Layout>
         ) : (

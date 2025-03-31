@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import SearchPostList from '../components/SearchPostList';
 
 const SearchResults = () => {
-  const { teamId } = useParams();
+  const { teamId, categoryId } = useParams();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get('q');
@@ -13,6 +13,7 @@ const SearchResults = () => {
       <h2>'{keyword}' 검색 결과</h2>
       <SearchPostList
         teamId={teamId}
+        categoryId={categoryId}
         keyword={keyword} />
     </div>
   );
