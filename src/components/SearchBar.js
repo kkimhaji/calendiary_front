@@ -11,7 +11,7 @@ const SearchBar = () => {
     e.preventDefault();
     const basePath = categoryId 
     ? `/teams/${teamId}/category/${categoryId}/search` 
-    : `/teams/${teamId}/search`;
+    : `/teams/${teamId}/posts/search`;
 
 navigate(`${basePath}?q=${encodeURIComponent(keyword)}`);
   };
