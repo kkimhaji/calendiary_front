@@ -1,0 +1,27 @@
+.main-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-list {
+    display: grid;
+    gap: 20px;
+}
+
+.load-more {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-alert {
+    padding: 20px;
+    text-align: center;
+    background: #ffeeba;
+    border-radius: 4px;
+}

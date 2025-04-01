@@ -52,10 +52,10 @@ function App() {
         {isLoggedIn ? (
           <Layout>
             <Routes>
+              <Route path='/' element={ <MainPage />} />
               <Route path="/teams/:teamId/recent" element={<RecentPosts />} />
               <Route path="/teams/:teamId/category/:categoryId/recent" element={<RecentPosts />} />
               <Route path='/test' element={<TestConnection />} />
-              <Route path="*" element={<Navigate to="/teams/:teamId/recent" replace />} />
               <Route path="/create-team" element={<CreateTeam />} />
               <Route path='/teams/:teamId/category/create' element={<CreateCategory />} />
               <Route path='/teams/:teamId/posts/create' element={<CreatePost />} />
