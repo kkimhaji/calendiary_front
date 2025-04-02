@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PostItem from '../components/PostItem';
-import { useAuth } from '../contexts/AuthContext';
+import { logoutUser, selectIsAuthenticated } from '../store/authSlice';
 import axios from '../api/axios';
 import '../styles/MainPage.css';
+import { useSelector, useDispatch } from 'react-redux';
 
 const MainPage = () => {
-    const { user } = useAuth();
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(selectIsAuthenticated);
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -24,22 +26,28 @@ const MainPage = () => {
     };
 
     useEffect(() => {
-        if (user) {
+        console.log("isLoggedIn: ", isLoggedIn);
+        if (isLoggedIn) {
             loadPosts(0); // 초기 로드
+        } else{
+            window.location.href="/login";
+            console.log("not logged in!");
+            dispatch(logoutUser());
         }
-    }, [user]);
+    }, [isLoggedIn]);
 
     return (
         <div className="main-page">
             <h1>내 팀들의 최신 활동</h1>
             
-            {user ? (
+            {isLoggedIn ? (
                 <>
                     <div className="post-list">
                         {posts.map(post => (
                             <PostItem 
                                 key={post.id}
                                 post={post}
+                                categoryId={post.categoryId}
                                 teamId={post.teamId} // PostItem에 필요한 props 전달
                             />
                         ))}
