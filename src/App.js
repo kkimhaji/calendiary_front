@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from './store/authSlice';
 import SearchResults from './pages/SearchResults';
+import MainPage from './pages/MainPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
