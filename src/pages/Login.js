@@ -43,7 +43,7 @@ function Login() {
     const handlePasswordReset = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/reset-password', { email: resetEmail });
+            await axios.post('/auth/get-temp-password', { email: resetEmail });
             alert('임시 비밀번호가 이메일로 발송되었습니다.');
             setShowReset(false);
         } catch (error) {
