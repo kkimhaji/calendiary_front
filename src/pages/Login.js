@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/authSlice';
 import '../styles/Login.css';
 import ToggleButton from '../components/ToggleButton';
+import axios from '../api/axios';
 
 function Login() {
     const dispatch = useDispatch();
     const { loading, error: authError } = useSelector(state => state.auth);
-    
+    const [showReset, setShowReset] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -36,6 +38,17 @@ function Login() {
             ...prev,
             rememberMe: !prev.rememberMe,
         }));
+    };
+
+    const handlePasswordReset = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('/reset-password', { email: resetEmail });
+            alert('임시 비밀번호가 이메일로 발송되었습니다.');
+            setShowReset(false);
+        } catch (error) {
+            alert('이메일 주소를 확인해주세요.');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -105,6 +118,27 @@ function Login() {
                     <p>계정이 없으신가요?</p>
                     <Link to="/register" className="register-button">회원가입</Link>
                 </div>
+                <div className="password-reset-link">
+                <button 
+                    className="text-link"
+                    onClick={() => setShowReset(!showReset)}
+                >
+                    비밀번호를 잊으셨나요?
+                </button>
+
+                {showReset && (
+                    <form className="reset-form" onSubmit={handlePasswordReset}>
+                        <input
+                            type="email"
+                            placeholder="등록된 이메일 주소"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            required
+                        />
+                        <button type="submit">임시 비밀번호 발급</button>
+                    </form>
+                )}
+            </div>
             </div>
             {errorReason === 'session_expired' && (
                 <div className="alert-message">

@@ -101,3 +101,38 @@
 .remember-me label {
     margin-left: 10px;
 }
+
+.password-reset-link {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.text-link {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0;
+}
+
+.reset-form {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.reset-form input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.reset-form button {
+    padding: 0.5rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
