@@ -67,14 +67,14 @@ function Header() {
                         <span className='menu-icon'></span>
                     </button>
                     <div className="logo">
-                        <Link to="/">게시판 프로젝트</Link>
+                        <Link to="/">HOME</Link>
                     </div>
                 </div>
                 <nav className="nav">
                     <ul>
                     {isLoggedIn && (
                         <li>
-                            <Link to="/account" className='user-nickname-link'>
+                            <Link to="/account-info" className='user-nickname-link'>
                             {currentUser?.nickname ? `${currentUser.nickname}님` : '사용자님'}
                             </Link>
                         </li>

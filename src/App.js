@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from './store/authSlice';
 import SearchResults from './pages/SearchResults';
 import MainPage from './pages/MainPage';
+import AccountInfoPage from './pages/AccountInfoPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -65,15 +66,13 @@ function App() {
               <Route path="/teams/:teamId/info" element={<TeamInfo />} />
               <Route path='/teams/:teamId/edit' element={<CreateTeam />} />
               <Route path="/teams/:teamId/category/:categoryId/info" element={<CategoryInfo />} />
-              <Route
-                path="/teams/:teamId/roles/:roleId/edit"
-                element={<CreateRole />}
-              />
+              <Route path="/teams/:teamId/roles/:roleId/edit" element={<CreateRole />}/>
               <Route path='/teams/:teamId/posts/search' element={<SearchResults />}/>
               <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
               <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />
+              <Route path="/account-info" element={<AccountInfoPage/>} />
             </Routes>
           </Layout>
         ) : (
