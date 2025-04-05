@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/AccountInfoPage.css';
 
 const AccountInfoPage = () => {
   const [memberInfo, setMemberInfo] = useState(null);
@@ -61,13 +62,13 @@ const AccountInfoPage = () => {
       </div>
       <div className="team-section">
         <div
-          className="team-header"
+          className="team-info-header"
           onClick={handleTeamListClick}
           style={{ cursor: 'pointer' }}
         >
           <h3>
             소속 팀 목록
-            <span className="toggle-icon">
+            <span className="team-list-toggle-icon">
               {isTeamsExpanded ? '▼' : '▶'}
             </span>
           </h3>
@@ -80,14 +81,8 @@ const AccountInfoPage = () => {
           <ul className="team-list">
             {teams.map(team => (
               <li key={team.teamId} className="team-item">
-                <div className="team-info-row">
-                  <span className="team-label">팀 이름:</span>
-                  <span className="team-value">{team.teamName}</span>
-                </div>
-                <div className="team-info-row">
-                  <span className="team-label">팀 내 닉네임:</span>
-                  <span className="team-value">{team.teamNickname}</span>
-                </div>
+                <span className="team-name">팀 이름: {team.teamName}</span>
+                <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
               </li>
             ))}
           </ul>
