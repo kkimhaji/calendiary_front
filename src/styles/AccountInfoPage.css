@@ -1,102 +1,75 @@
-.account-container {
+.account-info-container {
     max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.account-info {
-    background-color: white;
+.basic-info {
+    background: #f8f9fa;
+    padding: 20px;
     border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+    margin-bottom: 30px;
 }
 
-.account-info h2 {
-    color: #333;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.info-item {
-    margin-bottom: 1rem;
-}
-
-.info-label {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-
-.info-value {
-    color: #333;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.password-section {
-    background-color: white;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.password-section h3 {
-    color: #333;
-    margin-bottom: 1.5rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    color: #666;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-}
-
-.submit-button {
-    background-color: #4a90e2;
+.password-change-btn {
+    background-color: #007bff;
     color: white;
-    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px;
+}
+
+.team-header {
+    padding: 15px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    margin: 20px 0;
     transition: background-color 0.2s;
 }
 
-.submit-button:hover {
-    background-color: #357abd;
+.team-header:hover {
+    background-color: #e0e0e0;
 }
 
-.error-message {
+.toggle-icon {
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+.loading {
+    color: #666;
+    padding: 10px;
+    text-align: center;
+}
+
+.error {
     color: #dc3545;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
+    padding: 10px;
 }
 
-.success-message {
-    color: #28a745;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
+.no-teams {
+    color: #666;
+    padding: 20px;
+    text-align: center;
+}
+
+.team-info-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.team-label {
+    font-weight: 500;
+    color: #2c3e50;
+    min-width: 100px;
+}
+
+.team-value {
+    color: #34495e;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
