@@ -37,6 +37,12 @@ const TeamInfo = ({readOnly = false}) => {
   const isAuthenticated = useSelector(selectIsAuthenticated); // Redux 선택자 사용
   const inviteCode = searchParams.get('code');
   
+    // 닉네임 변경 관련 상태
+    const [isEditingNickname, setIsEditingNickname] = useState(false);
+    const [newNickname, setNewNickname] = useState('');
+    const [nicknameError, setNicknameError] = useState('');
+    const [nicknameLoading, setNicknameLoading] = useState(false);
+
   useEffect(() => {
     if (!isAuthenticated) {
       // 현재 URL을 저장하고 로그인 페이지로 리다이렉트
@@ -85,6 +91,38 @@ const TeamInfo = ({readOnly = false}) => {
       alert('팀 가입에 실패했습니다. ' + (error.response?.data?.message || ''));
     } finally {
       setJoining(false);
+    }
+  };
+
+   // 닉네임 변경 처리 함수
+  const handleUpdateNickname = async (e) => {
+    e.preventDefault();
+    
+    if (!newNickname.trim()) {
+      setNicknameError('닉네임을 입력해주세요');
+      return;
+    }
+    
+    setNicknameLoading(true);
+    setNicknameError('');
+    
+    try {
+      await axios.put(`/api/teams/${teamId}/nickname`, {
+        teamNickname: newNickname
+      });
+      
+      // 성공 시 팀 데이터 업데이트
+      setTeamData({
+        ...teamData,
+        teamNickname: newNickname
+      });
+      
+      setIsEditingNickname(false);
+    } catch (error) {
+      console.error('닉네임 변경 실패:', error);
+      setNicknameError('닉네임 변경에 실패했습니다');
+    } finally {
+      setNicknameLoading(false);
     }
   };
 
@@ -228,6 +266,65 @@ const TeamInfo = ({readOnly = false}) => {
             </button>
           )}
         </div>
+        {!readOnly && teamData.teamNickname && teamData.roleName && (
+          <div className="my-team-info-section">
+            <h3>내 팀 정보</h3>
+            <div className="info-container">
+              <div className="info-row">
+                <span className="info-label">역할:</span>
+                <span className="info-value role-badge">{teamData.roleName}</span>
+              </div>
+              
+              <div className="info-row">
+                <span className="info-label">팀 내 닉네임:</span>
+                
+                {isEditingNickname ? (
+                  <form onSubmit={handleUpdateNickname} className="nickname-form">
+                    <input
+                      type="text"
+                      value={newNickname}
+                      onChange={(e) => setNewNickname(e.target.value)}
+                      className="nickname-input"
+                      placeholder="새 닉네임 입력"
+                      maxLength={20}
+                    />
+                    <div className="nickname-btn-group">
+                      <button 
+                        type="submit" 
+                        className="save-btn"
+                        disabled={nicknameLoading}
+                      >
+                        {nicknameLoading ? '저장 중...' : '저장'}
+                      </button>
+                      <button 
+                        type="button" 
+                        className="cancel-btn"
+                        onClick={() => {
+                          setIsEditingNickname(false);
+                          setNewNickname(teamData.teamNickname);
+                          setNicknameError('');
+                        }}
+                      >
+                        취소
+                      </button>
+                    </div>
+                    {nicknameError && <div className="error-message">{nicknameError}</div>}
+                  </form>
+                ) : (
+                  <div className="nickname-display">
+                    <span className="info-value">{teamData.teamNickname}</span>
+                    <button 
+                      className="edit-nickname-btn"
+                      onClick={() => setIsEditingNickname(true)}
+                    >
+                      변경
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
         {!readOnly && permissions['MANAGE_MEMBERS'] && (
         <div className="invite-section">
           {!showInviteForm && !inviteLink && (
