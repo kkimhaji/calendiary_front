@@ -62,22 +62,24 @@ export const logoutUser = createAsyncThunk(
       // 서버에 로그아웃 요청
       await axios.post('/auth/logout');
       
-      // 스토리지에서 토큰 제거
-      localStorage.removeItem('accessToken');
-      sessionStorage.removeItem('accessToken');
-      localStorage.removeItem('rememberMe');
+      // // 스토리지에서 토큰 제거
+      // localStorage.removeItem('accessToken');
+      // sessionStorage.removeItem('accessToken');
+      // localStorage.removeItem('rememberMe');
       
-      // 인증 헤더 제거
-      delete axios.defaults.headers.common['Authorization'];
+      // // 인증 헤더 제거
+      // delete axios.defaults.headers.common['Authorization'];
       
       return true;
     } catch (error) {
        // 서버 오류가 있어도 로컬 상태는 정리
-       localStorage.removeItem('accessToken');
-       sessionStorage.removeItem('accessToken');
-       localStorage.removeItem('rememberMe');
-       delete axios.defaults.headers.common['Authorization'];
-      return rejectWithValue(error.response?.data?.message || '로그아웃에 실패했습니다.');
+      //  localStorage.removeItem('accessToken');
+      //  sessionStorage.removeItem('accessToken');
+      //  localStorage.removeItem('rememberMe');
+      //  delete axios.defaults.headers.common['Authorization'];
+      // return rejectWithValue(error.response?.data?.message || '로그아웃에 실패했습니다.');
+      console.error('로그아웃 API 호출 실패:', error);
+      return true;
     }
   }
 );
@@ -164,15 +166,27 @@ const authSlice = createSlice({
         state.error = action.payload;
         state.loading = false;
       })
-      
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
       // 로그아웃 처리
       .addCase(logoutUser.fulfilled, (state) => {
         state.accessToken = null;
         state.refreshToken = null;
         state.isLoggedIn = false;
         state.rememberMe = false;
+        state.user = null;
+        state.loading = false; // 로딩 상태 종료
       })
-      
+      .addCase(logoutUser.rejected, (state) => {
+        // 실패해도 로그아웃 처리
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.isLoggedIn = false;
+        state.rememberMe = false; 
+        state.user = null;
+        state.loading = false; // 로딩 상태 종료
+      })
       // 토큰 갱신 처리
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.accessToken = action.payload.accessToken;

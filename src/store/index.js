@@ -1,9 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import authReducer, { refreshAccessToken, logoutUser } from './authSlice';
+import authReducer, { refreshAccessToken, logoutUser, setLoading } from './authSlice';
 import routerReducer from './routerSlice';
-import axios, {setLogoutCallback} from '../api/axios';
+import instance from '../api/axios';
 
 const persistConfig = {
   key: 'root',
@@ -14,10 +14,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   router: routerReducer,
-});
-
-setLogoutCallback(() => {
-  store.dispatch(logoutUser());
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -34,39 +30,92 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
+export const forceLogout = async () => {
+  try {
+    window.__isLoggingOut = true;
+    store.dispatch(setLoading(false));
+    localStorage.clear();
+    sessionStorage.clear();
+    await store.dispatch(logoutUser());
+  } catch (err) {
+    console.error('로그아웃 처리 중 오류:', err);
+  } finally {
+    window.location.replace('/login?expired=true');
+  }
+};
+
 // Axios 토큰 갱신 인터셉터 설정 함수
-export const setupAxiosInterceptors = (axios) => {
-  if (!axios || !axios.interceptors) {
+export const setupAxiosInterceptors = (axiosInstance = instance) => {
+
+  if (!axiosInstance || !axiosInstance.intercpetors){
     console.error('유효한 axios 인스턴스가 전달되지 않았습니다');
     return;
   }
-  axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
 
-      // 401 에러이고 갱신 시도 중이 아닐 때
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+  axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-        try {
-          // dispatch로 토큰 갱신 액션 호출
-          await store.dispatch(refreshAccessToken());
-          
-          // 기존 요청 재시도
-          const newToken = store.getState().auth.accessToken;
-          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-          return axios(originalRequest);
-        } catch (refreshError) {
-          // 리프레시 토큰 만료 시 로그아웃
-          await store.dispatch(logoutUser());
-          window.location.href = '/login';
-          return Promise.reject(refreshError);
-        }
-      }
+    // 이미 로그아웃 처리 중인지 확인
+    if (window.__isLoggingOut) {
       return Promise.reject(error);
     }
-  );
+
+    // 401 에러 처리
+    if (error.response?.status === 401) {
+
+      await forceLogout();
+      // 리프레시 토큰 요청 자체가 실패한 경우 - 즉시 로그아웃
+    //   if (originalRequest.url?.includes('/auth/refresh-token') || originalRequest._retry) {
+    //     window.__isLoggingOut = true;
+        
+    //     // 로딩 상태 해제
+    //     store.dispatch(setLoading(false));
+        
+    //     // 로그아웃 처리
+    //     try {
+    //       await store.dispatch(logoutUser());
+    //     } catch (e) {
+    //       console.error('로그아웃 액션 디스패치 실패:', e);
+    //     } finally {
+    //       // 로컬 스토리지 직접 정리 (안전장치)
+    //       localStorage.clear();
+    //       sessionStorage.clear();
+          
+    //       // 로그인 페이지로 강제 이동
+    //       window.location.replace('/login?expired=true');
+    //     }
+        
+    //     return Promise.reject(error);
+    //   }
+      
+    //   // 일반 401 오류 - 리프레시 시도
+    //   if (!originalRequest._retry) {
+    //     originalRequest._retry = true;
+        
+    //     try {
+    //       await store.dispatch(refreshAccessToken());
+          
+    //       // 새 토큰으로 원래 요청 재시도
+    //       const newToken = store.getState().auth.accessToken;
+    //       originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+    //       return axiosInstance(originalRequest);
+    //     } catch (refreshError) {
+    //       // 리프레시 실패 - 위 로직으로 처리됨
+    //       return Promise.reject(refreshError);
+    //     }
+    //   }
+    // }
+    }
+    return Promise.reject(error);
+  }
+);
 };
+try {
+  setupAxiosInterceptors();
+} catch (e) {
+  console.error('인터셉터 설정 중 오류:', e);
+}
 
 export default store;

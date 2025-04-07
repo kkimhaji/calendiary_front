@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { logoutUser } from '../store/authSlice';
 
 // API 클라이언트 설정
 const api = axios.create({
-  baseURL: 'localhost:8080/',
+  baseURL: 'http://localhost:8080/',
   withCredentials: true, // 쿠키 전송을 위해 필수
 });
 
@@ -34,38 +35,70 @@ if (token) {
 
 // 응답 인터셉터 설정 (토큰 갱신)
 api.interceptors.response.use(
-  (response) => response,
+  response => response,
   async (error) => {
-    const originalRequest = error.config;
-    
-    // 401 에러이고 토큰 갱신 시도가 아직 없었던 경우
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      
-      try {
-        // 토큰 갱신 요청 (쿠키가 자동으로 전송됨)
-        const refreshResponse = await axios.post('/auth/refresh-token', {}, {
-          withCredentials: true
-        });
-        
-        // 새 Access Token 저장
-        const newAccessToken = refreshResponse.data.accessToken;
-        const rememberMe = localStorage.getItem('rememberMe') === 'true';
-        setAccessToken(newAccessToken, rememberMe);
-        
-        // 원래 요청 재시도
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        return axios(originalRequest);
-      } catch (refreshError) {
-        // 토큰 갱신 실패 - 로그아웃 처리
-        if (refreshError.response?.data?.code === 'REFRESH_TOKEN_EXPIRED') {
-          await authService.logout();
-          window.location.href = '/login?reason=session_expired';
-        }
-        setAccessToken(null, false);
-        return Promise.reject(refreshError);
-      }
+    if (window.__isLoggingOut) {
+      return Promise.reject(error);
     }
+
+    const originalRequest = error.config;
+    if (originalRequest.url?.includes('/refresh-token') || 
+    originalRequest.url?.includes('/auth/refresh-token')) {
+  console.log('리프레시 토큰 갱신 실패 - 로그아웃 처리');
+  window.__isLoggingOut = true;
+  
+  try {
+    await authService.logout();
+  } catch (e) {
+    // 로그아웃 실패해도 로그인 페이지로 강제 이동
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.replace('/login?expired=true');
+  }
+  
+  return Promise.reject(error);
+}
+
+  // 401 오류 & 토큰 만료 & 재시도 안함
+  if (error.response?.status === 401 && 
+    error.response?.data?.code === 'TOKEN_EXPIRED' && 
+    !originalRequest._retry) {
+  
+  try {
+    // 리프레시 토큰으로 재발급 시도
+    originalRequest._retry = true;
+    const refreshResult = await api.post('/auth/refresh-token', {}, {
+      withCredentials: true,
+      _skipAuthRetry: true // 새로운 플래그로 재시도 방지
+    });
+    console.log("refreshResult: ", refreshResult);
+    const newToken = refreshResult.data.accessToken;
+    
+    // 새 토큰 저장
+    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem('accessToken', newToken);
+    
+    // 원래 요청 재시도
+    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+    return api(originalRequest);
+  } catch (refreshError) {
+    // 리프레시 실패 = 완전 만료 = 로그아웃
+    console.log('토큰 갱신 실패, 로그아웃 실행');
+    
+    // 무한 루프 방지 플래그
+    window.__isLoggingOut = true;
+    
+    // 로컬 정리
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // 로그인 페이지로 이동
+    window.location.replace('/login');
+    await authService.logout();
+    return Promise.reject(refreshError);
+  }
+}
     
     return Promise.reject(error);
   }
@@ -106,6 +139,7 @@ const authService = {
       
       // 페이지 리로드로 상태 완전 초기화
       window.location.href = '/login';
+      window.location.reload(true);
     }
   },
   

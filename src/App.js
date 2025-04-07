@@ -26,7 +26,7 @@ import AccountInfoPage from './pages/AccountInfoPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
-  const [loading, setLoading] = useState(true);
+  const loading = useSelector(state => state.auth.loading);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -35,15 +35,25 @@ function App() {
         const success = await authService.attemptAutoLogin();
         setIsAuthenticated(success);
       } catch (error) {
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
+        setIsAuthenticated(false);}
     };
     
     attemptAutoLogin();
   }, []);
-  
+
+  useEffect(() => {
+    // 로그인 상태지만 토큰이 없는 경우 강제 로그아웃
+    const token = localStorage.getItem('accessToken') || 
+                  sessionStorage.getItem('accessToken');
+    
+    if (isLoggedIn && !token) {
+      console.log('비정상 상태 감지: 로그인 상태지만 토큰 없음');
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace('/login');
+    }
+  }, [isLoggedIn]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
