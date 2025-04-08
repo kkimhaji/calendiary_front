@@ -23,6 +23,7 @@ import { selectIsAuthenticated } from './store/authSlice';
 import SearchResults from './pages/SearchResults';
 import MainPage from './pages/MainPage';
 import AccountInfoPage from './pages/AccountInfoPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -82,7 +83,8 @@ function App() {
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
               <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />
-              <Route path="/account-info" element={<AccountInfoPage/>} />
+              <Route path="/account-info" element={isLoggedIn ? <AccountInfoPage /> : <Navigate to="/login" />} />
+              <Route path="/change-password" element={isLoggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
             </Routes>
           </Layout>
         ) : (
