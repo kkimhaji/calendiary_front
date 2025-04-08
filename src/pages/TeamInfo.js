@@ -107,8 +107,8 @@ const TeamInfo = ({readOnly = false}) => {
     setNicknameError('');
     
     try {
-      await axios.put(`/api/teams/${teamId}/nickname`, {
-        teamNickname: newNickname
+      await axios.put(`/team/${teamId}/nickname`, {
+        newNickname: newNickname
       });
       
       // 성공 시 팀 데이터 업데이트
