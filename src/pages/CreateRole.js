@@ -18,6 +18,9 @@ const CreateRole = () => {
     const [allMembers, setAllMembers] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState(new Set());
     const isEditMode = !!roleId;
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteError, setDeleteError] = useState('');
 
     // 역할 정보 불러오기
     useEffect(() => {
@@ -42,68 +45,93 @@ const CreateRole = () => {
         fetchData();
     }, [teamId, roleId, isEditMode]);
 
+    const handleDeleteRole = async () => {
+        setDeleteLoading(true);
+        setDeleteError('');
+
+        try {
+            await axios.delete(`/teams/${teamId}/roles/manage/delete/${roleId}`);
+            navigate(`/teams/${teamId}/info`, {
+                state: { message: "역할이 성공적으로 삭제되었습니다." }
+            });
+        } catch (err) {
+            console.error("역할 삭제 실패:", err);
+
+            if (err.response?.status === 403) {
+                setDeleteError("이 역할을 삭제할 권한이 없습니다.");
+            } else if (err.response?.status === 409) {
+                setDeleteError("이 역할을 가진 팀원이 있어 삭제할 수 없습니다.");
+            } else {
+                setDeleteError("역할 삭제 중 오류가 발생했습니다.");
+            }
+            setShowDeleteModal(false);
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
     // 폼 제출 핸들러
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const permissionsToSend = Array.from(formData.permissions); 
+        const permissionsToSend = Array.from(formData.permissions);
         const payload = {
             roleName: formData.name,
             description: formData.description,
             permissions: permissionsToSend
         };
-        
-        try{
-            if (isEditMode){
+
+        try {
+            if (isEditMode) {
                 await axios.put(`/teams/${teamId}/roles/${roleId}/update`, payload);
-            } else{
+            } else {
                 const response = await axios.post(`teams/${teamId}/roles/manage/create`, payload);
             }
             navigate(`/teams/${teamId}/info`)
 
-        }catch (error){
+        } catch (error) {
             console.error(error);
         }
-};
+    };
 
-// 멤버 제거 핸들러
-const handleRemoveMember = async (memberId) => {
-    try {
-        await axios.delete(`/teams/${teamId}/roles/${roleId}/members/${memberId}`);
-        // 멤버 목록 업데이트
-        setRole(prev => ({
-            ...prev,
-            members: prev.members.filter(m => m.id !== memberId)
-        }));
-    } catch (error) {
-        console.error('멤버 제거 실패:', error);
-    }
-};
+    // 멤버 제거 핸들러
+    const handleRemoveMember = async (memberId) => {
+        try {
+            await axios.delete(`/teams/${teamId}/roles/${roleId}/members/${memberId}`);
+            // 멤버 목록 업데이트
+            setRole(prev => ({
+                ...prev,
+                members: prev.members.filter(m => m.id !== memberId)
+            }));
+        } catch (error) {
+            console.error('멤버 제거 실패:', error);
+        }
+    };
 
- // 멤버 추가 모달 핸들러
- const handleAddMembers = async () => {
-    try {
-        await axios.post(
-            `/teams/${teamId}/roles/manage/member`,
-            { 
-                roleId: roleId,
-                memberIds: Array.from(selectedMembers) 
-            },
-        );
-        // 업데이트된 멤버 목록 다시 불러오기
-        const res = await axios.get(`/teams/${teamId}/roles/${roleId}`);
-        setRole(res.data);
-        setShowAddMemberModal(false);
-        setSelectedMembers(new Set());
-    } catch (error) {
-        console.error('멤버 추가 실패:', error);
-    }
-};
+    // 멤버 추가 모달 핸들러
+    const handleAddMembers = async () => {
+        try {
+            await axios.post(
+                `/teams/${teamId}/roles/manage/member`,
+                {
+                    roleId: roleId,
+                    memberIds: Array.from(selectedMembers)
+                },
+            );
+            // 업데이트된 멤버 목록 다시 불러오기
+            const res = await axios.get(`/teams/${teamId}/roles/${roleId}`);
+            setRole(res.data);
+            setShowAddMemberModal(false);
+            setSelectedMembers(new Set());
+        } catch (error) {
+            console.error('멤버 추가 실패:', error);
+        }
+    };
 
 
     const handlePermissionChange = (permKey) => {
         const newPermissions = new Set(formData.permissions);
         // 문자열 기반으로 직접 추가/제거
-        if (newPermissions.has(permKey)) { 
+        if (newPermissions.has(permKey)) {
             newPermissions.delete(permKey);
         } else {
             newPermissions.add(permKey);
@@ -113,16 +141,16 @@ const handleRemoveMember = async (memberId) => {
 
     return (
         <div className="create-role-container">
-             {showAddMemberModal && (
+            {showAddMemberModal && (
                 <div className="modal-overlay">
                     <div className="member-select-modal">
-                    <h3>멤버 선택</h3>
+                        <h3>멤버 선택</h3>
                         <MemberList
                             teamId={teamId}
                             onSelectMember={(memberId, isSelected) => {
                                 const newSelected = new Set(selectedMembers);
-                                isSelected 
-                                    ? newSelected.add(memberId) 
+                                isSelected
+                                    ? newSelected.add(memberId)
                                     : newSelected.delete(memberId);
                                 setSelectedMembers(newSelected);
                             }}
@@ -135,8 +163,38 @@ const handleRemoveMember = async (memberId) => {
                     </div>
                 </div>
             )}
+            {/* 삭제 확인 모달 추가 */}
+            {showDeleteModal && (
+                <div className="modal-overlay">
+                    <div className="delete-modal">
+                        <h3>역할 삭제</h3>
+                        <p>
+                            정말로 <strong>{formData.name}</strong> 역할을 삭제하시겠습니까?
+                        </p>
+                        <p className="warning-text">
+                            이 작업은 되돌릴 수 없으며, 이 역할을 가진 팀원이 있는 경우 삭제할 수 없습니다.
+                        </p>
+                        {deleteError && <div className="error-message">{deleteError}</div>}
+                        <div className="modal-buttons">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                disabled={deleteLoading}
+                            >
+                                취소
+                            </button>
+                            <button
+                                className="delete-button"
+                                onClick={handleDeleteRole}
+                                disabled={deleteLoading}
+                            >
+                                {deleteLoading ? '삭제 중...' : '삭제'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
-            <h2>역할 수정: {role?.roleName}</h2>
+            <h2>{isEditMode ? `역할 수정: ${role?.name}` : '새 역할 생성'}</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>역할 이름</label>
@@ -159,7 +217,7 @@ const handleRemoveMember = async (memberId) => {
                             <input
                                 type="checkbox"
                                 // 권한 키(문자열)로 체크 여부 확인
-                                checked={formData.permissions.has(perm.key)} 
+                                checked={formData.permissions.has(perm.key)}
                                 onChange={() => handlePermissionChange(perm.key)}
                             />
                             {perm.label}
@@ -170,7 +228,7 @@ const handleRemoveMember = async (memberId) => {
                 <div className="members-section">
                     <div className="members-header">
                         <h3>소속 멤버</h3>
-                        <button 
+                        <button
                             type="button"
                             className="btn-add-members"
                             onClick={() => setShowAddMemberModal(true)}
@@ -185,7 +243,20 @@ const handleRemoveMember = async (memberId) => {
                         showActions={true}
                     />
                 </div>
-                <button type="submit">저장</button>
+                {/* 버튼 그룹 - 삭제 버튼 추가 */}
+                <div className="action-buttons">
+                    {/* 삭제 버튼은 편집 모드에서만 표시 */}
+                    {isEditMode && (
+                        <button
+                            type="button"
+                            className="delete-button"
+                            onClick={() => setShowDeleteModal(true)}
+                        >
+                            역할 삭제
+                        </button>
+                    )}
+                    <button type="submit">저장</button>
+                </div>
             </form>
         </div>
     );
