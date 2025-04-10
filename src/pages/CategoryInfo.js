@@ -10,6 +10,9 @@ const CategoryInfo = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [hasManageCategoryPermission, setHasManageCategoryPermission] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteError, setDeleteError] = useState('');
 
     useEffect(() => {
         const checkPermission = async () => {
@@ -18,7 +21,8 @@ const CategoryInfo = () => {
                     params: {
                         permission: 'MANAGE_CATEGORIES',
                         targetId: teamId
-                    }});
+                    }
+                });
                 setHasManageCategoryPermission(response.data);
             } catch (err) {
                 console.error('권한 확인 실패:', err);
@@ -41,6 +45,33 @@ const CategoryInfo = () => {
         fetchCategory();
     }, [teamId, categoryId]);
 
+    const handleDeleteCategory = async () => {
+        setDeleteLoading(true);
+        setDeleteError('');
+
+        try {
+            // DELETE 요청 보내기
+            await axios.delete(`/teams/${teamId}/categories/${categoryId}/delete`);
+
+            // 삭제 성공 후 팀 정보 페이지로 이동
+            navigate(`/teams/${teamId}/info`, {
+                state: { message: "카테고리가 성공적으로 삭제되었습니다." }
+            });
+        } catch (err) {
+            console.error("카테고리 삭제 실패:", err);
+
+            if (err.response?.status === 403) {
+                setDeleteError("카테고리를 삭제할 권한이 없습니다.");
+            } else if (err.response?.status === 409) {
+                setDeleteError("이 카테고리에 게시글이 있어 삭제할 수 없습니다.");
+            } else {
+                setDeleteError("카테고리 삭제 중 오류가 발생했습니다.");
+            }
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
     if (loading) return <div className="loading">로딩 중...</div>;
     if (error) return <div className="error">{error}</div>;
 
@@ -48,24 +79,33 @@ const CategoryInfo = () => {
         <div className="category-info-container">
             <div className="category-header">
                 <h1>{category.name}</h1>
-<div className="button-group">
+                <div className="category-button-group">
                     {hasManageCategoryPermission && (
-                        <button 
-                            className="btn-edit"
-                            onClick={() => navigate(`/teams/${teamId}/categories/${categoryId}/edit`)}
-                        >
-                            카테고리 수정
-                        </button>
+                         <div className="category-actions">
+                         <button
+                             className="btn-edit"
+                             onClick={() => navigate(`/teams/${teamId}/categories/${categoryId}/edit`)}
+                         >
+                             카테고리 수정
+                         </button>
+                         
+                         <button 
+                             className="btn-delete"
+                             onClick={() => setShowDeleteModal(true)}
+                         >
+                             카테고리 삭제
+                         </button>
+                     </div>
                     )}
-                    <button 
+                    <button
                         className="btn-back"
                         onClick={() => navigate(-1)}
                     >
                         글 목록
                     </button>
-                    </div>
+                </div>
             </div>
-            
+
             <div className="category-content">
                 <div className="description-section">
                     <h3>설명</h3>
@@ -92,6 +132,39 @@ const CategoryInfo = () => {
                     </ul>
                 </div>
             </div>
+
+            {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="delete-modal">
+            <h3>카테고리 삭제</h3>
+            <p>
+              정말로 <strong>{category.name}</strong> 카테고리를 삭제하시겠습니까?
+            </p>
+            <p className="warning-text">
+              이 작업은 되돌릴 수 없으며, 카테고리 내 게시글이 있는 경우 삭제할 수 없습니다.
+            </p>
+            
+            {deleteError && <div className="error-message">{deleteError}</div>}
+            
+            <div className="modal-buttons">
+              <button
+                className="cancel-button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteLoading}
+              >
+                취소
+              </button>
+              <button
+                className="delete-confirm-button"
+                onClick={handleDeleteCategory}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? '삭제 중...' : '삭제'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
         </div>
     );
 };
