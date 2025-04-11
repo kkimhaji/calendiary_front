@@ -92,18 +92,36 @@
   font-size: 0.85rem;
 }
 
-.btn-edit-team {
-  background: #4CAF50;
-  color: white;
+.btn-edit, .btn-delete {
+  height: 38px;
+  padding: 0 1rem;
   border: none;
-  padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  transition: background-color 0.3s;
 }
 
-.btn-edit-team:hover {
-    background: #45a049;
+.btn-edit {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #45a049;
+}
+
+.btn-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #d32f2f;
 }
 
 .team-header {
@@ -478,4 +496,72 @@
   color: #dc3545;
   font-size: 0.85rem;
   margin-top: 5px;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-modal {
+  background-color: white;
+  border-radius: 8px;
+  padding: 25px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.delete-modal h3 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.warning-text {
+  color: #f44336;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-button {
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.delete-confirm-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.error-message {
+  background-color: #fdecea;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 10px 0;
 }
