@@ -46,11 +46,11 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
 
         //api 호출 전 ui에 즉시 반영
         //수정 예정
-        // setComments(prev => prev.filter(c => c.id !== commentId));
-        // axios.delete(`/comments/${commentId}`).catch(() => {
-        // // 실패 시 롤백
-        // setComments(prev => [...prev, deletedComment]);
-    // });
+        setComments(prev => prev.filter(c => c.id !== commentId));
+        axios.delete(`/posts/${postId}/comments/${commentId}`).catch(() => {
+        // 실패 시 롤백
+        setComments(prev => [...prev, deletedComment]);
+    });
     };
     return (
         <div className="comment-content">
