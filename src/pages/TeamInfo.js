@@ -294,7 +294,7 @@ const TeamInfo = ({readOnly = false}) => {
               팀 정보 수정
             </button>
             <button 
-            className="btn-delete"
+            className="btn-delete-team"
             onClick={() => setShowDeleteModal(true)}
           >
             팀 삭제
