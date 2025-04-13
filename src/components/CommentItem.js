@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from '../api/axios';
 import CommentForm from "./CommentForm";
 import '../styles/CommentItem.css';
@@ -10,7 +10,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
         canEdit: false,
         canDelete: false
     });
-    const [showReplyForm, setShowReplyForm] = useState(false); 
+    const [showReplyForm, setShowReplyForm] = useState(false);
     // 답글 작성 버튼 핸들러
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
@@ -20,9 +20,10 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
         const fetchPermissions = async () => {
             try {
                 const response = await axios.get(`/edit-delete-check/comment`, {
-                    params:{
+                    params: {
                         commentId: comment.id
-                    }});
+                    }
+                });
                 setPermissions(response.data);
             } catch (error) {
                 console.error('댓글 권한 확인 실패:', error);
@@ -33,12 +34,6 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
 
     if (!comment) return null;
 
-    const handleEdit = (commentId) => {
-        console.log("Edit comment:", commentId);
-        // 수정 로직 구현
-        onCommentSubmitted();
-    };
-
     const handleDelete = (commentId) => {
         console.log("Delete comment:", commentId);
         // 삭제 로직 구현 (API 호출 추가)
@@ -48,10 +43,11 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
         //수정 예정
         setComments(prev => prev.filter(c => c.id !== commentId));
         axios.delete(`/posts/${postId}/comments/${commentId}`).catch(() => {
-        // 실패 시 롤백
-        setComments(prev => [...prev, deletedComment]);
-    });
+            // 실패 시 롤백
+            setComments(prev => [...prev, deletedComment]);
+        });
     };
+
     return (
         <div className="comment-content">
             {comment.isDeleted ? (
@@ -61,12 +57,12 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                     <div className="comment-header">
                         <span className="author">{comment.authorName}</span>
                         <span className="comment-time">
-        {new Date(comment.createdDate).toLocaleDateString()} 
-        {new Date(comment.createdDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-    </span>
+                            {new Date(comment.createdDate).toLocaleDateString()}
+                            {new Date(comment.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                         <div className="comment-actions">
                             {permissions.canEdit && (
-                                <button 
+                                <button
                                     className="btn-edit"
                                     onClick={() => handleEdit(comment.id)}
                                 >
@@ -85,9 +81,9 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                     </div>
                     <p>{comment.content}</p>
                     {comment.depth < 2 && (
-                        <CommentForm 
-                            postId={postId} 
-                            parentId={comment.id} 
+                        <CommentForm
+                            postId={postId}
+                            parentId={comment.id}
                             depth={depth + 1}
                         />
                     )}
@@ -95,7 +91,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             )}
             {/* 답글 작성 버튼 */}
             {depth < 2 && ( // 최대 3단계까지만 허용
-                <button 
+                <button
                     className="btn-reply"
                     onClick={handleReplyClick}
                 >
@@ -104,9 +100,9 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             )}
             {/* 답글 작성 폼 */}
             {showReplyForm && (
-                <CommentForm 
+                <CommentForm
                     postId={postId}
-                    parentId={comment.id} 
+                    parentId={comment.id}
                     depth={depth}
                     onSuccess={() => {
                         setShowReplyForm(false);
@@ -117,9 +113,9 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
 
             {/* 대댓글 목록 */}
             {(comment.replies || []).length > 0 && (
-                <CommentList 
+                <CommentList
                     postId={postId}
-                    comments={comment.replies} 
+                    comments={comment.replies}
                     depth={depth + 1}
                     onCommentSubmitted={onCommentSubmitted}
                 />
