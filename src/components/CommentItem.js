@@ -15,6 +15,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
     };
+    const [isDeleted, setIsDeleted] = useState(comment?.isDeleted || false);
 
     useEffect(() => {
         const fetchPermissions = async () => {
@@ -34,18 +35,21 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
 
     if (!comment) return null;
 
-    const handleDelete = (commentId) => {
+    const handleDelete = async (commentId) => {
+        try{
         console.log("Delete comment:", commentId);
         // 삭제 로직 구현 (API 호출 추가)
         onCommentSubmitted();
 
         //api 호출 전 ui에 즉시 반영
-        //수정 예정
-        setComments(prev => prev.filter(c => c.id !== commentId));
-        axios.delete(`/posts/${postId}/comments/${commentId}`).catch(() => {
-            // 실패 시 롤백
-            setComments(prev => [...prev, deletedComment]);
-        });
+        setIsDeleted(true);
+        await axios.delete(`/posts/${postId}/comments/${commentId}`);
+    } catch (error) {
+        // 실패 시 UI 롤백
+        setIsDeleted(false);
+        console.error('댓글 삭제 실패:', error);
+        alert('댓글 삭제에 실패했습니다.');
+    }
     };
 
     return (
@@ -61,14 +65,6 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
                             {new Date(comment.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         <div className="comment-actions">
-                            {permissions.canEdit && (
-                                <button
-                                    className="btn-edit"
-                                    onClick={() => handleEdit(comment.id)}
-                                >
-                                    수정
-                                </button>
-                            )}
                             {permissions.canDelete && (
                                 <button
                                     className="btn-delete"
