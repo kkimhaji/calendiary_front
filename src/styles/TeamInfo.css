@@ -1,11 +1,11 @@
 .team-info-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
 .team-basic-info h1 {
   color: #2c3e50;
@@ -40,14 +40,15 @@
 .role-toggle-button:hover {
   background: #2980b9;
 }
-  
+
 .role-list {
   margin-top: 2rem;
 
 }
 
 .role-item {
-  display: block; /* Link가 block 요소로 동작하도록 */
+  display: block;
+  /* Link가 block 요소로 동작하도록 */
   text-decoration: none;
   color: inherit;
 }
@@ -92,7 +93,7 @@
   font-size: 0.85rem;
 }
 
-.btn-edit, .btn-delete {
+.btn-edit-team, .btn-delete-team {
   height: 38px;
   padding: 0 1rem;
   border: none;
@@ -106,21 +107,21 @@
   transition: background-color 0.3s;
 }
 
-.btn-edit {
+.btn-edit-team {
   background: #4CAF50;
   color: white;
 }
 
-.btn-edit:hover {
+.btn-edit-team:hover {
   background: #45a049;
 }
 
-.btn-delete {
+.btn-delete-team {
   background-color: #f44336;
   color: white;
 }
 
-.btn-delete:hover {
+.btn-delete-team:hover {
   background-color: #d32f2f;
 }
 
@@ -135,6 +136,12 @@
   padding-bottom: 1rem;
 
 }
+
+.team-buttons {
+  display: flex;
+  gap: 10px;
+}
+
 .btn-back {
   background: #6c757d;
   color: white;
