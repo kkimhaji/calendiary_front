@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import PostItem from './PostItem';
 
 const SearchPostList = ({ keyword }) => {

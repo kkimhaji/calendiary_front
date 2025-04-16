@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import PostItem from './PostItem';
 import SearchBar from './SearchBar';
 import '../styles/PostList.css';
