@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import DeleteConfirmModal from '../DeleteConfirmModal';
 
 const TeamDeleteButton = ({ teamId, teamName }) => {
   const navigate = useNavigate();
@@ -35,43 +36,22 @@ const TeamDeleteButton = ({ teamId, teamName }) => {
   return (
     <>
       <button
-        className="btn-delete-team"
+        className="btn-delete"
         onClick={() => setShowDeleteModal(true)}
       >
         팀 삭제
       </button>
 
       {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="delete-modal">
-            <h3>팀 삭제</h3>
-            <p>
-              정말로 <strong>{teamName}</strong> 팀을 삭제하시겠습니까?
-            </p>
-            <p className="warning-text">
-              이 작업은 되돌릴 수 없으며, 팀의 모든 카테고리와 게시글이 삭제됩니다.
-            </p>
-            
-            {deleteError && <div className="error-message">{deleteError}</div>}
-            
-            <div className="modal-buttons">
-              <button
-                className="cancel-button"
-                onClick={() => setShowDeleteModal(false)}
-                disabled={deleteLoading}
-              >
-                취소
-              </button>
-              <button
-                className="delete-confirm-button"
-                onClick={handleDeleteTeam}
-                disabled={deleteLoading}
-              >
-                {deleteLoading ? '삭제 중...' : '삭제'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteConfirmModal
+          title="팀 삭제"
+          entityName={teamName}
+          warningText="이 작업은 되돌릴 수 없으며, 팀의 모든 카테고리와 게시글이 삭제됩니다."
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteTeam}
+          isLoading={deleteLoading}
+          error={deleteError}
+        />
       )}
     </>
   );

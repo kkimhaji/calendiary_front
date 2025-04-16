@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/TeamInfo.css';
+import '../styles/InfoLayout.css';
 import { usePermissions } from '../hooks/usePermissions';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';
-import TeamLeaveButton from '../components/TeamLeaveButton';
-import TeamDeleteButton from '../components/TeamDeleteButton';
-import TeamEditButton from '../components/TeamEditButton';
-import TeamJoinBanner from '../components/TeamJoinBanner';
-import TeamInviteSection from '../components/TeamInviteSection';
-import TeamMemberInfo from '../components/TeamMemberInfo';
-import TeamRolesSection from '../components/TeamRolesSection';
-import TeamMembersSection from '../components/TeamMembersSection';
+import InfoLayout from '../components/layout/InfoLayout';
+import TeamLeaveButton from '../components/team/TeamLeaveButton';
+import TeamDeleteButton from '../components/team/TeamDeleteButton';
+import TeamEditButton from '../components/team/TeamEditButton';
+import TeamJoinBanner from '../components/team/TeamJoinBanner';
+import TeamInviteSection from '../components/team/TeamInviteSection';
+import TeamMemberInfo from '../components/team/TeamMemberInfo';
+import TeamRolesSection from '../components/team/TeamRolesSection';
+import TeamMembersSection from '../components/team/TeamMembersSection';
+import TeamMetadata from '../components/team/TeamMetadata';
 
 const TeamInfo = ({ readOnly = false }) => {
   const { teamId } = useParams();
@@ -25,6 +27,7 @@ const TeamInfo = ({ readOnly = false }) => {
   const location = useLocation();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const inviteCode = searchParams.get('code');
+  
   const [permissions, permissionsLoading] = usePermissions(
     readOnly ? [] : ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
     teamId
@@ -86,12 +89,29 @@ const TeamInfo = ({ readOnly = false }) => {
     });
   };
 
+  // 팀 액션 버튼 렌더링
+  const renderTeamActions = () => {
+    if (readOnly) return null;
+
+    return (
+      <div className="team-actions">
+        <TeamLeaveButton teamId={teamId} />
+        {permissions['MANAGE_TEAM'] && (
+          <>
+            <TeamEditButton teamId={teamId} />
+            <TeamDeleteButton teamId={teamId} teamName={teamData?.name} />
+          </>
+        )}
+      </div>
+    );
+  };
+
   if (!readOnly && permissionsLoading) return <div>권한 확인 중...</div>;
   if (loading) return <div className="loading">로딩 중...</div>;
   if (!teamData) return <div className="error-message">팀 정보를 불러올 수 없습니다.</div>;
 
   return (
-    <div className="team-info-container">
+    <>
       {/* 팀 가입 배너 */}
       {readOnly && (
         <TeamJoinBanner 
@@ -101,24 +121,13 @@ const TeamInfo = ({ readOnly = false }) => {
         />
       )}
 
-      <div className="team-basic-info">
-        <div className='team-header'>
-          <h1>{teamData.name}</h1>
-          {!readOnly && (
-            <div className="team-buttons">
-            <TeamLeaveButton teamId={teamId} />
-            
-            {!readOnly && permissions['MANAGE_TEAM'] && (
-              <>
-                <TeamEditButton teamId={teamId} />
-                <TeamDeleteButton teamId={teamId} teamName={teamData.name} />
-              </>
-            )}
-          </div>
-          )}
-          
-        </div>
-        
+      <InfoLayout
+        title={teamData.name}
+        actionButtons={renderTeamActions()}
+        description={teamData.description}
+        loading={loading}
+        error={error}
+      >
         {/* 내 팀 정보 섹션 */}
         {!readOnly && (
           <TeamMemberInfo 
@@ -133,14 +142,12 @@ const TeamInfo = ({ readOnly = false }) => {
           <TeamInviteSection teamId={teamId} />
         )}
 
-        {/* 팀 기본 정보 */}
-        <p className="team-description">{teamData.description}</p>
-
-        <div className="metadata">
-          <span>생성일: {new Date(teamData.createdAt).toLocaleDateString()}</span>
-          <span>멤버 수: {teamData.memberCount}명</span>
-          <span>만든 사람: {teamData.created_by}</span>
-        </div>
+        {/* 팀 메타데이터 */}
+        <TeamMetadata 
+          createdAt={teamData.createdAt}
+          memberCount={teamData.memberCount}
+          createdBy={teamData.created_by}
+        />
 
         {/* 역할 정보 섹션 */}
         <TeamRolesSection 
@@ -148,14 +155,14 @@ const TeamInfo = ({ readOnly = false }) => {
           hasManagePermission={permissions['MANAGE_ROLES']} 
           readOnly={readOnly} 
         />
-      </div>
-      
-      {/* 멤버 목록 섹션 */}
-      <TeamMembersSection 
-        teamId={teamId} 
-        memberCount={teamData.memberCount} 
-      />
-    </div>
+        
+        {/* 멤버 목록 섹션 */}
+        <TeamMembersSection 
+          teamId={teamId} 
+          memberCount={teamData.memberCount} 
+        />
+      </InfoLayout>
+    </>
   );
 };
 

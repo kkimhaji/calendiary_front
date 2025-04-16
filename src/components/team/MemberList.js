@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import '../styles/MemberList.css';
 
 const MemberList = ({ teamId, roleId,}) => {
