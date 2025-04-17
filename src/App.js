@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Register from './pages/Register';
 import TestConnection from './TestConnection';
 import { TeamProvider } from './contexts/TeamContext';
-import Layout from './components/Layout/Layout';
+import Layout from './components/layout/Layout';
 import CreateTeam from './pages/CreateTeam';
-import RecentPosts from './components/Layout/RecentPosts';
+import RecentPosts from './components/layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
 import CreatePost from './pages/CreatePost';
 import PostDetail from './pages/PostDetail';

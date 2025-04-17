@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 
 const TeamDeleteButton = ({ teamId, teamName }) => {

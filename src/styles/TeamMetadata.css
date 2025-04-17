@@ -1,0 +1,28 @@
+.metadata-section {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+  }
+  
+  .metadata-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  
+  .metadata-item {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .metadata-label {
+    font-weight: bold;
+    color: #555;
+  }  

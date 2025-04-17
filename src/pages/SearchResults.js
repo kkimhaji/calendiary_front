@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import SearchPostList from '../components/SearchPostList';
+import SearchPostList from '../components/post/SearchPostList';
 
 const SearchResults = () => {
   const { teamId, categoryId } = useParams();

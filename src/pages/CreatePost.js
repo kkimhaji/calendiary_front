@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../api/axios';
-import RichTextEditor from '../components/RichTextEditor';
+import RichTextEditor from '../components/post/RichTextEditor';
 import '../styles/CreatePost.css';
 
 const CreatePost = () => {

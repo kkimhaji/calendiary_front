@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/PostItem.css';
+import '../../styles/PostItem.css';
 
 const PostItem = ({ post, teamId, onClick, highlight }) => {
     const navigate = useNavigate();

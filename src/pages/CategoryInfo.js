@@ -5,7 +5,6 @@ import '../styles/InfoLayout.css';
 import InfoLayout from '../components/layout/InfoLayout';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { usePermissions } from '../hooks/usePermissions';
-// 카테고리 전용 컴포넌트
 import CategoryActions from '../components/category/CategoryActions';
 import CategoryPermissions from '../components/category/CategoryPermissions';
 

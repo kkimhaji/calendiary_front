@@ -3,8 +3,8 @@ import axios from '../../api/axios';
 import '../../styles/RecentPosts.css';
 import { useLocation, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import SearchBar from '../SearchBar';
-import PostList from '../PostList';
+import SearchBar from '../post/SearchBar';
+import PostList from '../post/PostList';
 
 const RecentPosts = () => {
     const { teamId, categoryId } = useParams();
