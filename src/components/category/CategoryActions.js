@@ -7,7 +7,7 @@ const CategoryActions = ({ teamId, categoryId, onDeleteClick, hasPermission }) =
   if (!hasPermission) return null;
 
   return (
-    <div className="action-buttons">
+    <div className="category-actions">
       <button
         className="btn-edit"
         onClick={() => navigate(`/teams/${teamId}/categories/${categoryId}/edit`)}

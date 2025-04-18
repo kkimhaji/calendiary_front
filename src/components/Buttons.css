@@ -1,0 +1,56 @@
+.button-group, .action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .btn-edit, .btn-delete, .btn-back, .btn-primary {
+    height: 38px;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-edit {
+    background: #4CAF50;
+    color: white;
+  }
+  
+  .btn-edit:hover {
+    background: #45a049;
+  }
+  
+  .btn-delete {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .btn-delete:hover {
+    background-color: #d32f2f;
+  }
+  
+  .btn-back {
+    background: #6c757d;
+    color: white;
+  }
+  
+  .btn-back:hover {
+    background: #5a6268;
+  }
+  
+  .btn-primary {
+    background: #1976d2;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #1565c0;
+  }
+  

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import '../styles/InfoLayout.css';
+import '../styles/CategoryInfo.css';
 import InfoLayout from '../components/layout/InfoLayout';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { usePermissions } from '../hooks/usePermissions';
@@ -17,7 +18,8 @@ const CategoryInfo = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
-  const { hasPermission: hasManageCategoryPermission, loading: permissionsLoading } = usePermissions('MANAGE_CATEGORIES', teamId);
+  const [permissionResults, permissionsLoading, permissionsError] = usePermissions(['MANAGE_CATEGORIES'], teamId);
+  const hasManageCategoryPermission = permissionResults?.['MANAGE_CATEGORIES'] || false;
 
   // 카테고리 정보 로드
   useEffect(() => {

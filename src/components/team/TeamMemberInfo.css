@@ -13,9 +13,9 @@
   
   .info-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.75rem;
+    gap: 10px;
   }
   
   .info-label {
@@ -27,8 +27,8 @@
     background: #e3f2fd;
     color: #1976d2;
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
   }
   
   .nickname-display {
@@ -38,15 +38,19 @@
   }
   
   .edit-nickname-btn {
-    background: none;
+    background-color: #6c757d;
+    color: white;
     border: none;
-    color: #1976d2;
-    cursor: pointer;
+    border-radius: 4px;
     padding: 4px 8px;
-    font-size: 0.85rem;
-    text-decoration: underline;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
   }
   
+  .edit-nickname-btn:hover {
+    background-color: #5a6268;
+  }
   .nickname-form {
     display: flex;
     flex-direction: column;
@@ -77,6 +81,11 @@
     color: white;
   }
   
+  .save-btn:disabled {
+    background-color: #8fd19e;
+    cursor: not-allowed;
+  }
+
   .cancel-btn {
     background: #f5f5f5;
     color: #333;

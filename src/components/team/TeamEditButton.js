@@ -10,7 +10,7 @@ const TeamEditButton = ({ teamId }) => {
 
   return (
     <button
-      className="btn-edit-team"
+      className="btn-edit"
       onClick={handleEdit}
     >
       팀 정보 수정

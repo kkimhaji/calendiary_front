@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import '../styles/InfoLayout.css';
+import '../styles/TeamInfo.css';
 import { usePermissions } from '../hooks/usePermissions';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';

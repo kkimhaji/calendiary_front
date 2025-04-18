@@ -2,9 +2,6 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
   .info-header {
@@ -70,11 +67,14 @@
   }
   
   .description-section {
-    margin-bottom: 2rem;
+    padding: 1rem;
+    /* margin-bottom: 2rem; */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
   .description-section h3 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 0.5rem;
     color: #444;
   }
@@ -82,7 +82,7 @@
   .info-content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
   }
   
   .loading, .error-message {
