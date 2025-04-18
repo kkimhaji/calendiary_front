@@ -17,9 +17,7 @@ const CategoryInfo = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
-
-  // 권한 확인 커스텀 훅 사용
-  const { hasPermission: hasManageCategoryPermission } = usePermissions('MANAGE_CATEGORIES', teamId);
+  const { hasPermission: hasManageCategoryPermission, loading: permissionsLoading } = usePermissions('MANAGE_CATEGORIES', teamId);
 
   // 카테고리 정보 로드
   useEffect(() => {
