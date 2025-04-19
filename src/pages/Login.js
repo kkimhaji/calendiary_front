@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/authSlice';
-import '../styles/Login.css';
+import './Login.css';
 import ToggleButton from '../components/ToggleButton';
 import axios from '../api/axios';
 

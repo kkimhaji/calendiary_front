@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/TeamLeaveButton.css';
+import './TeamLeaveButton.css';
 
 const TeamLeaveButton = ({ teamId, isOwner }) => {
   const navigate = useNavigate();

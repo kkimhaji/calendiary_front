@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
-import '../styles/CommentList.css';
+import './CommentList.css';
 
 function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted }) {
     return (

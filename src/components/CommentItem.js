@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from '../api/axios';
 import CommentForm from "./CommentForm";
-import '../styles/CommentItem.css';
+import './CommentItem.css';
 import CommentList from "./CommentList";
 
 // CommentItem.js

@@ -1,4 +1,5 @@
 import React from 'react';
+import './TeamMetadata.css';
 
 const TeamMetadata = ({ createdAt, memberCount, createdBy }) => {
   return (

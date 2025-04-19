@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/CreateRole.css';
+import './CreateRole.css';
 import { TeamPermission } from '../constants/TeamPermissions';
 import MemberList from '../components/team/MemberList';
 

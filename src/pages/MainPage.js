@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PostItem from '../components/post/PostItem';
 import { logoutUser, selectIsAuthenticated } from '../store/authSlice';
 import axios from '../api/axios';
-import '../styles/MainPage.css';
+import './MainPage.css';
 import { useSelector, useDispatch } from 'react-redux';
 
 const MainPage = () => {

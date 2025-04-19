@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-import '../styles/AccountInfoPage.css';
+import './AccountInfoPage.css';
 
 const AccountInfoPage = () => {
   const [memberInfo, setMemberInfo] = useState(null);

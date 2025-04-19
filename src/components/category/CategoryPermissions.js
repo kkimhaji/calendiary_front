@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/Permissions.css';
+import './Permissions.css';
 
 const CategoryPermissions = ({ rolePermissions }) => {
   if (!rolePermissions || rolePermissions.length === 0) {

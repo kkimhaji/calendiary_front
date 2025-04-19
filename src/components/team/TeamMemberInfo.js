@@ -1,6 +1,6 @@
 import React from 'react';
 import TeamNicknameEditor from './TeamNicknameEditor';
-import '../../styles/TeamMemberInfo.css';
+import './TeamMemberInfo.css';
 
 const TeamMemberInfo = ({ teamId, teamData, onNicknameUpdate }) => {
   if (!teamData.teamNickname || !teamData.roleName) return null;

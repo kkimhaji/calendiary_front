@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/ToggleButton.css'; // CSS 파일 추가
+import './ToggleButton.css';
 
 function ToggleButton({ checked, onChange }) {
     return (

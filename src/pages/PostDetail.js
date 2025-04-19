@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/PostDetail.css';
+import './PostDetail.css';
 import DOMPurify from 'dompurify';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';

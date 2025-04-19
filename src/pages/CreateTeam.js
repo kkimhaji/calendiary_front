@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/CreateTeam.css';
+import './CreateTeam.css';
 import { useTeam } from '../contexts/TeamContext';
 
 function CreateTeam() {

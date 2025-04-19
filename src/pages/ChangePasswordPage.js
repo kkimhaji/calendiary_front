@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import '../styles/ChangePasswordPage.css';
+import './ChangePasswordPage.css';
 
 const ChangePasswordPage = () => {
     const navigate = useNavigate();

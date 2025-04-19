@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/DeleteConfirmModal.css';
+import './DeleteConfirmModal.css';
 
 const DeleteConfirmModal = ({
   title,

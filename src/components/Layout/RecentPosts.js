@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../api/axios';
-import '../../styles/RecentPosts.css';
+import './RecentPosts.css';
 import { useLocation, useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../post/SearchBar';

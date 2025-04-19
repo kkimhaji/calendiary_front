@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import TeamInfo from './TeamInfo'; // 기존 TeamInfo 컴포넌트 재사용
-import '../styles/TeamJoinPage.css';
+import './TeamJoinPage.css';
 
 const TeamJoinPage = () => {
   const { teamId } = useParams();

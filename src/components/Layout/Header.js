@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../styles/Header.css';
+import './Header.css';
 import Menubar from './Menubar';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsAuthenticated, logoutUser, clearCredentials, fetchUserInfo, selectCurrentUser } from '../../store/authSlice';
