@@ -13,8 +13,10 @@
   
   .metadata {
     display: flex;
-    flex-wrap: wrap;
     gap: 1.5rem;
+    margin-bottom: 2rem;
+    color: #888;
+    font-size: 0.9rem;
   }
   
   .metadata-item {

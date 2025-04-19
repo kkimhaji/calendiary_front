@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import '../components/layout/InfoLayout.css';
-// import '../styles/TeamInfo.css';
 import { usePermissions } from '../hooks/usePermissions';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';
@@ -28,7 +27,7 @@ const TeamInfo = ({ readOnly = false }) => {
   const location = useLocation();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const inviteCode = searchParams.get('code');
-  
+
   const [permissions, permissionsLoading] = usePermissions(
     readOnly ? [] : ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
     teamId
@@ -115,10 +114,10 @@ const TeamInfo = ({ readOnly = false }) => {
     <>
       {/* 팀 가입 배너 */}
       {readOnly && (
-        <TeamJoinBanner 
-          teamId={teamId} 
-          inviteCode={inviteCode} 
-          isValidInvite={isValidInvite} 
+        <TeamJoinBanner
+          teamId={teamId}
+          inviteCode={inviteCode}
+          isValidInvite={isValidInvite}
         />
       )}
 
@@ -131,36 +130,36 @@ const TeamInfo = ({ readOnly = false }) => {
       >
         {/* 내 팀 정보 섹션 */}
         {!readOnly && (
-          <TeamMemberInfo 
-            teamId={teamId} 
-            teamData={teamData} 
+          <TeamMemberInfo
+            teamId={teamId}
+            teamData={teamData}
             onNicknameUpdate={handleNicknameUpdate}
           />
         )}
-        
+
         {/* 초대 링크 섹션 */}
         {!readOnly && permissions['MANAGE_MEMBERS'] && (
           <TeamInviteSection teamId={teamId} />
         )}
 
         {/* 팀 메타데이터 */}
-        <TeamMetadata 
+        <TeamMetadata
           createdAt={teamData.createdAt}
           memberCount={teamData.memberCount}
           createdBy={teamData.created_by}
         />
 
         {/* 역할 정보 섹션 */}
-        <TeamRolesSection 
-          teamId={teamId} 
-          hasManagePermission={permissions['MANAGE_ROLES']} 
-          readOnly={readOnly} 
+        <TeamRolesSection
+          teamId={teamId}
+          hasManagePermission={permissions['MANAGE_ROLES']}
+          readOnly={readOnly}
         />
-        
+
         {/* 멤버 목록 섹션 */}
-        <TeamMembersSection 
-          teamId={teamId} 
-          memberCount={teamData.memberCount} 
+        <TeamMembersSection
+          teamId={teamId}
+          memberCount={teamData.memberCount}
         />
       </InfoLayout>
     </>

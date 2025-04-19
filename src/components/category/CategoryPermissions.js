@@ -8,7 +8,7 @@ const CategoryPermissions = ({ rolePermissions }) => {
 
   return (
     <div className="permissions-section">
-      <h3>역할별 권한 설정</h3>
+      <h3>역할별 권한</h3>
       <ul className="role-permission-list">
         {rolePermissions.map(permission => (
           <li key={permission.id} className="role-item">

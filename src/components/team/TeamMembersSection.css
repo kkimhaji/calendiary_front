@@ -1,0 +1,59 @@
+.members-section {
+    margin-top: 2rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .toggle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: background 0.2s;
+  }
+  
+  .toggle-header:hover {
+    background: #f8f9fa;
+  }
+  
+  .member-list {
+    margin-top: 1rem;
+  }
+  
+  .member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .member-item:last-child {
+    border-bottom: none;
+  }
+  
+  .member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .nickname {
+    font-weight: 500;
+    color: #2c3e50;
+  }
+  
+  .email {
+    font-size: 0.9em;
+    color: #666;
+  }
+  
+  .role {
+    background: #e9ecef;
+    color: #495057;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.9em;
+  }

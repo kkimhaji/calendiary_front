@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../../api/axios';
+import './TeamMembersSection.css';
 
 const TeamMembersSection = ({ teamId, memberCount }) => {
   const [showMembers, setShowMembers] = useState(false);

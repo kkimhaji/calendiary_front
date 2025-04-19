@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './InfoLayout.css';
 import '../Buttons.css';
 
-const InfoLayout = ({ 
+const InfoLayout = ({
   title,
   actionButtons,
   description,
@@ -21,7 +21,7 @@ const InfoLayout = ({
     <div className="info-container">
       <div className="info-header">
         <h1>{title}</h1>
-        <div className="button-group">
+        <div className="info-button-group">
           {actionButtons}
           {onBackClick && (
             <button

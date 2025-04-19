@@ -1,170 +1,173 @@
 .info-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .info-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
-  }
-  
-  .info-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: #333;
-  }
-  
-  .button-group, .action-buttons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .btn-edit, .btn-delete, .btn-back {
-    height: 38px;
-    padding: 0 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 90px;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-edit {
-    background: #4CAF50;
-    color: white;
-  }
-  
-  .btn-edit:hover {
-    background: #45a049;
-  }
-  
-  .btn-delete {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .btn-delete:hover {
-    background-color: #d32f2f;
-  }
-  
-  .btn-back {
-    background: #6c757d;
-    color: white;
-  }
-  
-  .btn-back:hover {
-    background: #5a6268;
-  }
-  
-  .description-section {
-    padding: 1rem;
-    /* margin-bottom: 2rem; */
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .description-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
-    color: #444;
-  }
-  
-  .info-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .loading, .error-message {
-    text-align: center;
-    padding: 2rem;
-    border-radius: 4px;
-    background: #f9f9f9;
-    margin: 2rem auto;
-    max-width: 600px;
-  }
-  
-  .error-message {
-    color: #d32f2f;
-    background-color: #fdecea;
-  }
-  
-  /* 역할 및 권한 스타일 */
-  .permissions-section, .role-permission-list {
-    margin-top: 1rem;
-  }
-  
-  .role-item {
-    border: 1px solid #eee;
-    border-radius: 4px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: #f9f9f9;
-  }
-  
-  .role-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-  
-  .role-name {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .permission-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  
-  .permission-tag {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-  }
-  
-  /* 메타데이터 스타일 */
-  .metadata-section {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-top: 1rem;
-  }
-  
-  .metadata {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-  }
-  
-  .metadata-item {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .metadata-label {
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .no-data {
-    color: #777;
-    font-style: italic;
-    text-align: center;
-    padding: 1rem;
-  }
-  
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.info-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.info-button-group,
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 1rem;
+}
+
+.btn-edit,
+.btn-delete,
+.btn-back {
+  height: 38px;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  margin: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.btn-edit {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #45a049;
+}
+
+.btn-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #d32f2f;
+}
+
+.btn-back {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-back:hover {
+  background: #5a6268;
+}
+
+.description-section {
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.description-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #444;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.loading,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 4px;
+  background: #f9f9f9;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fdecea;
+}
+
+.permissions-section,
+.role-permission-list {
+  margin-top: 1rem;
+}
+
+.role-item {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f9f9f9;
+}
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.role-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.permission-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.permission-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.metadata-section {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.metadata-item {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.metadata-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.no-data {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
