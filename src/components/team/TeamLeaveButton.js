@@ -14,14 +14,17 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
     setError('');
 
     try {
-      await axios.post(`/member/${teamId}/leave`);
+      await axios.post(`/member/${teamId}/leave`, null, {
+        params: { deleteContents }
+      });
+
       // 성공 시 메인 페이지로 이동
-      navigate('/', { 
-        state: { message: '팀에서 성공적으로 탈퇴했습니다.' } 
+      navigate('/', {
+        state: { message: '팀에서 성공적으로 탈퇴했습니다.' }
       });
     } catch (err) {
       console.error('팀 탈퇴 실패:', err);
-      
+
       if (err.response?.status === 403) {
         setError('팀을 탈퇴할 권한이 없습니다.');
       } else if (err.response?.data?.message) {
@@ -52,9 +55,25 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
             <p className="warning-text">
               탈퇴 후에는 팀 콘텐츠에 접근할 수 없으며, 다시 가입하려면 초대를 받아야 합니다.
             </p>
-            
+            <div className="content-delete-option">
+              <input
+                type="checkbox"
+                id="delete-contents"
+                checked={deleteContents}
+                onChange={(e) => setDeleteContents(e.target.checked)}
+              />
+              <label htmlFor="delete-contents">
+                이 팀에 작성한 게시글과 댓글 모두 삭제하기
+              </label>
+            </div>
+
+            {deleteContents && (
+              <p className="option-warning">
+                선택 시 내가 작성한 모든 게시글과 댓글이 영구적으로 삭제됩니다.
+              </p>
+            )}
             {error && <div className="error-message">{error}</div>}
-            
+
             <div className="modal-buttons">
               <button
                 className="cancel-button"
