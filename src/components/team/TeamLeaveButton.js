@@ -8,6 +8,7 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [deleteContents, setDeleteContents] = useState(false);
 
   const handleLeaveTeam = async () => {
     setLoading(true);
