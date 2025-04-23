@@ -27,7 +27,7 @@ const TeamInfo = ({ readOnly = false }) => {
   const location = useLocation();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const inviteCode = searchParams.get('code');
-
+  const [showJoinBanner, setShowJoinBanner] = useState(false);
   const [permissions, permissionsLoading] = usePermissions(
     readOnly ? [] : ['MANAGE_TEAM', 'MANAGE_ROLES', 'MANAGE_MEMBERS'],
     teamId
@@ -41,36 +41,32 @@ const TeamInfo = ({ readOnly = false }) => {
     }
   }, [isAuthenticated, location, navigate]);
 
-  // 초대 코드 검증
-  useEffect(() => {
-    const validateInvite = async () => {
-      if (!readOnly || !inviteCode) return;
-
-      try {
-        const response = await axios.get('/invite/validate', {
-          params: { code: inviteCode }
-        });
-
-        if (response.data.isValid && response.data.teamId.toString() === teamId) {
-          setIsValidInvite(true);
-        } else {
-          setError(response.data.message || '유효하지 않은 초대 코드입니다.');
-        }
-      } catch (err) {
-        setError('초대 코드 검증 중 오류가 발생했습니다.');
-        console.error('초대 코드 검증 실패:', err);
-      }
-    };
-
-    validateInvite();
-  }, [readOnly, inviteCode, teamId]);
-
   // 팀 정보 로드
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
-        const response = await axios.get(`/team/${teamId}`);
+        let url = `/team/${teamId}`;
+        if (inviteCode) {
+          url += `?code=${inviteCode}`;
+        }
+        
+        const response = await axios.get(url);
         setTeamData(response.data);
+
+        switch (response.data.userStatus) {
+          case 'TEAM_MEMBER':
+            // 팀 멤버 UI 표시
+            break;
+          
+          case 'VALID_INVITE':
+            // 팀 가입 배너 표시
+            setShowJoinBanner(true);
+            break;
+            
+          case 'NO_ACCESS':
+            // 접근 거부 UI 표시
+            break;
+        }
       } catch (error) {
         console.error('팀 정보 조회 실패:', error);
         navigate(-1);
@@ -79,7 +75,7 @@ const TeamInfo = ({ readOnly = false }) => {
       }
     };
     fetchTeamData();
-  }, [teamId, navigate]);
+  }, [teamId, inviteCode]);
 
   // 닉네임 업데이트 핸들러
   const handleNicknameUpdate = (newNickname) => {
