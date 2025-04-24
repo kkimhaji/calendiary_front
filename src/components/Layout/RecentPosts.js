@@ -17,32 +17,6 @@ const RecentPosts = () => {
         if (categoryName) setCategoryName(categoryName);
     };
 
-    // 팀 정보 조회
-    useEffect(() => {
-        const fetchTeamInfo = async () => {
-            try {
-                const response = await axios.get(`/teams/${teamId}/info`);
-                setTeamName(response.data.name);
-            } catch (error) {
-                console.error('팀 정보 조회 실패:', error);
-            }
-        };
-        if (teamId) fetchTeamInfo();
-    }, [teamId]);
-
-    // 카테고리 정보 조회
-    useEffect(() => {
-        const fetchCategoryInfo = async () => {
-            try {
-                const response = await axios.get(`/teams/${teamId}/category/${categoryId}/info`);
-                setCategoryName(response.data.name);
-            } catch (error) {
-                console.error('카테고리 정보 조회 실패:', error);
-            }
-        };
-        if (categoryId) fetchCategoryInfo();
-    }, [categoryId, teamId]);
-
     const handleCreatePost = () => {
         navigate(`/teams/${teamId}/posts/create`);
     }
