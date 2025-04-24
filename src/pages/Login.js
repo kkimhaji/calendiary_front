@@ -23,7 +23,7 @@ function Login() {
     // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
     const errorReason = params.get('reason');
-    const redirectUrl = params.get('redirectUrl') || '/boardList';
+    const redirectUrl = params.get('redirectUrl') || '/';
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -75,7 +75,7 @@ function Login() {
                 {(error || authError) && <div className="error-message">{error || authError}</div>}
                 
                 {/* 리다이렉트 URL이 있는 경우 안내 메시지 표시 */}
-                {redirectUrl !== '/boardList' && (
+                {redirectUrl !== '/' && (
                     <div className="alert-message">
                         계속하려면 로그인이 필요합니다.
                     </div>
