@@ -27,8 +27,6 @@ function Sidebar() {
                 try {
                     const response = await axios.get(`/teams/${selectedTeamId}/categories`);
 
-                    console.log('API Response:', response.data);
-
                     setCategories(response.data || []); // 응답이 없을 경우 빈 배열 설정
                 } catch (error) {
                     console.error('카테고리 목록 조회 실패: ', error);

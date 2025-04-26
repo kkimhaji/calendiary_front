@@ -50,7 +50,6 @@ const CreatePost = () => {
             if (teamId) {
                 try {
                     const response = await axios.get(`/teams/${teamId}/categories`);
-                    console.log('API Response:', response.data);
                     setCategories(response.data || []);
                 } catch (error) {
                     console.error('카테고리 목록 조회 실패: ', error);
