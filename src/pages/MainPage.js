@@ -16,8 +16,11 @@ const MainPage = () => {
         try {
             const response = await axios.get(`/main?page=${pageNum}`);
             const newPosts = response.data.content;
-            
-            setPosts(prev => [...prev, ...newPosts]);
+            if (pageNum === 0) {
+                setPosts(newPosts);
+            } else {
+                setPosts(prev => [...prev, ...newPosts]);
+            }
             setHasMore(!response.data.last);
             
         } catch (error) {
@@ -28,6 +31,7 @@ const MainPage = () => {
     useEffect(() => {
         console.log("isLoggedIn: ", isLoggedIn);
         if (isLoggedIn) {
+            setPage(0);
             loadPosts(0); // 초기 로드
         } else{
             window.location.href="/login";
