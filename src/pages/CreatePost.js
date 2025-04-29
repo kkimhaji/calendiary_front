@@ -8,7 +8,6 @@ const CreatePost = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [categories, setCategories] = useState([]);
-    const [tempImageUrls, setTempImageUrls] = useState([]);
     const { teamId, categoryId, postId } = useParams();
     const navigate = useNavigate();
     const [error, setError] = useState('');
