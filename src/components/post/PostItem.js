@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './PostItem.css';
 
 const PostItem = ({ post, teamId, onClick, highlight }) => {
@@ -11,7 +11,7 @@ const PostItem = ({ post, teamId, onClick, highlight }) => {
     };
     const highlightText = (text) => {
         if (!highlight) return text;
-        
+
         const regex = new RegExp(`(${highlight})`, 'gi');
         return text.split(regex).map((part, i) =>
             regex.test(part) ? <mark key={i}>{part}</mark> : part
@@ -28,7 +28,12 @@ const PostItem = ({ post, teamId, onClick, highlight }) => {
                 <div className='post-comment-count'>{post.commentCount} 댓글</div>
             </div>
             <div className='post-meta'>
-                <span className='post-author'>{post.authorName}</span>
+                <Link
+                    to={`/teams/${teamId}/members/${post.authorId}`}
+                    className="author-name"
+                >
+                    {post.authorName}
+                </Link>
                 <span className='post-date'>
                     {new Date(post.createdDate).toLocaleDateString()}
                 </span>

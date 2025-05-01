@@ -1,9 +1,8 @@
-// MemberProfilePage.js
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Tabs, Tab } from '../components/Tabs';
 import PostItem from '../components/post/PostItem';
-import CommentItem from '../components/comment/CommentItem';
+import CommentItem from '../components/CommentItem';
 import axios from '../api/axios';
 import './MemberProfilePage.css';
 
@@ -47,7 +46,7 @@ const MemberProfilePage = () => {
   const loadPosts = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/${memberId}/teams/${teamId}/comments/posts?page=${pageNum}&size=10`);
+      const response = await axios.get(`/member/${memberId}/teams/${teamId}/comments/posts?page=${pageNum}&size=10`);
       
       if (reset) {
         setPosts(response.data.content);
@@ -67,7 +66,7 @@ const MemberProfilePage = () => {
   const loadComments = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/teams/${teamId}/members/${memberId}/comments?page=${pageNum}&size=10`);
+      const response = await axios.get(`/member/${memberId}/teams/${teamId}/comments?page=${pageNum}&size=10`);
       
       if (reset) {
         setComments(response.data.content);

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from '../api/axios';
 import CommentForm from "./CommentForm";
 import './CommentItem.css';
 import CommentList from "./CommentList";
 
 // CommentItem.js
-const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
+const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => {
     const [permissions, setPermissions] = useState({
         canEdit: false,
         canDelete: false
@@ -36,20 +37,20 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
     if (!comment) return null;
 
     const handleDelete = async (commentId) => {
-        try{
-        console.log("Delete comment:", commentId);
-        // 삭제 로직 구현 (API 호출 추가)
-        onCommentSubmitted();
+        try {
+            console.log("Delete comment:", commentId);
+            // 삭제 로직 구현 (API 호출 추가)
+            onCommentSubmitted();
 
-        //api 호출 전 ui에 즉시 반영
-        setIsDeleted(true);
-        await axios.delete(`/posts/${postId}/comments/${commentId}`);
-    } catch (error) {
-        // 실패 시 UI 롤백
-        setIsDeleted(false);
-        console.error('댓글 삭제 실패:', error);
-        alert('댓글 삭제에 실패했습니다.');
-    }
+            //api 호출 전 ui에 즉시 반영
+            setIsDeleted(true);
+            await axios.delete(`/posts/${postId}/comments/${commentId}`);
+        } catch (error) {
+            // 실패 시 UI 롤백
+            setIsDeleted(false);
+            console.error('댓글 삭제 실패:', error);
+            alert('댓글 삭제에 실패했습니다.');
+        }
     };
 
     return (
@@ -59,7 +60,12 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted }) => {
             ) : (
                 <>
                     <div className="comment-header">
-                        <span className="author">{comment.authorName}</span>
+                        <Link
+                            to={`/teams/${teamId}/members/${comment.authorId}`}
+                            className="author-name"
+                        >
+                            {comment.authorName}
+                        </Link>
                         <span className="comment-time">
                             {new Date(comment.createdDate).toLocaleDateString()}
                             {new Date(comment.createdDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

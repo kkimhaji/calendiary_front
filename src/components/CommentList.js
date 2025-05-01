@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import './CommentList.css';
 
-function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted }) {
+function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, teamId }) {
     return (
         <div className="comment-list">
             {comments.map((comment) => (
@@ -13,6 +13,7 @@ function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted }) {
                 >
                     <CommentItem 
                         comment={comment}
+                        teamId={teamId}
                         depth={depth}
                         postId={postId}
                         onCommentSubmitted={onCommentSubmitted}
