@@ -46,7 +46,7 @@ const MemberProfilePage = () => {
   const loadPosts = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/member/${memberId}/teams/${teamId}/comments/posts?page=${pageNum}&size=10`);
+      const response = await axios.get(`/member/${memberId}/teams/${teamId}/posts?page=${pageNum}&size=10`);
       
       if (reset) {
         setPosts(response.data.content);
