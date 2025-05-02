@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './PostDetail.css';
 import DOMPurify from 'dompurify';
@@ -105,7 +105,13 @@ const PostDetail = () => {
                 </div>
                 <div className="post-info">
                     
-                    작성자: {post.author.username} | 작성일: {new Date(post.createdDate).toLocaleDateString()}
+                작성자: 
+                    <Link 
+                        to={`/teams/${teamId}/members/${post.author.id}`} 
+                        className="author-link"
+                    >
+                        {post.author.username}
+                    </Link> | 작성일: {new Date(post.createdDate).toLocaleDateString()}
                 </div>
             
 
