@@ -28,12 +28,9 @@ const PostItem = ({ post, teamId, onClick, highlight }) => {
                 <div className='post-comment-count'>{post.commentCount} 댓글</div>
             </div>
             <div className='post-meta'>
-                <Link
-                    to={`/teams/${teamId}/members/${post.authorId}`}
-                    className="author-name"
-                >
+                <span className='author-name'>
                     {post.authorName}
-                </Link>
+                </span>
                 <span className='post-date'>
                     {new Date(post.createdDate).toLocaleDateString()}
                 </span>
