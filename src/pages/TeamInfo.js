@@ -128,7 +128,7 @@ const TeamInfo = ({ readOnly = false }) => {
         {!readOnly && (
           <TeamMemberInfo
             teamId={teamId}
-            teamData={teamData}
+            memberData={teamData.teamMemberInfo}
             onNicknameUpdate={handleNicknameUpdate}
           />
         )}
