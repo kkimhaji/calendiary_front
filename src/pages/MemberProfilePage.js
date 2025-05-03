@@ -20,8 +20,8 @@ const MemberProfilePage = () => {
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
-        const response = await axios.get(`/member/${memberId}/teams/${teamId}/posts`);
-        setMemberInfo(response.data);
+        const memberInfo = await axios.get(`/member/${memberId}/teams/${teamId}`);
+        setMemberInfo(memberInfo.data);
       } catch (error) {
         console.error('멤버 정보 로드 실패:', error);
       }
@@ -98,8 +98,9 @@ const MemberProfilePage = () => {
     <div className="member-profile-container">
       {memberInfo && (
         <div className="member-info-header">
-          <h1>{memberInfo.nickname}님의 활동</h1>
+          <h1>{memberInfo.teamNickname}님의 활동</h1>
           <div className="member-details">
+            <span className='email'>{memberInfo.email}</span>
             <span className="member-role">{memberInfo.roleName}</span>
             <span className="member-since">가입일: {new Date(memberInfo.joinedAt).toLocaleDateString()}</span>
           </div>
