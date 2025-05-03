@@ -2,8 +2,12 @@ import React from 'react';
 import TeamNicknameEditor from './TeamNicknameEditor';
 import './TeamMemberInfo.css';
 
-const TeamMemberInfo = ({ teamId, teamData, onNicknameUpdate }) => {
-  if (!teamData.teamNickname || !teamData.roleName) return null;
+const TeamMemberInfo = ({ teamId, memberData, onNicknameUpdate }) => {
+  if (!memberData.teamNickname || !memberData.roleName) return null;
+
+  const formattedJoinDate = memberData.joinedAt 
+  ? new Date(memberData.joinedAt).toLocaleDateString() 
+  : '정보 없음';
 
   return (
     <div className="my-team-info-section">
@@ -11,12 +15,17 @@ const TeamMemberInfo = ({ teamId, teamData, onNicknameUpdate }) => {
       <div className="info-container">
         <div className="info-row">
           <span className="info-label">역할:</span>
-          <span className="info-value role-badge">{teamData.roleName}</span>
+          <span className="info-value role-badge">{memberData.roleName}</span>
+        </div>
+
+        <div className="info-row">
+          <span className="info-label">가입일:</span>
+          <span className="info-value">{formattedJoinDate}</span>
         </div>
 
         <TeamNicknameEditor 
           teamId={teamId} 
-          currentNickname={teamData.teamNickname} 
+          currentNickname={memberData.teamNickname} 
           onNicknameUpdate={onNicknameUpdate} 
         />
       </div>
