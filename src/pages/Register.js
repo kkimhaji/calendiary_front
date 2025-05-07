@@ -8,7 +8,7 @@ import axios from '../api/axios';
 function Register() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     const [step, setStep] = useState(1);
     const [timeLeft, setTimeLeft] = useState(300);
     const [timerActive, setTimerActive] = useState(false);
@@ -20,6 +20,15 @@ function Register() {
         verificationCode: ''
     });
     const [loading, setLoading] = useState(false);
+
+    const [passwordValidation, setPasswordValidation] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        specialChar: false
+    });
+    const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
         let timer;
@@ -33,6 +42,32 @@ function Register() {
         }
         return () => clearInterval(timer);
     }, [timerActive, timeLeft]);
+    const validatePassword = (password) => {
+        const validations = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        setPasswordValidation(validations);
+
+        // 모든 조건이 충족되는지 확인
+        return Object.values(validations).every(isValid => isValid);
+    };
+
+    useEffect(() => {
+        if (step === 1) {
+            const isPasswordValid = validatePassword(formData.password);
+            const areAllFieldsFilled =
+                formData.email.trim() !== '' &&
+                formData.password.trim() !== '' &&
+                formData.nickname.trim() !== '';
+
+            setIsFormValid(isPasswordValid && areAllFieldsFilled);
+        }
+    }, [formData, step]);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
@@ -41,14 +76,27 @@ function Register() {
     };
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
+
+        // 비밀번호 입력 시 유효성 검사
+        if (name === 'password') {
+            validatePassword(value);
+        }
     };
 
     const handleInitialSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validatePassword(formData.password)) {
+            alert('비밀번호가 모든 조건을 충족해야 합니다.');
+            return;
+        }
+
         setLoading(true);
         try {
             await axios.post('/auth/register', {
@@ -75,19 +123,19 @@ function Register() {
                 email: formData.email,
                 verificationCode: formData.verificationCode
             });
-            
+
             const { accessToken, refreshToken } = response.data;
-            
+
             // Redux store에 인증 정보 저장
             dispatch(setCredentials({
                 access: accessToken,
                 refresh: refreshToken,
                 rememberMe: true
             }));
-            
+
             localStorage.setItem('accessToken', accessToken);
             axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-            
+
             alert('회원가입이 완료되었습니다.');
             navigate('/');
         } catch (error) {
@@ -154,9 +202,26 @@ function Register() {
                                 className="register-input"
                                 required
                             />
+                            <div className="password-validation">
+                                <p className={passwordValidation.length ? 'valid' : 'invalid'}>
+                                    ✓ 8자 이상
+                                </p>
+                                <p className={passwordValidation.uppercase ? 'valid' : 'invalid'}>
+                                    ✓ 대문자 포함
+                                </p>
+                                <p className={passwordValidation.lowercase ? 'valid' : 'invalid'}>
+                                    ✓ 소문자 포함
+                                </p>
+                                <p className={passwordValidation.number ? 'valid' : 'invalid'}>
+                                    ✓ 숫자 포함
+                                </p>
+                                <p className={passwordValidation.specialChar ? 'valid' : 'invalid'}>
+                                    ✓ 특수문자 포함
+                                </p>
+                            </div>
                         </div>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="register-submit-button"
                             disabled={loading}
                         >
@@ -200,8 +265,8 @@ function Register() {
                                     </button>
                                 </div>
                             </div>
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="register-submit-button"
                                 disabled={loading}
                             >
