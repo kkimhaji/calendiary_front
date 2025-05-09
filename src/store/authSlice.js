@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { api } from '../api/authService'; // axios 인스턴스 직접 임포트
+import axios from '../api/axios';  // authService 대신 직접 axios 사용
 
 const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 const rememberMe = localStorage.getItem('rememberMe') === 'true';
@@ -19,20 +19,20 @@ export const loginUser = createAsyncThunk(
   'auth/authenticate',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await api.post('/auth/authenticate', {
+      const response = await axios.post('/auth/authenticate', {
         email: loginData.email,
         password: loginData.password,
         rememberMe: loginData.rememberMe
       });
       const { accessToken, refreshToken } = response.data;
       
-      // rememberMe에 따라 저장소 선택
+      // 토큰 저장
       const storage = loginData.rememberMe ? localStorage : sessionStorage;
       storage.setItem('accessToken', accessToken);
       localStorage.setItem('rememberMe', loginData.rememberMe.toString());
       
       // 인증 헤더 설정
-      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       
       return { accessToken, refreshToken, rememberMe: loginData.rememberMe };
     } catch (error) {
@@ -46,7 +46,7 @@ export const fetchUserInfo = createAsyncThunk(
   'auth/fetchUserInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/member/get-info');
+      const response = await axios.get('/member/get-info');
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || '사용자 정보를 가져오는데 실패했습니다.');
@@ -61,8 +61,8 @@ export const logoutUser = createAsyncThunk(
     window.__isLoggingOut = true;
     
     try {
-      await api.post('/auth/logout', {}, {
-        _skipAuthRetry: true // 인증 재시도 방지
+      await axios.post('/auth/logout', {}, {
+        _skipAuthRetry: true
       });
       
       // 스토리지 정리
@@ -71,7 +71,7 @@ export const logoutUser = createAsyncThunk(
       localStorage.removeItem('rememberMe');
       
       // 인증 헤더 제거
-      delete api.defaults.headers.common['Authorization'];
+      delete axios.defaults.headers.common['Authorization'];
       
       window.__isLoggingOut = false;
       return true;
@@ -80,7 +80,7 @@ export const logoutUser = createAsyncThunk(
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
       localStorage.removeItem('rememberMe');
-      delete api.defaults.headers.common['Authorization'];
+      delete axios.defaults.headers.common['Authorization'];
       
       window.__isLoggingOut = false;
       console.error('로그아웃 API 호출 실패:', error);
@@ -100,13 +100,13 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
       state.rememberMe = rememberMe;
       
-      // 스토리지에 저장 (authService에서도 처리됨)
+      // 스토리지에 저장
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('accessToken', access);
       localStorage.setItem('rememberMe', rememberMe.toString());
       
       // 인증 헤더 설정
-      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
     },
     clearCredentials: (state) => {
       state.accessToken = null;
@@ -115,13 +115,13 @@ const authSlice = createSlice({
       state.rememberMe = false;
       state.user = null;
       
-      // localStorage와 sessionStorage에서 토큰 제거
+      // 스토리지 정리
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
       localStorage.removeItem('rememberMe');
       
       // 인증 헤더 제거
-      delete api.defaults.headers.common['Authorization'];
+      delete axios.defaults.headers.common['Authorization'];
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -184,10 +184,8 @@ const authSlice = createSlice({
   }
 });
 
-// 액션 생성자 내보내기
 export const { setCredentials, setLoading, setError, clearCredentials } = authSlice.actions;
 
-// 선택자 함수들
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isLoggedIn;
 export const selectAccessToken = (state) => state.auth.accessToken;

@@ -1,10 +1,4 @@
 import axios from 'axios';
-import { store } from '../store'; // Redux store import
-import { clearCredentials, refreshAccessToken } from '../store/authSlice';
-
-// 토큰 갱신 관련 상태 변수
-let isRefreshing = false;
-let failedQueue = [];
 
 // API 클라이언트 설정
 const instance = axios.create({
@@ -13,7 +7,11 @@ const instance = axios.create({
   timeout: 10000,
 });
 
-// 대기 요청 처리 함수
+// 토큰 관리 변수
+let isRefreshing = false;
+let failedQueue = [];
+
+// 토큰 갱신 시 대기 요청 처리
 const processQueue = (error, token = null) => {
   failedQueue.forEach(prom => {
     if (error) {
@@ -25,7 +23,7 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// 요청 인터셉터 (토큰 추가)
+// 요청 인터셉터
 instance.interceptors.request.use(
   (config) => {
     try {
@@ -33,8 +31,6 @@ instance.interceptors.request.use(
                     sessionStorage.getItem('accessToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-      } else {
-        delete config.headers?.Authorization;
       }
     } catch (e) {
       console.error('토큰 설정 중 오류:', e);
@@ -44,44 +40,28 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 응답 인터셉터 추가
+// 응답 인터셉터
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // 로그아웃 중이거나 특별 플래그가 있는 경우 처리 중단
+    // 로그아웃 중이면 처리 중단
     if (window.__isLoggingOut || error.config?._skipAuthRetry) {
       return Promise.reject(error);
     }
 
     const originalRequest = error.config;
     
-    // 리프레시 토큰 요청 자체가 실패한 경우 로그아웃 처리
+    // 리프레시 토큰 요청이 실패한 경우
     if (originalRequest?.url?.includes('/auth/refresh-token')) {
-      console.log('리프레시 토큰 갱신 실패 - 로그아웃 처리');
-      window.__isLoggingOut = true;
-      
-      // Redux 상태 정리
-      store.dispatch(clearCredentials());
-      
-      // 로컬 정리
-      localStorage.removeItem('accessToken');
-      sessionStorage.removeItem('accessToken');
-      localStorage.removeItem('rememberMe');
-      
-      // 로그인 페이지로 이동
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login?expired=true';
-      }
-      
+      handleLogout();
       return Promise.reject(error);
     }
 
-    // 401 오류 & 토큰 만료 & 재시도 안함
-    if (error.response?.status === 401 && 
-        !originalRequest?._retry &&
-        error.response?.data?.code === 'TOKEN_EXPIRED') {
+    // 401 오류 & 아직 재시도 안한 요청
+    if (error.response?.status === 401 && !originalRequest?._retry) {
+      originalRequest._retry = true;
       
-      // 이미 갱신 중이면 대기열에 추가
+      // 이미 토큰 갱신 중인 경우
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -93,40 +73,34 @@ instance.interceptors.response.use(
           .catch(err => Promise.reject(err));
       }
       
-      // 갱신 시작
       isRefreshing = true;
-      originalRequest._retry = true;
       
       try {
-        // Redux 액션을 통한 토큰 갱신
-        const result = await store.dispatch(refreshAccessToken()).unwrap();
-        const newToken = result.accessToken;
+        // 직접 토큰 갱신 요청
+        const refreshResult = await instance.post('/auth/refresh-token', {}, {
+          withCredentials: true,
+          _skipAuthRetry: true
+        });
         
-        // 대기 중인 요청 처리
+        const newToken = refreshResult.data.accessToken;
+        
+        // 토큰 저장
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('accessToken', newToken);
+        
+        instance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        
         processQueue(null, newToken);
         isRefreshing = false;
         
-        // 원래 요청 재시도
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return instance(originalRequest);
       } catch (refreshError) {
-        // 리프레시 실패 = 완전 만료 = 로그아웃
         processQueue(refreshError, null);
         isRefreshing = false;
-        window.__isLoggingOut = true;
         
-        // Redux 상태 정리
-        store.dispatch(clearCredentials());
-        
-        // 로컬 정리 및 리다이렉트
-        localStorage.removeItem('accessToken');
-        sessionStorage.removeItem('accessToken');
-        localStorage.removeItem('rememberMe');
-        
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login?expired=true';
-        }
-        
+        handleLogout();
         return Promise.reject(refreshError);
       }
     }
@@ -135,8 +109,27 @@ instance.interceptors.response.use(
   }
 );
 
-// 인스턴스 생성 확인 로그
-console.log('axios 인스턴스가 생성되었습니다. 인터셉터 사용 가능:', 
-  !!instance.interceptors);
+// store 직접 참조 대신 별도 함수로 로그아웃 처리
+export const handleLogout = () => {
+  window.__isLoggingOut = true;
+  
+  // 로컬 스토리지 정리
+  localStorage.removeItem('accessToken');
+  sessionStorage.removeItem('accessToken');
+  localStorage.removeItem('rememberMe');
+  
+  // 인증 헤더 제거
+  delete instance.defaults.headers.common['Authorization'];
+  
+  // 로그인 페이지로 리다이렉트
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login?expired=true';
+  }
+  
+  window.__isLoggingOut = false;
+};
+
+// 인스턴스 생성 확인
+console.log('axios 인스턴스가 생성되었습니다.');
 
 export default instance;
