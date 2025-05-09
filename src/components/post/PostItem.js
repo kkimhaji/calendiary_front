@@ -35,7 +35,7 @@ const PostItem = ({ post, teamId, onClick, highlight }) => {
                     {new Date(post.createdDate).toLocaleDateString()}
                 </span>
                 <span className='post-views'>
-                    <i className='fas fa-eye'></i> {post.viewCount}
+                    <i className='fas fa-eye'></i> 조회수 {post.viewCount}
                 </span>
             </div>
         </div>

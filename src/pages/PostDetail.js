@@ -55,9 +55,9 @@ const PostDetail = () => {
             } catch (error) {
                 if (error.response?.status === 403) {
                     alert('게시글 삭제 권한이 없습니다.');
-                }else{
-                console.error('게시글 삭제 실패:', error);
-                alert('게시글 삭제에 실패했습니다.');
+                } else {
+                    console.error('게시글 삭제 실패:', error);
+                    alert('게시글 삭제에 실패했습니다.');
                 }
             }
         }
@@ -68,14 +68,14 @@ const PostDetail = () => {
             const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`);
             setPost(response.data);
             // 현재 로그인한 사용자와 게시글 작성자 비교
-            
+
         } catch (error) {
             setPost(null);
-            if (error.response?.status === 403){
+            if (error.response?.status === 403) {
                 alert('게시글 조회 권한이 없습니다.');
-            } else{
-            console.error('게시글 로딩 실패:', error);
-            alert('게시글을 불러오는데 실패했습니다.');
+            } else {
+                console.error('게시글 로딩 실패:', error);
+                alert('게시글을 불러오는데 실패했습니다.');
             }
             navigate(-1);
         }
@@ -86,65 +86,66 @@ const PostDetail = () => {
         navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`);
     };
 
-    if (!post|| !post.title) return <div>로딩 중...</div>;
+    if (!post || !post.title) return <div>로딩 중...</div>;
 
     return (
         <div className="post-detail-container">
             <div className='post-content'>
-            <div className="post-header">
-            <span className="category-name">{post.categoryName}</span>
-                <h1 className="post-title">{post.title}</h1>
-                {permissions.canEdit && (
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleEdit}
-                    >
-                        수정
-                    </button>
-                )}
+                <div className="post-header">
+                    <span className="category-name">{post.categoryName}</span>
+                    <h1 className="post-title">{post.title}</h1>
+                    {permissions.canEdit && (
+                        <button
+                            className="btn btn-primary"
+                            onClick={handleEdit}
+                        >
+                            수정
+                        </button>
+                    )}
                 </div>
                 <div className="post-info">
-                    
-                작성자: 
-                    <Link 
-                        to={`/teams/${teamId}/members/${post.author.id}`} 
+
+                    작성자:
+                    <Link
+                        to={`/teams/${teamId}/members/${post.author.id}`}
                         className="author-link"
                     >
                         {post.author.username}
-                    </Link> | 작성일: {new Date(post.createdDate).toLocaleDateString()}
+                    </Link> |  작성일: {new Date(post.createdDate).toLocaleDateString()} |
+                    <span className="view-count">조회수: {post.viewCount}</span>
                 </div>
-            
 
-            <div className="post-body" dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(post.content)
-            }}>
-            </div>
-            <hr></hr>
-            <div>
-            <h4> 댓글 ({comments.length})</h4>
-                <CommentForm postId={postId}/>
+
+                <div className="post-body" dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(post.content)
+                }}>
+                </div>
+                <hr></hr>
                 <div>
-                <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} teamId={teamId}/>
-            </div>
-            </div>
-            <div className="button-group">
-                <button
-                    className="btn btn-default"
-                    onClick={() => navigate(-1)}
-                >
-                    목록으로
-                </button>
-                <div className="spacer"></div>
-                {permissions.canDelete && (
+                    <h4> 댓글 ({comments.length})</h4>
+                    <CommentForm postId={postId} />
+                    <div>
+                        <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} teamId={teamId} />
+                    </div>
+                </div>
+                <div className="button-group">
                     <button
-                        className="btn btn-danger"
-                        onClick={handleDelete}
+                        className="btn btn-default"
+                        onClick={() => navigate(-1)}
                     >
-                        삭제
+                        목록으로
                     </button>
-                )}
+                    <div className="spacer"></div>
+                    {permissions.canDelete && (
+                        <button
+                            className="btn btn-danger"
+                            onClick={handleDelete}
+                        >
+                            삭제
+                        </button>
+                    )}
+                </div>
             </div>
-        </div>
         </div>
     );
 };

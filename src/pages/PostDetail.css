@@ -92,3 +92,22 @@
     text-decoration: underline;
   }
   
+  .view-count {
+    color: #666;
+    margin-left: 5px;
+    font-size: 0.95em;
+}
+
+.view-count .fa-eye {
+    margin-right: 3px;
+}
+
+.post-info {
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
