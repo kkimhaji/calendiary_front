@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/authSlice';
@@ -19,11 +19,19 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
     const errorReason = params.get('reason');
     const redirectUrl = params.get('redirectUrl') || '/';
+
+    useEffect(() => {
+        // URL 파라미터에서 expired 확인
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('expired') === 'true') {
+            setError('세션이 만료되었습니다. 다시 로그인해주세요.');
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -54,12 +62,12 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        
+
         try {
             // Redux 액션 디스패치
             const resultAction = await dispatch(loginUser(loginData));
-            
-            if (!resultAction.error){
+
+            if (!resultAction.error) {
                 navigate(redirectUrl);
             }
         } catch (err) {
@@ -73,14 +81,14 @@ function Login() {
             <div className="login-box">
                 <h2>로그인</h2>
                 {(error || authError) && <div className="error-message">{error || authError}</div>}
-                
+
                 {/* 리다이렉트 URL이 있는 경우 안내 메시지 표시 */}
                 {redirectUrl !== '/' && (
                     <div className="alert-message">
                         계속하려면 로그인이 필요합니다.
                     </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>이메일</label>
@@ -119,26 +127,26 @@ function Login() {
                     <Link to="/register" className="register-button">회원가입</Link>
                 </div>
                 <div className="password-reset-link">
-                <button 
-                    className="text-link"
-                    onClick={() => setShowReset(!showReset)}
-                >
-                    비밀번호를 잊으셨나요?
-                </button>
+                    <button
+                        className="text-link"
+                        onClick={() => setShowReset(!showReset)}
+                    >
+                        비밀번호를 잊으셨나요?
+                    </button>
 
-                {showReset && (
-                    <form className="reset-form" onSubmit={handlePasswordReset}>
-                        <input
-                            type="email"
-                            placeholder="등록된 이메일 주소"
-                            value={resetEmail}
-                            onChange={(e) => setResetEmail(e.target.value)}
-                            required
-                        />
-                        <button type="submit">임시 비밀번호 발급</button>
-                    </form>
-                )}
-            </div>
+                    {showReset && (
+                        <form className="reset-form" onSubmit={handlePasswordReset}>
+                            <input
+                                type="email"
+                                placeholder="등록된 이메일 주소"
+                                value={resetEmail}
+                                onChange={(e) => setResetEmail(e.target.value)}
+                                required
+                            />
+                            <button type="submit">임시 비밀번호 발급</button>
+                        </form>
+                    )}
+                </div>
             </div>
             {errorReason === 'session_expired' && (
                 <div className="alert-message">
