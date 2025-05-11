@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '../store/authSlice';
+import { selectIsAuthenticated } from '../../store/authSlice';
 
 function CommentForm({ postId, parentId, depth, onSuccess }) {
     const [content, setContent] = useState('');

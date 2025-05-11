@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import CommentForm from "./CommentForm";
 import './CommentItem.css';
 import CommentList from "./CommentList";

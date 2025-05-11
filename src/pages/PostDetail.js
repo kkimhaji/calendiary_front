@@ -3,8 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
 import './PostDetail.css';
 import DOMPurify from 'dompurify';
-import CommentForm from '../components/CommentForm';
-import CommentList from '../components/CommentList';
+import CommentForm from '../components/comment/CommentForm';
+import CommentList from '../components/comment/CommentList';
 
 const PostDetail = () => {
     const [post, setPost] = useState(null);
