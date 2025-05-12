@@ -22,7 +22,7 @@ const MainPage = () => {
                 setPosts(prev => [...prev, ...newPosts]);
             }
             setHasMore(!response.data.last);
-            
+
         } catch (error) {
             console.error('게시글 불러오기 실패:', error);
         }
@@ -33,8 +33,8 @@ const MainPage = () => {
         if (isLoggedIn) {
             setPage(0);
             loadPosts(0); // 초기 로드
-        } else{
-            window.location.href="/login";
+        } else {
+            window.location.href = "/login";
             console.log("not logged in!");
             dispatch(logoutUser());
         }
@@ -43,12 +43,12 @@ const MainPage = () => {
     return (
         <div className="main-page">
             <h1>내 팀들의 최신 활동</h1>
-            
+
             {isLoggedIn ? (
                 <>
                     <div className="post-list">
                         {posts.map(post => (
-                            <PostItem 
+                            <PostItem
                                 key={post.id}
                                 post={post}
                                 categoryId={post.categoryId}
@@ -56,9 +56,9 @@ const MainPage = () => {
                             />
                         ))}
                     </div>
-                    
+
                     {hasMore && (
-                        <button 
+                        <button
                             className="load-more"
                             onClick={() => {
                                 const nextPage = page + 1;

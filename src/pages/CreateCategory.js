@@ -36,7 +36,7 @@ const CreateCategory = () => {
                         name: categoryData.name,
                         description: categoryData.description || ''
                     });
-                } 
+                }
                 // 2. 생성 모드: 역할 목록만 별도 조회
                 else {
                     const rolesRes = await axios.get(`/teams/${teamId}/roles/get_roles`);
@@ -48,7 +48,7 @@ const CreateCategory = () => {
                 }
 
                 setRolePermissions(rolesData);
-                
+
             } catch (error) {
                 console.error('데이터 불러오기 실패:', error);
                 navigate(-1);
@@ -60,21 +60,21 @@ const CreateCategory = () => {
     }, [teamId, categoryId, isEditMode]);
 
     const handlePermissionChange = (roleId, permissionKey) => {
-        setRolePermissions(prev => 
+        setRolePermissions(prev =>
             prev.map(role => {
                 if (role.roleId === roleId) {
                     //완전히 새로운 Set 생성 (Deep Copy)
                     const updatedPermissions = new Set(role.permissions);
-                    updatedPermissions.has(permissionKey) 
-                    ? updatedPermissions.delete(permissionKey)
-                    : updatedPermissions.add(permissionKey);
-                return { ...role, permissions: updatedPermissions };
+                    updatedPermissions.has(permissionKey)
+                        ? updatedPermissions.delete(permissionKey)
+                        : updatedPermissions.add(permissionKey);
+                    return { ...role, permissions: updatedPermissions };
                 }
                 return role;
             })
         );
     };
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -87,13 +87,13 @@ const CreateCategory = () => {
                 }))
             };
 
-            const endpoint = isEditMode 
+            const endpoint = isEditMode
                 ? `/teams/${teamId}/categories/${categoryId}/update`
                 : `/teams/${teamId}/categories/create`;
 
             const method = isEditMode ? 'put' : 'post';
             const response = await axios[method](endpoint, payload);
-            
+
             refreshCategories();
             navigate(`/teams/${teamId}/categories/${response.data.id}/recent`);
         } catch (error) {

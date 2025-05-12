@@ -26,7 +26,7 @@ const MemberProfilePage = () => {
         console.error('멤버 정보 로드 실패:', error);
       }
     };
-    
+
     fetchMemberInfo();
   }, [teamId, memberId]);
 
@@ -34,7 +34,7 @@ const MemberProfilePage = () => {
   useEffect(() => {
     setPage(0);
     setHasMore(true);
-    
+
     if (activeTab === 'posts') {
       loadPosts(0, true);
     } else {
@@ -47,13 +47,13 @@ const MemberProfilePage = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/member/${memberId}/teams/${teamId}/posts?page=${pageNum}&size=10`);
-      
+
       if (reset) {
         setPosts(response.data.content);
       } else {
         setPosts(prev => [...prev, ...response.data.content]);
       }
-      
+
       setHasMore(!response.data.last);
       setLoading(false);
     } catch (error) {
@@ -67,13 +67,13 @@ const MemberProfilePage = () => {
     try {
       setLoading(true);
       const response = await axios.get(`/member/${memberId}/teams/${teamId}/comments?page=${pageNum}&size=10`);
-      
+
       if (reset) {
         setComments(response.data.content);
       } else {
         setComments(prev => [...prev, ...response.data.content]);
       }
-      
+
       setHasMore(!response.data.last);
       setLoading(false);
     } catch (error) {
@@ -86,7 +86,7 @@ const MemberProfilePage = () => {
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    
+
     if (activeTab === 'posts') {
       loadPosts(nextPage);
     } else {
@@ -106,15 +106,15 @@ const MemberProfilePage = () => {
           </div>
         </div>
       )}
-      
+
       <Tabs activeTab={activeTab} onChange={setActiveTab}>
         <Tab id="posts" label="작성한 게시글">
           <div className="posts-list">
             {posts.length > 0 ? (
               posts.map(post => (
-                <PostItem 
-                  key={post.id} 
-                  post={post} 
+                <PostItem
+                  key={post.id}
+                  post={post}
                   categoryId={post.categoryId}
                   teamId={teamId}
                   showCategory={true}
@@ -125,7 +125,7 @@ const MemberProfilePage = () => {
             )}
           </div>
         </Tab>
-        
+
         <Tab id="comments" label="작성한 댓글">
           <div className="comments-list">
             {comments.length > 0 ? (
@@ -145,10 +145,10 @@ const MemberProfilePage = () => {
           </div>
         </Tab>
       </Tabs>
-      
+
       {hasMore && (
-        <button 
-          className="load-more-button" 
+        <button
+          className="load-more-button"
           onClick={handleLoadMore}
           disabled={loading}
         >

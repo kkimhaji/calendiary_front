@@ -84,7 +84,7 @@ const CreatePost = () => {
 
     const handleImageUpload = async (file) => {
         const formData = new FormData();
-        formData.append('file', file);    
+        formData.append('file', file);
 
         try {
             const response = await axios.post(`/teams/${teamId}/images/temp-upload`, formData, {
@@ -101,36 +101,36 @@ const CreatePost = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!selectedCategoryId && !isEdit) {
             setError('카테고리를 선택해주세요.');
             return;
         }
-    
+
         try {
             if (isEdit) {
                 // 수정 시에는 FormData 사용
                 const formData = new FormData();
                 formData.append('title', title);
                 formData.append('content', content);
-                
+
                 // 이미지 파일 추가
                 if (images.length > 0) {
                     images.forEach(image => {
                         formData.append('images', image);
                     });
                 }
-    
+
                 await axios.put(
-                    `/teams/${teamId}/category/${categoryId}/posts/${postId}`, 
-                    formData, 
+                    `/teams/${teamId}/category/${categoryId}/posts/${postId}`,
+                    formData,
                     {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
                     }
                 );
-                
+
                 alert('게시글이 수정되었습니다.');
                 navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}`);
             } else {
@@ -140,24 +140,24 @@ const CreatePost = () => {
                 formData.append('content', content);
                 formData.append('teamId', teamId);
                 formData.append('categoryId', selectedCategoryId);
-                
+
                 // 이미지 파일 추가
                 if (images.length > 0) {
                     images.forEach(image => {
                         formData.append('images', image);
                     });
                 }
-    
+
                 await axios.post(
-                    `/teams/${teamId}/category/${selectedCategoryId}/posts`, 
-                    formData, 
+                    `/teams/${teamId}/category/${selectedCategoryId}/posts`,
+                    formData,
                     {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
                     }
                 );
-                
+
                 alert('게시글이 작성되었습니다.');
                 navigate(`/teams/${teamId}/category/${selectedCategoryId}/recent`);
             }
@@ -166,7 +166,7 @@ const CreatePost = () => {
             alert(isEdit ? '게시글 수정에 실패했습니다.' : '게시글 작성에 실패했습니다.');
         }
     };
-    
+
 
     return (
         <div className="create-post-container">
@@ -214,7 +214,7 @@ const CreatePost = () => {
                         {error && <p className="error-message">{error}</p>}
                     </div>
                 )}
-                
+
                 <div className="form-group">
                     <RichTextEditor
                         initialValue={content}
@@ -228,11 +228,11 @@ const CreatePost = () => {
                         }}
                     />
                 </div>
-                
+
                 <div className="button-group">
-                    <button 
-                        type="submit" 
-                        className="submit-button" 
+                    <button
+                        type="submit"
+                        className="submit-button"
                         disabled={!isEdit && !selectedCategoryId}
                     >
                         {isEdit ? '수정하기' : '작성하기'}

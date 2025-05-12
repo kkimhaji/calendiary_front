@@ -49,7 +49,7 @@ const TeamInfo = ({ readOnly = false }) => {
         if (inviteCode) {
           url += `?code=${inviteCode}`;
         }
-        
+
         const response = await axios.get(url);
         setTeamData(response.data);
 
@@ -57,12 +57,12 @@ const TeamInfo = ({ readOnly = false }) => {
           case 'TEAM_MEMBER':
             // 팀 멤버 UI 표시
             break;
-          
+
           case 'VALID_INVITE':
             // 팀 가입 배너 표시
             setShowJoinBanner(true);
             break;
-            
+
           case 'NO_ACCESS':
             // 접근 거부 UI 표시
             break;

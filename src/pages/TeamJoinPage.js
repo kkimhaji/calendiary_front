@@ -9,7 +9,7 @@ const TeamJoinPage = () => {
   const [searchParams] = useSearchParams();
   const inviteCode = searchParams.get('code');
   const navigate = useNavigate();
-  
+
   const [isValid, setIsValid] = useState(false);
   const [validationLoading, setValidationLoading] = useState(true);
   const [validationError, setValidationError] = useState(null);
@@ -22,15 +22,15 @@ const TeamJoinPage = () => {
       try {
         setValidationLoading(true);
         const response = await axios.get('/team/invite/validate', {
-            params: { code: inviteCode },
+          params: { code: inviteCode },
         });
-        
+
         // 다른 팀의 초대 코드인 경우 리다이렉트
         if (response.data.isValid && response.data.teamId !== parseInt(teamId)) {
           navigate(`/teams/${response.data.teamId}/join?code=${inviteCode}`);
           return;
         }
-        
+
         setIsValid(response.data.isValid);
         if (!response.data.isValid) {
           setValidationError(response.data.message);
@@ -56,10 +56,10 @@ const TeamJoinPage = () => {
   const handleJoinTeam = async () => {
     try {
       setJoining(true);
-      await axios.post(`/team/${teamId}/join`, 
+      await axios.post(`/team/${teamId}/join`,
         { code: inviteCode },
       );
-      
+
       // 가입 성공 시 일반 팀 페이지로 리다이렉트
       navigate(`/teams/${teamId}`);
     } catch (error) {
@@ -74,7 +74,7 @@ const TeamJoinPage = () => {
   if (validationLoading) {
     return <div className="loading">초대 코드 검증 중...</div>;
   }
-  
+
   if (!isValid) {
     return (
       <div className="invite-error">
@@ -94,7 +94,7 @@ const TeamJoinPage = () => {
           <h2>팀 초대</h2>
           <p>이 팀에 가입하시겠습니까?</p>
         </div>
-        <button 
+        <button
           className="join-button"
           onClick={handleJoinTeam}
           disabled={joining}
