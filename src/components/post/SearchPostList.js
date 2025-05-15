@@ -3,14 +3,14 @@ import { useParams, useLocation } from 'react-router-dom';
 import axios from '../../api/axios';
 import PostItem from './PostItem';
 
-const SearchPostList = ({ keyword }) => {
+const SearchPostList = ({ searchKeyword }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const { teamId, categoryId } = useParams();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-
-  const keyword = queryParams.get('q') || '';
+  const keyword = searchKeyword;
+  // const keyword = queryParams.get('q') || '';
   const searchType = queryParams.get('type') || 'BOTH';
 
   useEffect(() => {
