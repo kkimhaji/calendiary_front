@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Tabs, Tab } from '../components/Tabs';
 import PostItem from '../components/post/PostItem';
-import CommentItem from '../components/CommentItem';
+import CommentItem from '../components/comment/CommentItem';
 import axios from '../api/axios';
 import './MemberProfilePage.css';
 
