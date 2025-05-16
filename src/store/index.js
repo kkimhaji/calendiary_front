@@ -47,7 +47,7 @@ export const forceLogout = async () => {
 // Axios 토큰 갱신 인터셉터 설정 함수
 export const setupAxiosInterceptors = (axiosInstance = instance) => {
 
-  if (!axiosInstance || !axiosInstance.intercpetors){
+  if (!axiosInstance || !axiosInstance.interceptors){
     console.error('유효한 axios 인스턴스가 전달되지 않았습니다');
     return;
   }

@@ -19,7 +19,7 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
-
+    const [expired, setExpired] = useState(false);
     // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
     const errorReason = params.get('reason');
@@ -27,11 +27,12 @@ function Login() {
 
     useEffect(() => {
         // URL 파라미터에서 expired 확인
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(location.search);
         if (params.get('expired') === 'true') {
             setError('세션이 만료되었습니다. 다시 로그인해주세요.');
+            setExpired(true);
         }
-    }, []);
+    }, [location]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
