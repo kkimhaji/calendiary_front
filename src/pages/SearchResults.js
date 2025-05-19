@@ -14,7 +14,7 @@ const SearchResults = () => {
       <SearchPostList
         teamId={teamId}
         categoryId={categoryId}
-        keyword={keyword} />
+        searchKeyword={keyword} />
     </div>
   );
 };
