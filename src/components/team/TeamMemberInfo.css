@@ -23,12 +23,14 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .info-label {
   font-weight: 500;
   min-width: 100px;
   color: #555;
+  font-weight: bold;
 }
 
 .role-badge {
@@ -50,18 +52,6 @@
   font-size: 1.2rem;
   margin-bottom: 1rem;
   color: #333;
-}
-
-.info-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  gap: 10px;
-}
-
-.info-label {
-  font-weight: bold;
-  color: #555;
 }
 
 .role-badge {
@@ -96,19 +86,74 @@
 .nickname-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  flex: 1;
+}
+
+.nickname-input-container {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .nickname-input {
-  padding: 8px;
+  flex: 1;
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.nickname-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.nickname-input.error {
+  border-color: #dc3545;
+}
+
+.nickname-input.success {
+  border-color: #28a745;
+}
+
+.nickname-input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.check-duplicate-btn {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+.check-duplicate-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.check-duplicate-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
 .nickname-btn-group {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.nickname-hint {
+  color: #6c757d;
+  font-size: 11px;
+  margin-top: 4px;
 }
 
 .save-btn,
