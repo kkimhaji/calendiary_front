@@ -7,7 +7,7 @@ import axios from '../api/axios';
 import './MemberProfilePage.css';
 
 const MemberProfilePage = () => {
-  const { teamId, memberId } = useParams();
+  const { teamId, teamMemberId } = useParams();
   const [activeTab, setActiveTab] = useState('posts');
   const [memberInfo, setMemberInfo] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -20,7 +20,7 @@ const MemberProfilePage = () => {
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
-        const memberInfo = await axios.get(`/member/${memberId}/teams/${teamId}`);
+        const memberInfo = await axios.get(`/teams/${teamId}/member/${teamMemberId}`);
         setMemberInfo(memberInfo.data);
       } catch (error) {
         console.error('멤버 정보 로드 실패:', error);
@@ -28,7 +28,7 @@ const MemberProfilePage = () => {
     };
 
     fetchMemberInfo();
-  }, [teamId, memberId]);
+  }, [teamId, teamMemberId]);
 
   // 탭에 따라 게시글 또는 댓글 로드
   useEffect(() => {
@@ -40,13 +40,13 @@ const MemberProfilePage = () => {
     } else {
       loadComments(0, true);
     }
-  }, [activeTab, teamId, memberId]);
+  }, [activeTab, teamId, teamMemberId]);
 
   // 게시글 로드
   const loadPosts = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/member/${memberId}/teams/${teamId}/posts?page=${pageNum}&size=10`);
+      const response = await axios.get(`/teams/${teamId}/${teamMemberId}/posts?page=${pageNum}&size=10`);
 
       if (reset) {
         setPosts(response.data.content);
@@ -66,7 +66,7 @@ const MemberProfilePage = () => {
   const loadComments = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/member/${memberId}/teams/${teamId}/comments?page=${pageNum}&size=10`);
+      const response = await axios.get(`/teams/${teamId}/${teamMemberId}/comments?page=${pageNum}&size=10`);
 
       if (reset) {
         setComments(response.data.content);

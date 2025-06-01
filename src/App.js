@@ -84,7 +84,7 @@ function App() {
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
               <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />
-              <Route path="/teams/:teamId/members/:memberId" element={<MemberProfilePage />} />
+              <Route path="/teams/:teamId/members/:teamMemberId" element={<MemberProfilePage />} />
               <Route path="/account-info" element={isLoggedIn ? <AccountInfoPage /> : <Navigate to="/login" />} />
               <Route path="/change-password" element={isLoggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
             </Routes>
