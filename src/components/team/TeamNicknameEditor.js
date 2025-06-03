@@ -74,13 +74,17 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
 
 
     try {
-      await axios.put(`/team/${teamId}/nickname`, {
+      const response = await axios.put(`/team/${teamId}/nickname`, {
         newNickname: newNickname
       });
 
-      onNicknameUpdate(newNickname);
+      const updatedNickname = response.data;
+      
+      onNicknameUpdate(updatedNickname);
       setIsEditing(false);
+      setNewNickname(updatedNickname);
       resetValidationState();
+
     } catch (error) {
       console.error('닉네임 변경 실패:', error);
       if (error.response?.status === 409) {

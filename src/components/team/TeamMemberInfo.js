@@ -1,13 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import TeamNicknameEditor from './TeamNicknameEditor';
 import './TeamMemberInfo.css';
 
 const TeamMemberInfo = ({ teamId, memberData, onNicknameUpdate }) => {
+  const [currentTeamNickname, setCurrentTeamNickname] = useState(memberData.teamNickname);
+
   if (!memberData.teamNickname || !memberData.roleName) return null;
 
   const formattedJoinDate = memberData.joinedAt 
   ? new Date(memberData.joinedAt).toLocaleDateString() 
   : '정보 없음';
+// 닉네임 업데이트 핸들러
+  const handleNicknameUpdate = (newNickname) => {
+    setCurrentTeamNickname(newNickname); // 로컬 상태 업데이트
+    if (onNicknameUpdate) {
+      onNicknameUpdate(newNickname); // 상위 컴포넌트에도 전달
+    }
+  };
 
   return (
     <div className="my-team-info-section">
@@ -25,8 +34,8 @@ const TeamMemberInfo = ({ teamId, memberData, onNicknameUpdate }) => {
 
         <TeamNicknameEditor 
           teamId={teamId} 
-          currentNickname={memberData.teamNickname} 
-          onNicknameUpdate={onNicknameUpdate} 
+          currentNickname={currentTeamNickname} 
+          onNicknameUpdate={handleNicknameUpdate} 
         />
       </div>
     </div>
