@@ -56,7 +56,7 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
       return;
     }
 
-// 현재 닉네임과 동일한 경우 중복 확인 생략
+    // 현재 닉네임과 동일한 경우 중복 확인 생략
     if (newNickname.trim() !== currentNickname) {
       if (!duplicateChecked) {
         setError('중복 확인을 먼저 해주세요');
@@ -79,7 +79,7 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
       });
 
       const updatedNickname = response.data;
-      
+
       onNicknameUpdate(updatedNickname);
       setIsEditing(false);
       setNewNickname(updatedNickname);
@@ -96,14 +96,14 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
       setLoading(false);
     }
   };
-    // 검증 상태 초기화 함수
-    const resetValidationState = () => {
-      setDuplicateChecked(false);
-      setIsDuplicate(false);
-      setError('');
-    };
+  // 검증 상태 초기화 함수
+  const resetValidationState = () => {
+    setDuplicateChecked(false);
+    setIsDuplicate(false);
+    setError('');
+  };
 
- // 닉네임 입력 변경 핸들러
+  // 닉네임 입력 변경 핸들러
   const handleNicknameChange = (e) => {
     setNewNickname(e.target.value);
     resetValidationState(); // 닉네임 변경 시 검증 상태 초기화
@@ -129,7 +129,7 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
 
       {isEditing ? (
         <form onSubmit={handleUpdateNickname} className="nickname-form">
-           <div className="nickname-input-container">
+          <div className="nickname-input-container">
             <input
               type="text"
               value={newNickname}
@@ -144,8 +144,8 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
               className="check-duplicate-btn"
               onClick={handleCheckDuplicate}
               disabled={
-                !newNickname.trim() || 
-                isCheckingDuplicate || 
+                !newNickname.trim() ||
+                isCheckingDuplicate ||
                 loading ||
                 newNickname.trim() === currentNickname
               }
@@ -153,12 +153,12 @@ const TeamNicknameEditor = ({ teamId, currentNickname, onNicknameUpdate }) => {
               {isCheckingDuplicate ? '확인 중...' : '중복 확인'}
             </button>
           </div>
-          
+
           {/* 상태별 메시지 표시 */}
           {duplicateChecked && !isDuplicate && !error && newNickname.trim() !== currentNickname && (
             <div className="success-message">사용 가능한 닉네임입니다</div>
           )}
-          
+
           <div className="nickname-btn-group">
             <button
               type="submit"

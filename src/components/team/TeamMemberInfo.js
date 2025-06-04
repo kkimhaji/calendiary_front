@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TeamNicknameEditor from './TeamNicknameEditor';
 import './TeamMemberInfo.css';
 
@@ -7,10 +7,10 @@ const TeamMemberInfo = ({ teamId, memberData, onNicknameUpdate }) => {
 
   if (!memberData.teamNickname || !memberData.roleName) return null;
 
-  const formattedJoinDate = memberData.joinedAt 
-  ? new Date(memberData.joinedAt).toLocaleDateString() 
-  : '정보 없음';
-// 닉네임 업데이트 핸들러
+  const formattedJoinDate = memberData.joinedAt
+    ? new Date(memberData.joinedAt).toLocaleDateString()
+    : '정보 없음';
+  // 닉네임 업데이트 핸들러
   const handleNicknameUpdate = (newNickname) => {
     setCurrentTeamNickname(newNickname); // 로컬 상태 업데이트
     if (onNicknameUpdate) {
@@ -32,10 +32,10 @@ const TeamMemberInfo = ({ teamId, memberData, onNicknameUpdate }) => {
           <span className="info-value">{formattedJoinDate}</span>
         </div>
 
-        <TeamNicknameEditor 
-          teamId={teamId} 
-          currentNickname={currentTeamNickname} 
-          onNicknameUpdate={handleNicknameUpdate} 
+        <TeamNicknameEditor
+          teamId={teamId}
+          currentNickname={currentTeamNickname}
+          onNicknameUpdate={handleNicknameUpdate}
         />
       </div>
     </div>
