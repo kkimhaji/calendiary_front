@@ -22,9 +22,8 @@ const TeamInviteSection = ({ teamId }) => {
         : null;
 
       const response = await axios.post(
-        `/team/invite`,
+        `/teams/${teamId}/invite`,
         {
-          teamId: parseInt(teamId),
           expiresAt: expiresAt,
           maxUses: inviteSettings.maxUses
         }
