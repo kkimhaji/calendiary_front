@@ -3,14 +3,14 @@ import axios from '../../api/axios';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../../store/authSlice';
 
-function CommentForm({ postId, parentId, depth, onSuccess }) {
+function CommentForm({ categoryId, postId, parentId, depth, onSuccess }) {
     const [content, setContent] = useState('');
     const isLoggedIn = useSelector(selectIsAuthenticated);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`/posts/${postId}/comments`, {
+            await axios.post(`/category/${categoryId}/posts/${postId}/comments`, {
                 content,
                 parentCommentId: parentId || null,
                 depth: depth + 1, // 현재 댓글 깊이 + 1

@@ -6,7 +6,7 @@ import './CommentItem.css';
 import CommentList from "./CommentList";
 
 // CommentItem.js
-const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => {
+const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, teamId }) => {
     const [permissions, setPermissions] = useState({
         canEdit: false,
         canDelete: false
@@ -44,7 +44,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => 
 
             //api 호출 전 ui에 즉시 반영
             setIsDeleted(true);
-            await axios.delete(`/posts/${postId}/comments/${commentId}`);
+            await axios.delete(`/category/${categoryId}/posts/${postId}/comments/${commentId}`);
         } catch (error) {
             // 실패 시 UI 롤백
             setIsDeleted(false);
@@ -84,6 +84,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => 
                     <p>{comment.content}</p>
                     {comment.depth < 2 && (
                         <CommentForm
+                            categoryId={categoryId}
                             postId={postId}
                             parentId={comment.id}
                             depth={depth + 1}
@@ -103,6 +104,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => 
             {/* 답글 작성 폼 */}
             {showReplyForm && (
                 <CommentForm
+                    categoryId={categoryId}
                     postId={postId}
                     parentId={comment.id}
                     depth={depth}
@@ -116,6 +118,7 @@ const CommentItem = ({ comment, depth, postId, onCommentSubmitted, teamId }) => 
             {/* 대댓글 목록 */}
             {(comment.replies || []).length > 0 && (
                 <CommentList
+                    categoryId={categoryId}
                     postId={postId}
                     comments={comment.replies}
                     depth={depth + 1}

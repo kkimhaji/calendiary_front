@@ -12,6 +12,7 @@ function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, tea
                     style={{ marginLeft: depth * 30 }}
                 >
                     <CommentItem 
+                        categoryId={comment.categoryId}
                         comment={comment}
                         teamId={teamId}
                         depth={depth}
