@@ -49,7 +49,7 @@ const RichTextEditor = ({
     initialValue = '', 
     onChange, 
     teamId, 
-    onReady 
+    onImageUpload
 }) => {
     const editorConfiguration = {
         licenseKey: 'GPL',
@@ -160,15 +160,15 @@ const RichTextEditor = ({
             upload: {
                 types: ['jpeg', 'png', 'gif', 'webp']
             }
-        },
-        simpleUpload: {
-            withCredentials: true,
-            uploadUrl: `/teams/${teamId}/images/temp-upload`,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'multipart/form-data'
-            }
         }
+        // simpleUpload: {
+        //     withCredentials: true,
+        //     uploadUrl: `/teams/${teamId}/images/temp-upload`,
+        //     headers: {
+        //         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // }
     };
 
     return (
@@ -181,8 +181,12 @@ const RichTextEditor = ({
                 if (onChange) onChange(data);
             }}
             onReady={(editor) => {
-                // 에디터가 준비되면 콜백 함수 호출
-                if (onReady) onReady(editor);
+                 // ✅ 커스텀 이미지 업로드 어댑터 설정
+                 if (onImageUpload) {
+                    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => ({
+                        upload: () => loader.file.then(onImageUpload)
+                    });
+                }
             }}
         />
     );

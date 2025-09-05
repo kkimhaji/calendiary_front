@@ -1,4 +1,3 @@
-// useContentEditor.js
 import { useState } from 'react';
 import axios from '../api/axios';
 
@@ -71,3 +70,5 @@ export const useContentEditor = ({
         error
     };
 };
+
+export default useContentEditor;

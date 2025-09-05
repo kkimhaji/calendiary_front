@@ -1,9 +1,9 @@
-// ContentEditor.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import RichTextEditor from '../components/RichTextEditor';
-import CategorySelector from '../components/CategorySelector';
-import VisibilitySelector from '../components/VisibilitySelector';
+import RichTextEditor from './post/RichTextEditor';
+import CategorySelector from './CategorySelector';
+import VisibilitySelector from './diary/VisibilitySelector';
+import { useContentEditor } from '../hooks/useContentEditor';
 
 const ContentEditor = ({ 
     contentType, // 'post' | 'diary'
