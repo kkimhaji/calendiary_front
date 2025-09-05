@@ -1,0 +1,236 @@
+.diary-item {
+    cursor: pointer;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.diary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.diary-thumbnail-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.diary-list-thumbnail {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.diary-list-placeholder {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    font-size: 3rem;
+    color: #6c757d;
+}
+
+.image-count-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.diary-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.diary-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.diary-date {
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.diary-time {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.diary-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.visibility {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.visibility.public {
+    background-color: #e8f5e8;
+    color: #28a745;
+}
+
+.visibility.private {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+.diary-preview {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
+/* 검색 하이라이트 */
+.diary-item mark {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+/* 리스트 뷰와 그리드 뷰 구분 */
+.diary-grid.list-view .diary-item {
+    display: flex;
+    padding: 15px;
+}
+
+.diary-grid.list-view .diary-thumbnail-container {
+    flex-shrink: 0;
+    margin-right: 20px;
+    margin-bottom: 0;
+}
+
+.diary-grid.list-view .diary-list-thumbnail,
+.diary-grid.list-view .diary-list-placeholder {
+    width: 120px;
+    height: 120px;
+}
+
+.diary-grid.list-view .diary-content {
+    flex: 1;
+    justify-content: space-between;
+}
+
+.diary-grid.list-view .diary-preview {
+    -webkit-line-clamp: 3;
+}
+
+/* 선택된 날짜의 일기 목록 (달력에서 사용) */
+.selected-date-diaries {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.selected-date-diaries h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .diary-item {
+        padding: 15px;
+    }
+    
+    .diary-list-thumbnail,
+    .diary-list-placeholder {
+        height: 150px;
+    }
+    
+    .diary-grid.list-view .diary-item {
+        flex-direction: column;
+    }
+    
+    .diary-grid.list-view .diary-thumbnail-container {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .diary-grid.list-view .diary-list-thumbnail,
+    .diary-grid.list-view .diary-list-placeholder {
+        width: 100%;
+        height: 150px;
+    }
+    
+    .image-count-badge {
+        bottom: 5px;
+        right: 5px;
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .diary-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .diary-info {
+        flex-wrap: wrap;
+    }
+    
+    .visibility {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+}

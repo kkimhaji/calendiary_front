@@ -1,0 +1,72 @@
+.visibility-selector {
+    margin-bottom: 1rem;
+}
+
+.visibility-title {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.visibility-options {
+    display: flex;
+    gap: 12px;
+}
+
+.visibility-option {
+    flex: 1;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.visibility-option:hover {
+    border-color: #007bff;
+    background-color: #f8f9ff;
+}
+
+.visibility-option.selected {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.visibility-radio {
+    display: none;
+}
+
+.option-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.option-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-icon {
+    font-size: 1.2rem;
+}
+
+.option-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.option-description {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+    .visibility-options {
+        flex-direction: column;
+    }
+}
