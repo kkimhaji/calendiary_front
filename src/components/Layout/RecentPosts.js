@@ -30,6 +30,7 @@ const RecentPosts = () => {
                         ? `${categoryName} 카테고리의 글 목록`
                         : `${teamName} 팀의 글 목록`}
                 </h2>
+                <div className='header-buttons'>                
                 {!categoryId ? (
                     <button
                         className='team-info-button'
@@ -49,6 +50,7 @@ const RecentPosts = () => {
                     onClick={handleCreatePost} >
                     글 작성하기
                 </button>
+                </div>
             </div>
             <PostList
                 teamId={teamId}

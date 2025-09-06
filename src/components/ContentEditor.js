@@ -4,6 +4,7 @@ import RichTextEditor from './post/RichTextEditor';
 import CategorySelector from './CategorySelector';
 import VisibilitySelector from './diary/VisibilitySelector';
 import { useContentEditor } from '../hooks/useContentEditor';
+import './ContentEditor.css';
 
 const ContentEditor = ({ 
     contentType, // 'post' | 'diary'
@@ -50,12 +51,13 @@ const ContentEditor = ({
                 title, content, selectedCategory, visibility 
             })}>
                 {/* 제목 입력 */}
-                <div className="form-group">
+                <div className="content-form-group">
                     <input
                         type="text"
                         placeholder="제목을 입력하세요"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        className="title-input"
                         required
                     />
                 </div>
@@ -78,7 +80,7 @@ const ContentEditor = ({
                 )}
 
                 {/* 본문 에디터 */}
-                <div className="form-group">
+                <div className="content-form-group">
                     <RichTextEditor
                         initialValue={content}
                         onChange={setContent}
@@ -95,10 +97,14 @@ const ContentEditor = ({
                 ))}
 
                 <div className="button-group">
-                    <button type="submit" disabled={isLoading}>
+                    <button type="submit" disabled={isLoading}
+                                            className="submit-button"
+>
                         {isEdit ? '수정하기' : '작성하기'}
                     </button>
-                    <button type="button" onClick={() => navigate(-1)}>
+                    <button type="button" 
+                        className="cancel-button"
+                        onClick={() => navigate(-1)}>
                         취소
                     </button>
                 </div>

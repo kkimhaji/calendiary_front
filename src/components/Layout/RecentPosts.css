@@ -6,21 +6,24 @@
 
 .header-buttons {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
 }
 
 .posts-header {
-  margin: 1rem;
-  padding: 0.5rem;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .team-info-button,
 .category-info-button {
   background: #27ae60;
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 1.2rem;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -39,6 +42,17 @@
 .category-info-button:hover {
   background: #d35400;
 }
-.create-post-button{
-  margin: 0.5rem;
+
+.create-post-button {
+  padding: 1.2rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-post-button:hover {
+    background-color: #357abd;
 }
