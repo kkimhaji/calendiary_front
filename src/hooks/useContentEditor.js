@@ -70,5 +70,3 @@ export const useContentEditor = ({
         error
     };
 };
-
-export default useContentEditor;
