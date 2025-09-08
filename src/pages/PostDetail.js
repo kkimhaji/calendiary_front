@@ -18,7 +18,7 @@ const PostDetail = () => {
 
     const refreshComments = async () => {
         try {
-            const response = await axios.get(`/posts/${postId}/comments`);
+            const response = await axios.get(`/category/${categoryId}/posts/${postId}/comments`);
             console.log("comment", response.data);
             setComments(response.data || []);
         } catch (error) {
