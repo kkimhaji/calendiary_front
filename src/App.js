@@ -26,6 +26,7 @@ import AccountInfoPage from './pages/AccountInfoPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import MemberProfilePage from './pages/MemberProfilePage';
 import DiaryPage from './pages/DiaryPage';
+import CreateDiary from './components/diary/CreateDiary';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -89,6 +90,7 @@ function App() {
               <Route path="/account-info" element={isLoggedIn ? <AccountInfoPage /> : <Navigate to="/login" />} />
               <Route path="/change-password" element={isLoggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
               <Route path="/diary" element={<DiaryPage />} />
+              <Route path='/diary/create' element={<CreateDiary />} />
             </Routes>
           </Layout>
         ) : (
