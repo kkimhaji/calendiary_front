@@ -1,5 +1,5 @@
 import React from 'react';
-import ContentEditor from '../components/ContentEditor';
+import ContentEditor from '../ContentEditor';
 
 const CreateDiary = () => {
     return (
