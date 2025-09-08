@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Menubar from './Menubar';
 import './Layout.css';
 import Header from './Header';
 
 function Layout({ children }) {
-    const [isMenuOpen, setIsMenuOpen] = useState(true);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation(); 
+    
+    const isDiaryPage = () => {
+        return location.pathname.startsWith('/diary');
+    };
 
     return (
         <div className="layout">
-            <Header />
+            <Header 
+                isMenuOpen={isMenuOpen} 
+                setIsMenuOpen={setIsMenuOpen}
+            />
+            <Menubar 
+                isOpen={isMenuOpen} 
+                setIsOpen={setIsMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+            />
             <div className="main-content">
-                <Sidebar />
-                <div className="content">
+                {!isDiaryPage() && <Sidebar />}
+                <div className={`content ${isDiaryPage() ? 'full-width' : ''}`}>
                     {children}
                 </div>
             </div>
