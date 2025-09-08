@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from '../api/axios';  // authService 대신 직접 axios 사용
+import axios, { resetAuthState } from '../api/axios';
 
 const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
 const rememberMe = localStorage.getItem('rememberMe') === 'true';
 
 const initialState = {
   accessToken: accessToken,
-  refreshToken: null,
+  refreshToken: localStorage.getItem('refreshToken'),
   isLoggedIn: !!accessToken,
   rememberMe: rememberMe,
   loading: false,
@@ -24,15 +24,22 @@ export const loginUser = createAsyncThunk(
         password: loginData.password,
         rememberMe: loginData.rememberMe
       });
+      
       const { accessToken, refreshToken } = response.data;
       
       // 토큰 저장
       const storage = loginData.rememberMe ? localStorage : sessionStorage;
       storage.setItem('accessToken', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
       localStorage.setItem('rememberMe', loginData.rememberMe.toString());
       
       // 인증 헤더 설정
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      
+      // 인증 상태 초기화
+      resetAuthState();
       
       return { accessToken, refreshToken, rememberMe: loginData.rememberMe };
     } catch (error) {
@@ -58,31 +65,33 @@ export const fetchUserInfo = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
-    window.__isLoggingOut = true;
-    
     try {
       await axios.post('/auth/logout', {}, {
-        _skipAuthRetry: true
+        _skipAuth: true
       });
       
       // 스토리지 정리
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('rememberMe');
       
       // 인증 헤더 제거
       delete axios.defaults.headers.common['Authorization'];
       
-      window.__isLoggingOut = false;
+      // 인증 상태 초기화
+      resetAuthState();
+      
       return true;
     } catch (error) {
       // 서버 오류가 있어도 로컬 상태는 정리
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('rememberMe');
       delete axios.defaults.headers.common['Authorization'];
+      resetAuthState();
       
-      window.__isLoggingOut = false;
       console.error('로그아웃 API 호출 실패:', error);
       return true;
     }
@@ -94,19 +103,22 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { access, refresh, rememberMe } = action.payload;
-      state.accessToken = access;
-      state.refreshToken = refresh;
+      const { accessToken, refreshToken, rememberMe } = action.payload;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
       state.isLoggedIn = true;
       state.rememberMe = rememberMe;
       
       // 스토리지에 저장
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem('accessToken', access);
+      storage.setItem('accessToken', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
       localStorage.setItem('rememberMe', rememberMe.toString());
       
       // 인증 헤더 설정
-      axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
     },
     clearCredentials: (state) => {
       state.accessToken = null;
@@ -118,10 +130,14 @@ const authSlice = createSlice({
       // 스토리지 정리
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('rememberMe');
       
       // 인증 헤더 제거
       delete axios.defaults.headers.common['Authorization'];
+      
+      // 인증 상태 초기화
+      resetAuthState();
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
