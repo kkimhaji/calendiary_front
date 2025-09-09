@@ -160,15 +160,7 @@ const RichTextEditor = ({
             upload: {
                 types: ['jpeg', 'png', 'gif', 'webp']
             }
-        }
-        // simpleUpload: {
-        //     withCredentials: true,
-        //     uploadUrl: `/teams/${teamId}/images/temp-upload`,
-        //     headers: {
-        //         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // }
+        },
     };
 
     return (
