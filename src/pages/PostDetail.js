@@ -136,7 +136,7 @@ const PostDetail = () => {
                     <h4> 댓글 ({comments.length})</h4>
                     <CommentForm categoryId={categoryId} postId={postId} />
                     <div>
-                        <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} teamId={teamId} />
+                        <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} teamId={teamId} categoryId={categoryId} />
                     </div>
                 </div>
                 <div className="button-group">

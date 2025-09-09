@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentItem from './CommentItem';
 import './CommentList.css';
 
-function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, teamId }) {
+function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, teamId, categoryId }) {
     return (
         <div className="comment-list">
             {comments.map((comment) => (
@@ -12,7 +12,7 @@ function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, tea
                     style={{ marginLeft: depth * 30 }}
                 >
                     <CommentItem 
-                        categoryId={comment.categoryId}
+                        categoryId={categoryId}
                         comment={comment}
                         teamId={teamId}
                         depth={depth}
