@@ -173,7 +173,7 @@ const RichTextEditor = ({
                 if (onChange) onChange(data);
             }}
             onReady={(editor) => {
-                 // ✅ 커스텀 이미지 업로드 어댑터 설정
+                 // 커스텀 이미지 업로드 어댑터 설정
                  if (onImageUpload) {
                     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => ({
                         upload: () => loader.file.then(onImageUpload)

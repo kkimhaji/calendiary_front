@@ -83,7 +83,18 @@ const PostDetail = () => {
 
 
     const handleEdit = () => {
-        navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`);
+        navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`, {
+            state: {
+                isEdit: true,
+                postData: {
+                    id: post.id,
+                    title: post.title,
+                    content: post.content,
+                    teamId: teamId,
+                    categoryId: categoryId
+                }
+            }
+        });
     };
 
     if (!post || !post.title) return <div>로딩 중...</div>;
