@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './PostItem.css';
+import ContentCard from '../common/ContentCard';
 
 const PostItem = ({ post, teamId, onClick, highlight }) => {
     const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 export const useContentEditor = ({ 
     contentType, 
@@ -11,6 +12,7 @@ export const useContentEditor = ({
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleImageUpload = async (file) => {
         const formData = new FormData();
@@ -46,12 +48,14 @@ export const useContentEditor = ({
                     headers: { 'Content-Type': 'application/json' }
                 });
                 alert(`${contentType === 'post' ? '게시글' : '일기'}이 수정되었습니다.`);
+                contentType === 'post'? navigate(`/teams/${teamId}/category/${categoryId}/recent`): navigate(`/diary`);
             } else {
                 const createUrl = apiEndpoints.create(teamId, data.selectedCategory);
                 await axios.post(createUrl, payload, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 alert(`${contentType === 'post' ? '게시글' : '일기'}이 작성되었습니다.`);
+                contentType === 'post'? navigate(`/teams/${teamId}/category/${categoryId}/recent`): navigate(`/diary`);
             }
 
             // 성공 후 페이지 이동 로직...
