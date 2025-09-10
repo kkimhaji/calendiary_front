@@ -56,7 +56,7 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
     return (
         <div className="comment-content">
             {comment.isDeleted ? (
-                <em>삭제된 댓글입니다</em>
+                <em>  삭제된 댓글입니다.  </em>
             ) : (
                 <>
                     <div className="comment-header">
@@ -82,6 +82,30 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
                         </div>
                     </div>
                     <p>{comment.content}</p>
+
+                    {/* 답글 작성 버튼 */}
+                    {depth < 2 && ( // 최대 3단계까지만 허용
+                        <button
+                            className="btn-reply"
+                            onClick={handleReplyClick}
+                        >
+                            답글 작성
+                        </button>
+                    )}
+                    {/* 답글 작성 폼 */}
+                    {showReplyForm && (
+                        <CommentForm
+                            categoryId={categoryId}
+                            postId={postId}
+                            parentId={comment.id}
+                            depth={depth}
+                            onSuccess={() => {
+                                setShowReplyForm(false);
+                                onCommentSubmitted(); // 상위 컴포넌트에 새로고침 요청
+                            }}
+                        />
+                    )}
+
                     {comment.depth < 2 && (
                         <CommentForm
                             categoryId={categoryId}
@@ -92,28 +116,7 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
                     )}
                 </>
             )}
-            {/* 답글 작성 버튼 */}
-            {depth < 2 && ( // 최대 3단계까지만 허용
-                <button
-                    className="btn-reply"
-                    onClick={handleReplyClick}
-                >
-                    답글 작성
-                </button>
-            )}
-            {/* 답글 작성 폼 */}
-            {showReplyForm && (
-                <CommentForm
-                    categoryId={categoryId}
-                    postId={postId}
-                    parentId={comment.id}
-                    depth={depth}
-                    onSuccess={() => {
-                        setShowReplyForm(false);
-                        onCommentSubmitted(); // 상위 컴포넌트에 새로고침 요청
-                    }}
-                />
-            )}
+
 
             {/* 대댓글 목록 */}
             {(comment.replies || []).length > 0 && (

@@ -3,12 +3,19 @@
     border: none;
     color: #666;
     cursor: pointer;
-    padding: 0;
+    padding: 5px;
     font-size: 0.9em;
 }
 
 .btn-reply:hover {
     text-decoration: underline;
+}
+
+.comment-content em {
+    color: #999;
+    font-style: italic;
+    padding: 10px 0;
+    display: block;
 }
 
 .comment-header {
