@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './InfoLayout.css';
-import '../Buttons.css';
+import '../components/Buttons.css';
 
 const InfoLayout = ({
   title,
