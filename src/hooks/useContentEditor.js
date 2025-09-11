@@ -30,38 +30,61 @@ export const useContentEditor = ({
         }
     };
 
-    const handleSubmit = async (e, data) => {
+    const handleSubmit = async (e, formData) => {
         e.preventDefault();
-        setIsLoading(true);
-
         try {
-            const payload = {
-                title: data.title,
-                content: data.content,
-                ...(data.selectedCategory && { categoryId: data.selectedCategory }),
-                ...(data.visibility && { visibility: data.visibility })
+            setIsLoading(true);
+            
+            const submitData = {
+                title: formData.title,
+                content: formData.content
             };
-
-            if (isEdit) {
-                const updateUrl = apiEndpoints.update(teamId, categoryId, contentId);
-                await axios.put(updateUrl, payload, {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                alert(`${contentType === 'post' ? '게시글' : '일기'}이 수정되었습니다.`);
-                contentType === 'post'? navigate(`/teams/${teamId}/category/${categoryId}/recent`): navigate(`/diary`);
-            } else {
-                const createUrl = apiEndpoints.create(teamId, data.selectedCategory);
-                await axios.post(createUrl, payload, {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                alert(`${contentType === 'post' ? '게시글' : '일기'}이 작성되었습니다.`);
-                contentType === 'post'? navigate(`/teams/${teamId}/category/${categoryId}/recent`): navigate(`/diary`);
+    
+            // 일기의 경우 visibility 추가
+            if (contentType === 'diary') {
+                submitData.visibility = formData.visibility;
             }
-
-            // 성공 후 페이지 이동 로직...
+    
+            // 게시글의 경우 categoryId 추가 (작성시에만)
+            if (contentType === 'post' && !isEdit) {
+                submitData.categoryId = formData.selectedCategory;
+            }
+    
+            let url;
+            let method;
+    
+            if (isEdit) {
+                method = 'PUT';
+                if (contentType === 'diary') {
+                    url = apiEndpoints.update(contentId);
+                } else {
+                    url = apiEndpoints.update(teamId, categoryId, contentId);
+                }
+            } else {
+                method = 'POST';
+                if (contentType === 'diary') {
+                    url = apiEndpoints.create();
+                } else {
+                    url = apiEndpoints.create(teamId, categoryId);
+                }
+            }
+    
+            await axios({
+                method,
+                url,
+                data: submitData
+            });
+    
+            // 성공 후 리다이렉트
+            if (contentType === 'diary') {
+                navigate('/diary');
+            } else {
+                navigate(`/teams/${teamId}/category/${categoryId}/recent`);
+            }
+    
         } catch (error) {
             console.error('제출 실패:', error);
-            alert(`${contentType === 'post' ? '게시글' : '일기'} ${isEdit ? '수정' : '작성'}에 실패했습니다.`);
+            setError('저장에 실패했습니다.');
         } finally {
             setIsLoading(false);
         }

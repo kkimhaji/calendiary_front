@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
-import './PostDetail.css';
-import DOMPurify from 'dompurify';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '../store/authSlice';
+import ContentDetailLayout from '../layout/ContentDetailLayout';
 import CommentForm from '../components/comment/CommentForm';
 import CommentList from '../components/comment/CommentList';
 
@@ -15,11 +16,13 @@ const PostDetail = () => {
         canDelete: false
     });
     const [comments, setComments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const isAuthenticated = useSelector(selectIsAuthenticated);
 
     const refreshComments = async () => {
         try {
             const response = await axios.get(`/category/${categoryId}/posts/${postId}/comments`);
-            console.log("comment", response.data);
             setComments(response.data || []);
         } catch (error) {
             setComments([]);
@@ -27,24 +30,75 @@ const PostDetail = () => {
         }
     };
 
+    // useEffect(() => {
+    //     const checkPermissions = async () => {
+    //         try {
+    //             const response = await axios.get(`/edit-delete-check/post`, {
+    //                 params: {
+    //                     postId: postId
+    //                 },
+    //             });
+    //             setPermissions(response.data);
+    //             console.log("권한 확인 response: ", response.data);
+    //         } catch (error) {
+    //             console.error('권한 확인 실패:', error);
+    //             setPermissions({ canEdit: false, canDelete: false });
+    //         }
+    //     };
+    //     refreshComments();
+    //     fetchPost();
+    //     checkPermissions();
+    // }, [teamId, categoryId, postId]);
+
     useEffect(() => {
+        let isCancelled = false;
         const checkPermissions = async () => {
+                    try {
+                        const response = await axios.get(`/edit-delete-check/post`, {
+                            params: {
+                                postId: postId
+                            },
+                        });
+                        setPermissions(response.data);
+                    } catch (error) {
+                        console.error('권한 확인 실패:', error);
+                        setPermissions({ canEdit: false, canDelete: false });
+                    }
+                };
+
+        const loadData = async () => {
             try {
-                const response = await axios.get(`/edit-delete-check/post`, {
-                    params: {
-                        postId: postId
-                    },
-                });
-                setPermissions(response.data);
-                console.log("권한 확인 response: ", response.data);
+                setLoading(true);
+                setError(null);
+                
+                // 1. 게시글 조회 (필수)
+                await fetchPost();
+                
+                if (isCancelled) return;
+                
+                // 2. 댓글과 권한을 병렬로 조회 (선택적)
+                await Promise.allSettled([
+                    refreshComments(),
+                    checkPermissions()
+                ]);
+                
             } catch (error) {
-                console.error('권한 확인 실패:', error);
-                setPermissions({ canEdit: false, canDelete: false });
+                console.error('데이터 로딩 실패:', error);
+                if (!isCancelled) {
+                }
+            } finally {
+                if (!isCancelled) {
+                    console.log('로딩 상태 해제');
+                    setLoading(false);
+                }
             }
         };
-        refreshComments();
-        fetchPost();
-        checkPermissions();
+
+        loadData();
+
+        return () => {
+            isCancelled = true;
+        };
     }, [teamId, categoryId, postId]);
 
     const handleDelete = async () => {
@@ -67,17 +121,21 @@ const PostDetail = () => {
         try {
             const response = await axios.get(`/teams/${teamId}/category/${categoryId}/posts/${postId}`);
             setPost(response.data);
+            return response.data;
             // 현재 로그인한 사용자와 게시글 작성자 비교
 
         } catch (error) {
+            console.error('게시글 로딩 실패:', error);
             setPost(null);
+            
             if (error.response?.status === 403) {
-                alert('게시글 조회 권한이 없습니다.');
+                setError('게시글 조회 권한이 없습니다.');
+            } else if (error.response?.status === 404) {
+                setError('게시글을 찾을 수 없습니다.');
             } else {
-                console.error('게시글 로딩 실패:', error);
-                alert('게시글을 불러오는데 실패했습니다.');
+                setError('게시글을 불러오는데 실패했습니다.');
             }
-            navigate(-1);
+            throw error; // 에러를 다시 던져서 useEffect에서 처리
         }
     };
 
@@ -97,67 +155,60 @@ const PostDetail = () => {
         });
     };
 
-    if (!post || !post.title) return <div>로딩 중...</div>;
+    // 렌더링 조건 개선
+    console.log('렌더링 조건 확인:', { loading, error, post: !!post });
+
+    if (loading) return <div className="loading">로딩 중...</div>;
+    if (error) return <div className="error">{error}</div>;
+    if (!post) return <div className="not-found">게시글을 찾을 수 없습니다.</div>;
 
     return (
-        <div className="post-detail-container">
-            <div className='post-content'>
-                <div className="post-header">
-                    <span className="category-name">{post.categoryName}</span>
-                    <h1 className="post-title">{post.title}</h1>
-                    {permissions.canEdit && (
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleEdit}
-                        >
-                            수정
-                        </button>
+        <ContentDetailLayout
+            title={post.title}
+            content={post.content}
+            authorInfo={
+                <Link
+                    to={`/teams/${teamId}/members/${post.author.id}`}
+                    className="author-link"
+                >
+                    작성자: {post.author.username}
+                </Link>
+            }
+            createdDate={post.createdDate}
+            headerExtra={
+                <span className="category-name">{post.categoryName}</span>
+            }
+            metaInfo={`조회수: ${post.viewCount}`}
+            permissions={permissions}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onBack={() => navigate(-1)}
+            commentsSection={
+                <>
+                    <h4>댓글 ({comments.length})</h4>
+                    {isAuthenticated ? (
+                        <>
+                            <CommentForm 
+                                categoryId={categoryId} 
+                                postId={postId} 
+                                onCommentSubmitted={refreshComments}
+                            />
+                            <CommentList 
+                                comments={comments} 
+                                onCommentSubmitted={refreshComments} 
+                                postId={postId} 
+                                teamId={teamId} 
+                            />
+                        </>
+                    ) : (
+                        <div className="comment-auth-required">
+                            댓글을 보려면 로그인해주세요.
+                        </div>
                     )}
-                </div>
-                <div className="post-info">
-
-                    작성자:
-                    <Link
-                        to={`/teams/${teamId}/members/${post.author.id}`}
-                        className="author-link"
-                    >
-                        {post.author.username}
-                    </Link> |  작성일: {new Date(post.createdDate).toLocaleDateString()} |
-                    <span className="view-count">조회수: {post.viewCount}</span>
-                </div>
-
-
-                <div className="post-body" dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(post.content)
-                }}>
-                </div>
-                <hr></hr>
-                <div>
-                    <h4> 댓글 ({comments.length})</h4>
-                    <CommentForm categoryId={categoryId} postId={postId} />
-                    <div>
-                        <CommentList comments={comments} onCommentSubmitted={refreshComments} postId={postId} teamId={teamId} categoryId={categoryId} />
-                    </div>
-                </div>
-                <div className="button-group">
-                    <button
-                        className="btn btn-default"
-                        onClick={() => navigate(-1)}
-                    >
-                        목록으로
-                    </button>
-                    <div className="spacer"></div>
-                    {permissions.canDelete && (
-                        <button
-                            className="btn btn-danger"
-                            onClick={handleDelete}
-                        >
-                            삭제
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
+                </>
+            }
+            className="post-detail-container"
+        />
     );
 };
 

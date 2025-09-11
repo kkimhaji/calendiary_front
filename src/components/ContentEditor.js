@@ -67,7 +67,12 @@ const ContentEditor = ({
                 console.log('기존 콘텐츠 데이터 로드 시작:', { teamId, categoryId, contentId });
                 
                 // API 엔드포인트를 통해 데이터 조회
-                const url = apiEndpoints.fetch(teamId, categoryId, contentId);
+                let url;
+                if (contentType === 'diary') {
+                    url = apiEndpoints.fetch(contentId);
+                } else {
+                    url = apiEndpoints.fetch(teamId, categoryId, contentId);
+                }
                 const response = await axios.get(url);
                 
                 console.log('콘텐츠 데이터 로드 성공:', response.data);
