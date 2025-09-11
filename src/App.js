@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Register from './pages/Register';
 import TestConnection from './TestConnection';
 import { TeamProvider } from './contexts/TeamContext';
-import Layout from './components/layout/Layout';
+import Layout from './layout/Layout';
 import CreateTeam from './pages/CreateTeam';
 import RecentPosts from './components/layout/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
@@ -27,6 +27,7 @@ import ChangePasswordPage from './pages/ChangePasswordPage';
 import MemberProfilePage from './pages/MemberProfilePage';
 import DiaryPage from './pages/DiaryPage';
 import CreateDiary from './components/diary/CreateDiary';
+import DiaryDetail from './pages/DiaryDetail';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -91,6 +92,8 @@ function App() {
               <Route path="/change-password" element={isLoggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
               <Route path="/diary" element={<DiaryPage />} />
               <Route path='/diary/create' element={<CreateDiary />} />
+              <Route path='/diary/:diaryId' element={<DiaryDetail />} />
+              <Route path='/diary/:diaryId/edit' element={<CreateDiary />} />
             </Routes>
           </Layout>
         ) : (
