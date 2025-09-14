@@ -1,0 +1,42 @@
+.date-picker-container {
+    margin-bottom: 20px;
+}
+
+.date-picker-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+}
+
+.date-picker-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.1em;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.date-picker-input:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .date-picker-input {
+        font-size: 1em;
+        padding: 10px 14px;
+    }
+}

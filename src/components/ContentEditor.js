@@ -6,8 +6,9 @@ import CategorySelector from './CategorySelector';
 import VisibilitySelector from './diary/VisibilitySelector';
 import { useContentEditor } from '../hooks/useContentEditor';
 import './ContentEditor.css';
+import DatePicker from './diary/DatePicker';
 
-const ContentEditor = ({ 
+const ContentEditor = ({
     contentType, // 'post' | 'diary'
     apiEndpoints,
     showCategory = true,
@@ -19,19 +20,28 @@ const ContentEditor = ({
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [visibility, setVisibility] = useState('PUBLIC');
     const [isLoadingContent, setIsLoadingContent] = useState(false); // 데이터 로딩 상태
+    const [diaryDate, setDiaryDate] = useState('');
 
     const { teamId, categoryId, postId, diaryId } = useParams();
     const navigate = useNavigate();
     const isEdit = !!(postId || diaryId);
     const contentId = postId || diaryId;
 
+    //일기 작성 시 오늘 날짜를 기본값으로 설정
+    useEffect(() => {
+        if (contentType === 'diary' && !isEdit && !diaryDate) {
+            const today = new Date().toISOString().split('T')[0];
+            setDiaryDate(today);
+        }
+    }, [contentType, isEdit, diaryDate]);
+
     const handleSubmitSuccess = (responseData) => {
         console.log('작성/수정 성공:', responseData);
-        
+
         // 성공 메시지 표시 (선택사항)
         const action = isEdit ? '수정' : '작성';
         alert(`${contentType === 'post' ? '게시글' : '일기'} ${action}이 완료되었습니다.`);
-        
+
         // 목록 페이지로 이동
         if (contentType === 'post') {
             // 게시글의 경우: 해당 카테고리의 최근 게시글 페이지로 이동
@@ -55,7 +65,7 @@ const ContentEditor = ({
         contentId,
         teamId,
         categoryId,
-        onSubmitSuccess: handleSubmitSuccess 
+        onSubmitSuccess: handleSubmitSuccess
     });
 
     useEffect(() => {
@@ -64,8 +74,7 @@ const ContentEditor = ({
         const fetchContentData = async () => {
             try {
                 setIsLoadingContent(true);
-                console.log('기존 콘텐츠 데이터 로드 시작:', { teamId, categoryId, contentId });
-                
+
                 // API 엔드포인트를 통해 데이터 조회
                 let url;
                 if (contentType === 'diary') {
@@ -74,22 +83,25 @@ const ContentEditor = ({
                     url = apiEndpoints.fetch(teamId, categoryId, contentId);
                 }
                 const response = await axios.get(url);
-                
-                console.log('콘텐츠 데이터 로드 성공:', response.data);
-                
+
                 // 받아온 데이터로 상태 업데이트
                 if (response.data) {
                     setTitle(response.data.title || '');
                     setContent(response.data.content || '');
-                    
+
                     // 게시글의 경우 카테고리 정보 설정
                     if (contentType === 'post' && response.data.categoryId) {
                         setSelectedCategory(response.data.categoryId);
                     }
-                    
+
                     // 일기의 경우 공개/비공개 설정
-                    if (contentType === 'diary' && response.data.visibility) {
-                        setVisibility(response.data.visibility);
+                    if (contentType === 'diary') {
+                        if (response.data.visibility) {
+                            setVisibility(response.data.visibility);
+                        }
+                        if (response.data.diaryDate) {
+                            setDiaryDate(response.data.diaryDate);
+                        }
                     }
                 }
             } catch (error) {
@@ -126,14 +138,14 @@ const ContentEditor = ({
     return (
         <div className="content-editor-container">
             <h2>
-                {isEdit ? 
-                    `${contentType === 'post' ? '게시글' : '일기'} 수정` : 
+                {isEdit ?
+                    `${contentType === 'post' ? '게시글' : '일기'} 수정` :
                     `${contentType === 'post' ? '게시글' : '일기'} 작성`
                 }
             </h2>
-            
-            <form onSubmit={(e) => handleSubmit(e, { 
-                title, content, selectedCategory, visibility 
+
+            <form onSubmit={(e) => handleSubmit(e, {
+                title, content, selectedCategory, visibility, diaryDate
             })}>
                 {/* 제목 입력 */}
                 <div className="content-form-group">
@@ -146,6 +158,17 @@ const ContentEditor = ({
                         required
                     />
                 </div>
+
+                {/* 일기용 날짜 선택기 */}
+                {contentType === 'diary' && (
+                    <div className="content-form-group">
+                        <DatePicker
+                            selectedDate={diaryDate}
+                            onDateChange={setDiaryDate}
+                            label="일기 날짜"
+                        />
+                    </div>
+                )}
 
                 {/* 카테고리 선택 (게시글에만 표시) */}
                 {showCategory && !isEdit && (
@@ -183,11 +206,11 @@ const ContentEditor = ({
 
                 <div className="button-group">
                     <button type="submit" disabled={isLoading}
-                                            className="submit-button"
->
+                        className="submit-button"
+                    >
                         {isEdit ? '수정하기' : '작성하기'}
                     </button>
-                    <button type="button" 
+                    <button type="button"
                         className="cancel-button"
                         onClick={() => navigate(-1)}>
                         취소
