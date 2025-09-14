@@ -2,12 +2,12 @@ import React from 'react';
 import ContentCard from '../common/ContentCard';
 import './DiaryItem.css';
 
-const DiaryItem = ({ 
-    diary, 
-    onClick, 
-    highlight, 
-    showDate = true, 
-    isEmbedded = false 
+const DiaryItem = ({
+    diary,
+    onClick,
+    highlight,
+    showDate = true,
+    isEmbedded = false
 }) => {
     const highlightText = (text) => {
         if (!highlight) return text;
@@ -53,6 +53,7 @@ const DiaryItem = ({
         title: diary.title,
         content: diary.content,
         createdDate: diary.createdDateTime || diary.createdDate,
+        diaryDate: diary.diaryDate,
         authorNickname: diary.authorNickname || '나',
         visibility: diary.visibility || 'PRIVATE',
         thumbnailImageUrl: diary.thumbnailImageUrl,
@@ -60,8 +61,8 @@ const DiaryItem = ({
     };
 
     const plainContent = getPlainTextContent(diaryData.content);
-    const preview = plainContent.length > 100 
-        ? plainContent.substring(0, 100) + '...' 
+    const preview = plainContent.length > 100
+        ? plainContent.substring(0, 100) + '...'
         : plainContent;
 
     if (isEmbedded) {
@@ -73,9 +74,9 @@ const DiaryItem = ({
                         {highlight ? highlightText(diaryData.title) : diaryData.title}
                     </h3>
                     <div className="diary-meta">
-                        {showDate && (
+                        {showDate && diaryData.diaryDate && (
                             <span className="diary-date">
-                                {formatDate(diaryData.createdDate)}
+                                일기: {formatDate(diaryData.diaryDate)}
                             </span>
                         )}
                         <span className="diary-time">
@@ -86,17 +87,17 @@ const DiaryItem = ({
                         </span>
                     </div>
                 </div>
-                
+
                 {preview && (
                     <div className="diary-preview">
                         {preview}
                     </div>
                 )}
-                
+
                 {diaryData.thumbnailImageUrl && (
                     <div className="diary-thumbnail-wrapper">
-                        <img 
-                            src={diaryData.thumbnailImageUrl} 
+                        <img
+                            src={diaryData.thumbnailImageUrl}
                             alt="썸네일"
                             className="diary-thumbnail"
                         />
@@ -118,8 +119,8 @@ const DiaryItem = ({
         >
             <div className="diary-content">
                 {diaryData.thumbnailImageUrl && (
-                    <img 
-                        src={diaryData.thumbnailImageUrl} 
+                    <img
+                        src={diaryData.thumbnailImageUrl}
                         alt="썸네일"
                         className="diary-thumbnail"
                     />
