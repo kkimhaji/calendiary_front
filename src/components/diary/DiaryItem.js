@@ -65,6 +65,8 @@ const DiaryItem = ({
         ? plainContent.substring(0, 100) + '...'
         : plainContent;
 
+        console.log('DiaryItem 데이터:', diaryData);
+
     if (isEmbedded) {
         // 임베디드 모드: 간단한 형태로 표시
         return (

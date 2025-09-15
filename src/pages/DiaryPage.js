@@ -192,7 +192,8 @@ const DiaryPage = () => {
     };
 
     const handleDiaryClick = (diary) => {
-        navigate(`/diary/${diary.id}`);
+        const diaryId = diary.diaryId || diary.id;
+        navigate(`/diary/${diaryId}`);
     };
 
     const handleLoadMore = () => {
@@ -319,7 +320,7 @@ const DiaryPage = () => {
                                     setSelectedDate(null);
                                     setSelectedDiaries([]);
                                 }}
-                                showDate={false}
+                                showDate={true}
                                 isEmbedded={true}
                             />
                         </div>
@@ -359,7 +360,7 @@ const DiaryPage = () => {
                                             diaries={diaries}
                                             onDiaryClick={handleDiaryClick}
                                             showDate={false}
-                                            isEmbedded={true}
+                                            isEmbedded={false}
                                             highlight={searchQuery}
                                         />
                                     </div>

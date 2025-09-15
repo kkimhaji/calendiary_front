@@ -119,7 +119,7 @@ const DiaryList = ({
             {/* 닫기 버튼 */}
             {onClose && (
                 <button className="close-button" onClick={onClose}>
-                    ✕
+                    X
                 </button>
             )}
             
