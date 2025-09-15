@@ -96,7 +96,7 @@ const DiaryPage = () => {
 
             console.log('리스트 데이터 요청:', params);
 
-            const response = await axios.get(`/api/diary/list/monthly`, { params });
+            const response = await axios.get(`/diary/list/monthly`, { params });
             console.log('리스트 데이터 응답:', response.data);
 
             const newDiaries = Array.isArray(response.data)
