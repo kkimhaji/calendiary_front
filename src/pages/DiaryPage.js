@@ -21,17 +21,16 @@ const DiaryPage = () => {
     const [hasMore, setHasMore] = useState(true);
     const navigate = useNavigate();
 
-    // 달력 데이터와 리스트 데이터 로드
+    // 기존 useEffect들 유지...
     useEffect(() => {
         if (viewMode === 'calendar') {
             fetchCalendarData();
         } else {
             setPage(0);
-            fetchListData(true); // 초기 로드
+            fetchListData(true);
         }
     }, [currentDate, viewMode]);
 
-    // 검색어 변경 시
     useEffect(() => {
         if (viewMode === 'list') {
             setPage(0);
@@ -39,7 +38,6 @@ const DiaryPage = () => {
         }
     }, [searchQuery]);
 
-    // 페이지 변경 시
     useEffect(() => {
         if (page > 0 && viewMode === 'list') {
             fetchListData(false);
@@ -52,10 +50,13 @@ const DiaryPage = () => {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
 
+            console.log('캘린더 데이터 요청:', { year, month });
+
             const response = await axios.get(`/diary/calendar`, {
                 params: { year, month }
             });
 
+            console.log('캘린더 데이터 응답:', response.data);
             setCalendarData(response.data || []);
         } catch (error) {
             console.error('달력 데이터 로드 실패:', error);
@@ -63,6 +64,16 @@ const DiaryPage = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // ✅ 안전한 날짜 추출 함수
+    const getEffectiveDate = (diary) => {
+        if (diary.diaryDate) {
+            return diary.diaryDate; // 이미 YYYY-MM-DD 형식
+        } else if (diary.createdDate) {
+            return diary.createdDate.split('T')[0]; // LocalDateTime에서 날짜 부분 추출
+        }
+        return null;
     };
 
     const fetchListData = async (isReset = false) => {
@@ -83,14 +94,17 @@ const DiaryPage = () => {
                 params.q = searchQuery;
             }
 
-            const response = await axios.get(`/diary/list/monthly`, { params });
+            console.log('리스트 데이터 요청:', params);
+
+            const response = await axios.get(`/api/diary/list/monthly`, { params });
+            console.log('리스트 데이터 응답:', response.data);
+
             const newDiaries = Array.isArray(response.data)
                 ? response.data
                 : (response.data.content || []);
 
             if (isReset) {
                 setListData(newDiaries);
-                // 즉시 그룹화 처리
                 const grouped = groupDiariesByDate(newDiaries);
                 setGroupedListData(grouped);
             } else {
@@ -100,9 +114,8 @@ const DiaryPage = () => {
                 setGroupedListData(grouped);
             }
 
-            // hasMore 처리 (배열 응답의 경우)
             if (Array.isArray(response.data)) {
-                setHasMore(newDiaries.length === 20); // size와 동일하면 더 있을 수 있음
+                setHasMore(newDiaries.length === 20);
             } else {
                 setHasMore(!response.data.last);
             }
@@ -118,7 +131,6 @@ const DiaryPage = () => {
     };
 
     const groupDiariesByDate = (diaries) => {
-
         if (!diaries || diaries.length === 0) {
             return {};
         }
@@ -126,8 +138,13 @@ const DiaryPage = () => {
         const grouped = {};
 
         diaries.forEach(diary => {
-            // diaryDate 필드 사용 (서버 응답에 맞춤)
-            const dateKey = diary.diaryDate || diary.createdDate.split('T')[0];
+            // ✅ 안전한 날짜 추출
+            const dateKey = getEffectiveDate(diary);
+            
+            if (!dateKey) {
+                console.warn('일기에 날짜 정보가 없습니다:', diary);
+                return;
+            }
 
             if (!grouped[dateKey]) {
                 grouped[dateKey] = [];
@@ -135,21 +152,21 @@ const DiaryPage = () => {
             grouped[dateKey].push(diary);
         });
 
-            // 날짜순으로 정렬 (최신순)
-    const sortedKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
-    const sortedGrouped = {};
-    sortedKeys.forEach(key => {
-        sortedGrouped[key] = grouped[key];
-    });
+        const sortedKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+        const sortedGrouped = {};
+        sortedKeys.forEach(key => {
+            sortedGrouped[key] = grouped[key];
+        });
 
         return sortedGrouped;
     };
 
     const handleDateClick = (date) => {
         const clickedDate = date.toISOString().split('T')[0];
-        const dayDiaries = calendarData.filter(diary =>
-            diary.diaryDate === clickedDate // diaryDate 기준으로 변경
-        );
+        const dayDiaries = calendarData.filter(diary => {
+            const diaryDate = getEffectiveDate(diary);
+            return diaryDate === clickedDate;
+        });
 
         if (dayDiaries.length === 1) {
             navigate(`/diary/${dayDiaries[0].diaryId}`);
@@ -161,7 +178,6 @@ const DiaryPage = () => {
             setSelectedDiaries([]);
         }
     };
-
 
     const handleViewModeChange = (newMode) => {
         setViewMode(newMode);
@@ -188,9 +204,10 @@ const DiaryPage = () => {
         if (view !== 'month') return null;
 
         const dateStr = date.toISOString().split('T')[0];
-        const dayDiaries = calendarData.filter(diary =>
-            diary.diaryDate === dateStr // diaryDate 기준으로 변경
-        );
+        const dayDiaries = calendarData.filter(diary => {
+            const diaryDate = getEffectiveDate(diary);
+            return diaryDate === dateStr;
+        });
 
         if (dayDiaries.length === 0) return null;
 
@@ -215,13 +232,15 @@ const DiaryPage = () => {
         );
     };
 
+    // ✅ 수정된 getTileClassName 함수
     const getTileClassName = ({ date, view }) => {
         if (view !== 'month') return null;
 
         const dateStr = date.toISOString().split('T')[0];
-        const dayDiaries = calendarData.filter(diary =>
-            diary.createdDateTime.split('T')[0] === dateStr
-        );
+        const dayDiaries = calendarData.filter(diary => {
+            const diaryDate = getEffectiveDate(diary);
+            return diaryDate === dateStr;
+        });
 
         return dayDiaries.length > 0 ? 'has-diary' : null;
     };
@@ -248,6 +267,7 @@ const DiaryPage = () => {
         }
     };
 
+    // 나머지 렌더링 부분은 동일...
     return (
         <div className="diary-page">
             <div className="diary-header">
@@ -289,7 +309,6 @@ const DiaryPage = () => {
                         showNeighboringMonth={false}
                     />
 
-                    {/* 선택된 날짜의 일기 목록 */}
                     {selectedDate && selectedDiaries.length > 0 && (
                         <div className="selected-date-diaries">
                             <h3>{selectedDate} 일기 목록</h3>
@@ -308,14 +327,13 @@ const DiaryPage = () => {
                 </div>
             ) : (
                 <div className="list-container">
-                    {/* 검색바 */}
                     <SearchBar
                         onSearch={handleSearch}
                         placeholder="일기 검색..."
                     />
+                    
                     {isLoading && <div className="loading">로딩 중...</div>}
 
-                    {/* 날짜별 그룹 리스트 */}
                     <div className="diary-list-wrapper">
                         {!isLoading && Object.keys(groupedListData).length === 0 ? (
                             <div className="empty-list">
