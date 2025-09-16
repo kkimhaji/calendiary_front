@@ -38,7 +38,6 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
 
     const handleDelete = async (commentId) => {
         try {
-            console.log("Delete comment:", commentId);
             // 삭제 로직 구현 (API 호출 추가)
             onCommentSubmitted();
 

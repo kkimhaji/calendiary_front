@@ -26,7 +26,6 @@ const authService = {
       // 로그인 성공 시 인증 상태 초기화
       resetAuthState();
       
-      console.log('로그인 성공');
       return response.data;
     } catch (error) {
       console.error('로그인 실패:', error);
@@ -56,10 +55,9 @@ const authService = {
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       resetAuthState();
       
-      console.log('자동 로그인 성공');
       return true;
     } catch (error) {
-      console.log('자동 로그인 실패:', error.message);
+      console.error('자동 로그인 실패:', error.message);
       return false;
     }
   },
@@ -81,8 +79,6 @@ const authService = {
       
       delete axios.defaults.headers.common['Authorization'];
       resetAuthState();
-      
-      console.log('로그아웃 완료');
       
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
