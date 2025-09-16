@@ -251,3 +251,74 @@
         gap: 5px;
     }
 }
+
+/* 일기 날짜 정보 스타일 */
+.diary-date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.diary-date {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.created-date {
+    font-size: 0.95em;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 기존 date-info와 구분 */
+.date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.date-info .diary-date {
+    font-size: 1em;
+    font-weight: 600;
+    color: #2980b9;
+}
+
+.date-info .created-date {
+    font-size: 0.9em;
+    color: #95a5a6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .diary-date-info {
+        gap: 6px;
+    }
+    
+    .diary-date {
+        font-size: 1em;
+    }
+    
+    .created-date {
+        font-size: 0.85em;
+    }
+}
+
+/* 아이콘과 텍스트 정렬 */
+.diary-date-info .diary-date,
+.diary-date-info .created-date,
+.date-info .diary-date,
+.date-info .created-date {
+    align-items: flex-start;
+}
+
+/* 강조 스타일 */
+.diary-date strong {
+    color: #e74c3c;
+}

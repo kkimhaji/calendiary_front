@@ -7,6 +7,8 @@ const ContentDetailLayout = ({
     content,
     authorInfo,
     createdDate,
+    diaryDate, // diaryDate 추가
+    customDateInfo, 
     headerExtra, // 카테고리, 공개설정 등
     metaInfo, // 조회수 등 추가 정보
     permissions,
@@ -17,6 +19,20 @@ const ContentDetailLayout = ({
     additionalActions, // 추가 액션 버튼들
     className = "content-detail-container"
 }) => {
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    const formatDateTime = (dateString) => {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleString('ko-KR');
+    };
+
     return (
         <div className={className}>
             <div className="content-detail-wrapper">
@@ -39,12 +55,34 @@ const ContentDetailLayout = ({
                 {/* 메타 정보 */}
                 <div className="content-meta">
                     <span className="author-info">{authorInfo}</span>
-                    <span className="created-date">
-                        작성일: {new Date(createdDate).toLocaleDateString()}
-                    </span>
+                                          
+                    {/* ✅ customDateInfo가 있으면 우선 사용 */}
+                    {customDateInfo ? (
+                        customDateInfo
+                    ) : (
+                        <div className="date-info">
+                            {/* ✅ diaryDate가 있으면 구분해서 표시 */}
+                            {diaryDate && diaryDate !== createdDate ? (
+                                <>
+                                    <span className="diary-date">
+                                        📅 {formatDate(diaryDate)} 일기
+                                    </span>
+                                    <span className="created-date">
+                                        ✏️ 작성: {formatDateTime(createdDate)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="created-date">
+                                    작성일: {formatDate(createdDate)}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    
                     {metaInfo && <span className="meta-extra">{metaInfo}</span>}
                 </div>
 
+                <hr/>
                 {/* 본문 내용 */}
                 <div 
                     className="content-body" 

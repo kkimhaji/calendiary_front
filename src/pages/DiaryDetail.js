@@ -22,11 +22,8 @@ const DiaryDetail = () => {
                 setLoading(true);
                 setError(null);
                 
-                console.log('일기 조회 시작 - diaryId:', diaryId);
-                
                 const response = await axios.get(`/diary/${diaryId}`);
-                console.log('일기 조회 성공:', response.data);
-                
+
                 if (!isCancelled) {
                     setDiary(response.data);
                     
@@ -81,9 +78,33 @@ const DiaryDetail = () => {
                     title: diary.title,
                     content: diary.content,
                     visibility: diary.visibility,
+                    diaryDate: diary.diaryDate,
                     createdDate: diary.createdDate
                 }
             }
+        });
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'short'
+        });
+    };
+
+    const formatDateTime = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
     };
 
@@ -97,6 +118,17 @@ const DiaryDetail = () => {
             content={diary.content}
             authorInfo="내 일기"
             createdDate={diary.createdDate}
+            diaryDate={diary.diaryDate}
+            customDateInfo={
+                <div className="diary-date-info">
+                    <div className="diary-date">
+                        📅 <strong>{formatDate(diary.diaryDate)} 일기</strong>
+                    </div>
+                    <div className="created-date">
+                        ✏️ 작성: {formatDateTime(diary.createdDate)}
+                    </div>
+                </div>
+            }
             headerExtra={
                 <span className={`visibility-badge ${diary.visibility.toLowerCase()}`}>
                     {diary.visibility === 'PUBLIC' ? '공개' : '비공개'}
