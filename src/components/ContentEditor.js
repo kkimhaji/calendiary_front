@@ -27,6 +27,12 @@ const ContentEditor = ({
     const isEdit = !!(postId || diaryId);
     const contentId = postId || diaryId;
 
+    useEffect(() => {
+        if (contentType === 'post' && categoryId && !selectedCategory) {
+            setSelectedCategory(parseInt(categoryId));
+        }
+    }, [contentType, categoryId, selectedCategory]);
+
     //일기 작성 시 오늘 날짜를 기본값으로 설정
     useEffect(() => {
         if (contentType === 'diary' && !isEdit && !diaryDate) {
@@ -36,7 +42,6 @@ const ContentEditor = ({
     }, [contentType, isEdit, diaryDate]);
 
     const handleSubmitSuccess = (responseData) => {
-        console.log('작성/수정 성공:', responseData);
 
         // 성공 메시지 표시 (선택사항)
         const action = isEdit ? '수정' : '작성';
@@ -171,7 +176,7 @@ const ContentEditor = ({
                 )}
 
                 {/* 카테고리 선택 (게시글에만 표시) */}
-                {showCategory && !isEdit && (
+                {showCategory && (
                     <CategorySelector
                         teamId={teamId}
                         selectedCategory={selectedCategory}

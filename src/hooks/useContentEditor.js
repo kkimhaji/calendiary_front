@@ -49,7 +49,7 @@ export const useContentEditor = ({
             }
 
             // 게시글의 경우 categoryId 추가 (작성시에만)
-            if (contentType === 'post' && !isEdit) {
+            if (contentType === 'post') {
                 submitData.categoryId = formData.selectedCategory;
             }
 
@@ -61,7 +61,8 @@ export const useContentEditor = ({
                 if (contentType === 'diary') {
                     url = apiEndpoints.update(contentId);
                 } else {
-                    url = apiEndpoints.update(teamId, categoryId, contentId);
+                    const targetCategoryId = formData.selectedCategory || categoryId;
+                    url = apiEndpoints.update(teamId, targetCategoryId, contentId);
                 }
             } else {
                 method = 'POST';
@@ -82,7 +83,8 @@ export const useContentEditor = ({
             if (contentType === 'diary') {
                 navigate('/diary');
             } else {
-                navigate(`/teams/${teamId}/category/${categoryId}/recent`);
+                const targetCategoryId = formData.selectedCategory || categoryId;
+                navigate(`/teams/${teamId}/category/${targetCategoryId}/recent`);
             }
 
         } catch (error) {
