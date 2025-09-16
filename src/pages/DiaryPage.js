@@ -21,6 +21,27 @@ const DiaryPage = () => {
     const [hasMore, setHasMore] = useState(true);
     const navigate = useNavigate();
 
+    const isSameDate = (date1, date2) => {
+        if (!date1 || !date2) return false;
+        
+        // Date 객체로 변환
+        const d1 = date1 instanceof Date ? date1 : new Date(date1);
+        const d2 = date2 instanceof Date ? date2 : new Date(date2);
+        
+        return d1.getFullYear() === d2.getFullYear() &&
+               d1.getMonth() === d2.getMonth() &&
+               d1.getDate() === d2.getDate();
+    };
+
+    // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
+    const formatDateToString = (date) => {
+        if (!date) return '';
+        const d = date instanceof Date ? date : new Date(date);
+        return d.getFullYear() + '-' + 
+               String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+               String(d.getDate()).padStart(2, '0');
+    };
+
     // 기존 useEffect들 유지...
     useEffect(() => {
         if (viewMode === 'calendar') {
@@ -50,13 +71,10 @@ const DiaryPage = () => {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
 
-            console.log('캘린더 데이터 요청:', { year, month });
-
             const response = await axios.get(`/diary/calendar`, {
                 params: { year, month }
             });
 
-            console.log('캘린더 데이터 응답:', response.data);
             setCalendarData(response.data || []);
         } catch (error) {
             console.error('달력 데이터 로드 실패:', error);
@@ -66,7 +84,7 @@ const DiaryPage = () => {
         }
     };
 
-    // ✅ 안전한 날짜 추출 함수
+    // 안전한 날짜 추출 함수
     const getEffectiveDate = (diary) => {
         if (diary.diaryDate) {
             return diary.diaryDate; // 이미 YYYY-MM-DD 형식
@@ -94,10 +112,7 @@ const DiaryPage = () => {
                 params.q = searchQuery;
             }
 
-            console.log('리스트 데이터 요청:', params);
-
             const response = await axios.get(`/diary/list/monthly`, { params });
-            console.log('리스트 데이터 응답:', response.data);
 
             const newDiaries = Array.isArray(response.data)
                 ? response.data
@@ -161,17 +176,17 @@ const DiaryPage = () => {
         return sortedGrouped;
     };
 
-    const handleDateClick = (date) => {
-        const clickedDate = date.toISOString().split('T')[0];
+    const handleDateClick = (clickedDate) => {
+        // ✅ 개선된 날짜 비교 로직
         const dayDiaries = calendarData.filter(diary => {
-            const diaryDate = getEffectiveDate(diary);
-            return diaryDate === clickedDate;
+            const isMatch = isSameDate(clickedDate, diary.diaryDate);
+            return isMatch;
         });
-
+        
         if (dayDiaries.length === 1) {
             navigate(`/diary/${dayDiaries[0].diaryId}`);
         } else if (dayDiaries.length > 1) {
-            setSelectedDate(clickedDate);
+            setSelectedDate(formatDateToString(clickedDate));
             setSelectedDiaries(dayDiaries);
         } else {
             setSelectedDate(null);
@@ -204,11 +219,7 @@ const DiaryPage = () => {
     const renderTileContent = ({ date, view }) => {
         if (view !== 'month') return null;
 
-        const dateStr = date.toISOString().split('T')[0];
-        const dayDiaries = calendarData.filter(diary => {
-            const diaryDate = getEffectiveDate(diary);
-            return diaryDate === dateStr;
-        });
+        const dayDiaries = calendarData.filter(diary => isSameDate(date, diary.diaryDate));
 
         if (dayDiaries.length === 0) return null;
 
@@ -233,17 +244,14 @@ const DiaryPage = () => {
         );
     };
 
-    // ✅ 수정된 getTileClassName 함수
+    // 수정된 getTileClassName 함수
     const getTileClassName = ({ date, view }) => {
         if (view !== 'month') return null;
-
-        const dateStr = date.toISOString().split('T')[0];
-        const dayDiaries = calendarData.filter(diary => {
-            const diaryDate = getEffectiveDate(diary);
-            return diaryDate === dateStr;
-        });
-
-        return dayDiaries.length > 0 ? 'has-diary' : null;
+        
+        // 개선된 날짜 비교
+        const hasDiary = calendarData.some(diary => isSameDate(date, diary.diaryDate));
+        
+        return hasDiary ? 'has-diary' : null;
     };
 
     const formatDateLabel = (dateString) => {
@@ -360,7 +368,7 @@ const DiaryPage = () => {
                                             diaries={diaries}
                                             onDiaryClick={handleDiaryClick}
                                             showDate={false}
-                                            isEmbedded={false}
+                                            isEmbedded={true}
                                             highlight={searchQuery}
                                         />
                                     </div>
