@@ -79,9 +79,6 @@ const DiaryItem = ({
                                 일기: {formatDate(diaryData.diaryDate)}
                             </span>
                         )}
-                        <span className="diary-time">
-                            {formatTime(diaryData.createdDate)}
-                        </span>
                         <span className={`diary-visibility ${diaryData.visibility.toLowerCase()}`}>
                             {diaryData.visibility === 'PUBLIC' ? '🌍 공개' : '🔒 비공개'}
                         </span>
