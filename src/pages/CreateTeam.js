@@ -77,8 +77,8 @@ function CreateTeam() {
                     <label>팀 이름</label>
                     <input
                         type="text"
-                        name="name"
-                        value={teamData.name}
+                        name="teamName"
+                        value={teamData.teamName}
                         onChange={handleChange}
                         required
                         minLength={2}
