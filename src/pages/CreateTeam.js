@@ -51,6 +51,7 @@ function CreateTeam() {
                     }
                 });
                 alert('팀 정보가 수정되었습니다');
+                navigate(`/teams/${teamId}/info`);
             } else {
                 // 생성 요청
                 const response = await axios.post('/team/create', teamData, {
@@ -62,7 +63,7 @@ function CreateTeam() {
                 navigate(`/teams/${response.data.id}/info`);
             }
             refreshTeams();
-            navigate(teamId ? `/team/${teamId}` : '/teams');
+            // navigate(teamId ? `/team/${teamId}` : `/teams/${response.data.id}/info`);
         } catch (error) {
             console.error(teamId ? '수정 실패' : '생성 실패', error);
             alert(error.response?.data?.message || '요청 처리 중 오류 발생');
@@ -77,8 +78,8 @@ function CreateTeam() {
                     <label>팀 이름</label>
                     <input
                         type="text"
-                        name="teamName"
-                        value={teamData.teamName}
+                        name="name"
+                        value={teamData.name}
                         onChange={handleChange}
                         required
                         minLength={2}
