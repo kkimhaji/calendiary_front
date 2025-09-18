@@ -95,7 +95,7 @@ const CreateCategory = () => {
             const response = await axios[method](endpoint, payload);
 
             refreshCategories();
-            navigate(`/teams/${teamId}/categories/${response.data.id}/recent`);
+            navigate(`/teams/${teamId}/category/${response.data.id}/recent`);
         } catch (error) {
             console.error('저장 실패:', error);
         }
