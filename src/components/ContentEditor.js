@@ -50,7 +50,8 @@ const ContentEditor = ({
         // 목록 페이지로 이동
         if (contentType === 'post') {
             // 게시글의 경우: 해당 카테고리의 최근 게시글 페이지로 이동
-            navigate(`/teams/${teamId}/category/${categoryId}/recent`);
+            const finalCategoryId = selectedCategory || categoryId;
+            navigate(`/teams/${teamId}/category/${finalCategoryId}/recent`);
         } else if (contentType === 'diary') {
             // 일기의 경우: 일기 목록 페이지로 이동
             navigate('/diary/list');
@@ -69,7 +70,7 @@ const ContentEditor = ({
         isEdit,
         contentId,
         teamId,
-        categoryId,
+        categoryId: selectedCategory, // 실제 선택된 카테고리 전달
         onSubmitSuccess: handleSubmitSuccess
     });
 
@@ -85,7 +86,9 @@ const ContentEditor = ({
                 if (contentType === 'diary') {
                     url = apiEndpoints.fetch(contentId);
                 } else {
-                    url = apiEndpoints.fetch(teamId, categoryId, contentId);
+                    const finalCategoryId = selectedCategory || categoryId;
+                    url = apiEndpoints.fetch(teamId, finalCategoryId, contentId);
+                    // url = apiEndpoints.fetch(teamId, categoryId, contentId);
                 }
                 const response = await axios.get(url);
 
