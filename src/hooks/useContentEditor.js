@@ -15,18 +15,47 @@ export const useContentEditor = ({
     const navigate = useNavigate();
 
     const handleImageUpload = async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-
         try {
-            const response = await axios.post('/images/temp-upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-                params: { domain: contentType.toUpperCase() }
+            console.log('handleImageUpload - 업로드 시작:', {
+                fileName: file.name,
+                fileType: file.type,
+                fileSize: file.size,
+                contentType: contentType
             });
-            return { default: response.data };
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('domain', contentType.toUpperCase());
+
+            // 요청 전 FormData 내용 확인
+            console.log('handleImageUpload - FormData 내용:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ':', pair[1]);
+            }
+
+            const response = await axios.post('/images/temp-upload', formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log('handleImageUpload - 업로드 성공:', response.data);
+            return response.data; // 임시 URL 직접 반환
+
         } catch (error) {
-            console.error('이미지 업로드 실패:', error);
-            throw new Error('이미지 업로드에 실패했습니다.');
+            console.error('handleImageUpload - 업로드 실패:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message
+            });
+            
+            const errorMessage = error.response?.data?.message || 
+                               error.response?.statusText ||
+                               '이미지 업로드에 실패했습니다.';
+            
+            alert(`이미지 업로드 실패: ${errorMessage}`);
+            throw new Error(errorMessage);
         }
     };
 
@@ -34,6 +63,14 @@ export const useContentEditor = ({
         e.preventDefault();
         try {
             setIsLoading(true);
+            setError('');
+
+            console.log('handleSubmit - 글 제출 시작:', {
+                title: formData.title,
+                contentType: contentType,
+                isEdit: isEdit,
+                contentLength: formData.content?.length
+            });
 
             const submitData = {
                 title: formData.title,
@@ -73,11 +110,15 @@ export const useContentEditor = ({
                 }
             }
 
-            await axios({
+            console.log('handleSubmit - API 호출:', { method, url, submitData });
+
+            const response = await axios({
                 method,
                 url,
                 data: submitData
             });
+
+            console.log('handleSubmit - 글 제출 성공:', response.data);
 
             // 성공 후 리다이렉트
             if (contentType === 'diary') {
@@ -88,8 +129,18 @@ export const useContentEditor = ({
             }
 
         } catch (error) {
-            console.error('제출 실패:', error);
-            setError('저장에 실패했습니다.');
+            console.error('handleSubmit - 제출 실패:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                message: error.message
+            });
+            
+            const errorMessage = error.response?.data?.message ||
+                               error.response?.statusText ||
+                               '저장에 실패했습니다.';
+            setError(errorMessage);
+            alert(errorMessage);
         } finally {
             setIsLoading(false);
         }
