@@ -16,22 +16,9 @@ export const useContentEditor = ({
 
     const handleImageUpload = async (file) => {
         try {
-            console.log('handleImageUpload - 업로드 시작:', {
-                fileName: file.name,
-                fileType: file.type,
-                fileSize: file.size,
-                contentType: contentType
-            });
-
             const formData = new FormData();
             formData.append('file', file);
             formData.append('domain', contentType.toUpperCase());
-
-            // 요청 전 FormData 내용 확인
-            console.log('handleImageUpload - FormData 내용:');
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ':', pair[1]);
-            }
 
             const response = await axios.post('/images/temp-upload', formData, {
                 headers: { 
@@ -39,7 +26,6 @@ export const useContentEditor = ({
                 }
             });
 
-            console.log('handleImageUpload - 업로드 성공:', response.data);
             return response.data; // 임시 URL 직접 반환
 
         } catch (error) {
@@ -64,13 +50,6 @@ export const useContentEditor = ({
         try {
             setIsLoading(true);
             setError('');
-
-            console.log('handleSubmit - 글 제출 시작:', {
-                title: formData.title,
-                contentType: contentType,
-                isEdit: isEdit,
-                contentLength: formData.content?.length
-            });
 
             const submitData = {
                 title: formData.title,
@@ -109,16 +88,11 @@ export const useContentEditor = ({
                     url = apiEndpoints.create(teamId, categoryId);
                 }
             }
-
-            console.log('handleSubmit - API 호출:', { method, url, submitData });
-
             const response = await axios({
                 method,
                 url,
                 data: submitData
             });
-
-            console.log('handleSubmit - 글 제출 성공:', response.data);
 
             // 성공 후 리다이렉트
             if (contentType === 'diary') {

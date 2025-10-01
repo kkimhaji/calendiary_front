@@ -1,4 +1,3 @@
-// RichTextEditor.js
 import React, { useMemo, useCallback } from 'react';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
@@ -54,22 +53,15 @@ class CustomUploadAdapter {
 
     upload() {
         return this.loader.file
-            .then(file => {
-                console.log('CustomUploadAdapter - 파일 업로드 시작:', file.name, file.type, file.size);
-                return this.onImageUpload(file);
-            })
-            .then(response => {
-                console.log('CustomUploadAdapter - 업로드 성공:', response);
-                return { default: response };
-            })
+            .then(file => this.onImageUpload(file))
+            .then(response => ({ default: response }))
             .catch(error => {
-                console.error('CustomUploadAdapter - 업로드 실패:', error);
                 throw error;
             });
     }
 
     abort() {
-        console.log('CustomUploadAdapter - 업로드 중단');
+        // 업로드 중단 처리
     }
 }
 
@@ -79,14 +71,12 @@ const RichTextEditor = React.memo(({
     onImageUpload,
     domain = 'POST'
 }) => {
-    console.log('RichTextEditor - 초기화:', { domain, hasOnImageUpload: !!onImageUpload });
-
-    // onImageUpload를 useCallback으로 메모이제이션 [web:96]
+    // 무한 재렌더링 방지를 위한 안정화된 콜백
     const stableOnImageUpload = useCallback(onImageUpload, []);
 
-    // 플러그인 메모이제이션으로 무한 재렌더링 방지 [web:94]
+    // 커스텀 플러그인 정의
     const customPlugins = useMemo(() => {
-        // 커스텀 업로드 어댑터 플러그인
+        // 파일 업로드 어댑터 플러그인
         function CustomUploadAdapterPlugin(editor) {
             editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
                 return new CustomUploadAdapter(loader, stableOnImageUpload);
@@ -96,37 +86,27 @@ const RichTextEditor = React.memo(({
         // 클립보드 이미지 처리 플러그인
         function ClipboardImageUploadPlugin(editor) {
             editor.editing.view.document.on('paste', async (evt, data) => {
-                console.log('ClipboardImageUploadPlugin - paste 이벤트 발생');
-                
                 try {
                     const clipboardData = data.dataTransfer;
                     const files = Array.from(clipboardData.files || []);
-                    
-                    console.log('ClipboardImageUploadPlugin - 파일 목록:', files);
                     
                     if (files.length > 0) {
                         const imageFiles = files.filter(file => file.type.startsWith('image/'));
                         
                         if (imageFiles.length > 0) {
-                            console.log('ClipboardImageUploadPlugin - 이미지 파일 발견:', imageFiles);
-                            
                             const imageFile = imageFiles[0];
                             
                             try {
                                 const uploadedUrl = await stableOnImageUpload(imageFile);
-                                console.log('ClipboardImageUploadPlugin - 업로드 성공:', uploadedUrl);
                                 
-                                // CKEditor5의 올바른 이미지 삽입 방법 [web:91][web:92]
+                                // 에디터에 이미지 삽입
                                 editor.model.change(writer => {
                                     const imageElement = writer.createElement('imageBlock', {
                                         src: uploadedUrl
                                     });
                                     
-                                    // 현재 선택 위치에 이미지 삽입
                                     const selection = editor.model.document.selection;
                                     editor.model.insertContent(imageElement, selection);
-                                    
-                                    console.log('ClipboardImageUploadPlugin - 이미지 삽입 완료');
                                 });
                                 
                                 // 기본 paste 이벤트 방지
@@ -134,19 +114,20 @@ const RichTextEditor = React.memo(({
                                 data.preventDefault();
                                 
                             } catch (error) {
-                                console.error('ClipboardImageUploadPlugin - 업로드 실패:', error);
+                                // 업로드 실패 시 기본 동작 유지
                             }
                         }
                     }
                 } catch (error) {
-                    console.error('ClipboardImageUploadPlugin - 전체 처리 실패:', error);
+                    // 전체 처리 실패 시 기본 동작 유지
                 }
             });
         }
 
         return [CustomUploadAdapterPlugin, ClipboardImageUploadPlugin];
-    }, []); // 의존성 배열을 빈 배열로 변경 [web:94]
+    }, [stableOnImageUpload]);
 
+    // 에디터 설정
     const editorConfiguration = useMemo(() => ({
         licenseKey: 'GPL',
         toolbar: {
@@ -211,7 +192,6 @@ const RichTextEditor = React.memo(({
             Underline,
             ImageResizeEditing,
             ImageResizeHandles,
-            // 커스텀 플러그인들 추가
             ...customPlugins
         ],
         image: {
@@ -264,14 +244,10 @@ const RichTextEditor = React.memo(({
                 const data = editor.getData();
                 if (onChange) onChange(data);
             }}
-            onReady={(editor) => {
-                console.log('RichTextEditor - 에디터 준비 완료');
-            }}
         />
     );
 });
 
-// displayName 설정
 RichTextEditor.displayName = 'RichTextEditor';
 
 export default RichTextEditor;
