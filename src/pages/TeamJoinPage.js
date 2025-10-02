@@ -140,7 +140,7 @@ const TeamJoinPage = () => {
         teamNickname: teamNickname.trim()
       });
 
-      navigate(`/teams/${teamId}`);
+      navigate(`/teams/${teamId}/info`);
     } catch (error) {
       console.error('팀 가입 실패:', error);
 
