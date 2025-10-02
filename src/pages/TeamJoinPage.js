@@ -24,7 +24,9 @@ const TeamJoinPage = () => {
     const validateInvite = async () => {
       try {
         setValidationLoading(true);
-        const response = await axios.get('/team/invite/validate', {
+        
+        // 수정된 API 호출 - 올바른 엔드포인트 사용
+        const response = await axios.get(`/teams/${teamId}/invite/validate`, {
           params: { code: inviteCode },
         });
 
@@ -39,6 +41,7 @@ const TeamJoinPage = () => {
           setValidationError(response.data.message);
         }
       } catch (error) {
+        console.error('초대 코드 검증 실패:', error);
         setIsValid(false);
         setValidationError('초대 코드 검증 중 오류가 발생했습니다.');
       } finally {
@@ -53,8 +56,7 @@ const TeamJoinPage = () => {
       setValidationLoading(false);
       setValidationError('초대 코드가 없습니다.');
     }
-  }, [inviteCode, teamId]);
-
+  }, [inviteCode, teamId, navigate]);
   // 팀 닉네임 유효성 검증
   const validateTeamNickname = (nickname) => {
     if (!nickname.trim()) {
