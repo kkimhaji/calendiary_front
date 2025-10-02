@@ -135,7 +135,7 @@ const TeamJoinPage = () => {
       setJoining(true);
 
       // 팀 닉네임을 포함한 가입 요청
-      await axios.post(`/team/${teamId}/join`, {
+      await axios.post(`/teams/${teamId}/join`, {
         code: inviteCode,
         teamNickname: teamNickname.trim()
       });
