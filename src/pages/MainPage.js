@@ -29,7 +29,6 @@ const MainPage = () => {
     };
 
     useEffect(() => {
-        console.log("isLoggedIn: ", isLoggedIn);
         if (isLoggedIn) {
             setPage(0);
             loadPosts(0); // 초기 로드

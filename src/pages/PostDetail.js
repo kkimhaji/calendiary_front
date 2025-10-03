@@ -30,26 +30,6 @@ const PostDetail = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const checkPermissions = async () => {
-    //         try {
-    //             const response = await axios.get(`/edit-delete-check/post`, {
-    //                 params: {
-    //                     postId: postId
-    //                 },
-    //             });
-    //             setPermissions(response.data);
-    //             console.log("권한 확인 response: ", response.data);
-    //         } catch (error) {
-    //             console.error('권한 확인 실패:', error);
-    //             setPermissions({ canEdit: false, canDelete: false });
-    //         }
-    //     };
-    //     refreshComments();
-    //     fetchPost();
-    //     checkPermissions();
-    // }, [teamId, categoryId, postId]);
-
     useEffect(() => {
         let isCancelled = false;
         const checkPermissions = async () => {
@@ -154,9 +134,6 @@ const PostDetail = () => {
             }
         });
     };
-
-    // 렌더링 조건 개선
-    console.log('렌더링 조건 확인:', { loading, error, post: !!post });
 
     if (loading) return <div className="loading">로딩 중...</div>;
     if (error) return <div className="error">{error}</div>;

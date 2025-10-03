@@ -25,7 +25,6 @@ const TeamJoinPage = () => {
       try {
         setValidationLoading(true);
         
-        // 수정된 API 호출 - 올바른 엔드포인트 사용
         const response = await axios.get(`/teams/${teamId}/invite/validate`, {
           params: { code: inviteCode },
         });
