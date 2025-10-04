@@ -20,7 +20,7 @@ const MemberProfilePage = () => {
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
-        const memberInfo = await axios.get(`/teams/${teamId}/member/${teamMemberId}`);
+        const memberInfo = await axios.get(`/member/teams/${teamId}/member/${teamMemberId}`);
         setMemberInfo(memberInfo.data);
       } catch (error) {
         console.error('멤버 정보 로드 실패:', error);
@@ -46,7 +46,7 @@ const MemberProfilePage = () => {
   const loadPosts = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/teams/${teamId}/${teamMemberId}/posts?page=${pageNum}&size=10`);
+      const response = await axios.get(`/member/teams/${teamId}/${teamMemberId}/posts?page=${pageNum}&size=10`);
 
       if (reset) {
         setPosts(response.data.content);
@@ -66,7 +66,7 @@ const MemberProfilePage = () => {
   const loadComments = async (pageNum, reset = false) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/teams/${teamId}/${teamMemberId}/comments?page=${pageNum}&size=10`);
+      const response = await axios.get(`/member/teams/${teamId}/${teamMemberId}/comments?page=${pageNum}&size=10`);
 
       if (reset) {
         setComments(response.data.content);
