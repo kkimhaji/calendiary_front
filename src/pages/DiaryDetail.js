@@ -8,8 +8,8 @@ const DiaryDetail = () => {
     const { diaryId } = useParams();
     const navigate = useNavigate();
     const [permissions, setPermissions] = useState({
-        canEdit: true,
-        canDelete: true
+        canEdit: false,
+        canDelete: false
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,21 +17,37 @@ const DiaryDetail = () => {
     useEffect(() => {
         let isCancelled = false;
 
-        const loadData = async () => {
+        // 작성자 확인 함수
+        const checkAuthor = async () => {
             try {
-                setLoading(true);
-                setError(null);
+                const response = await axios.get(`/diary/${diaryId}/check`);
                 
-                const response = await axios.get(`/diary/${diaryId}`);
-
                 if (!isCancelled) {
-                    setDiary(response.data);
-                    
+                    const isAuthor = response.data;
+                    // 작성자인 경우에만 수정/삭제 가능
                     setPermissions({
-                        canEdit: true,
-                        canDelete: true
+                        canEdit: isAuthor,
+                        canDelete: isAuthor
                     });
                 }
+            } catch (error) {
+                console.error('작성자 확인 실패:', error);
+                if (!isCancelled) {
+                    setPermissions({ canEdit: false, canDelete: false });
+                }
+            }
+        };
+
+        // 일기 조회 함수
+        const fetchDiary = async () => {
+            try {
+                const response = await axios.get(`/diary/${diaryId}`);
+                
+                if (!isCancelled) {
+                    setDiary(response.data);
+                }
+                
+                return response.data;
             } catch (error) {
                 console.error('일기 로드 실패:', error);
                 
@@ -44,6 +60,29 @@ const DiaryDetail = () => {
                         setError('일기를 불러오는데 실패했습니다.');
                     }
                 }
+                
+                throw error;
+            }
+        };
+
+        // 데이터 로드 함수
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                // 1. 일기 조회 (필수)
+                await fetchDiary();
+                
+                if (isCancelled) return;
+                
+                // 2. 작성자 확인 (병렬 실행)
+                await Promise.allSettled([
+                    checkAuthor()
+                ]);
+                
+            } catch (error) {
+                console.error('데이터 로딩 실패:', error);
             } finally {
                 if (!isCancelled) {
                     setLoading(false);
@@ -59,17 +98,33 @@ const DiaryDetail = () => {
     }, [diaryId]);
 
     const handleDelete = async () => {
+        if (!permissions.canDelete) {
+            alert('일기 삭제 권한이 없습니다.');
+            return;
+        }
+
         if (window.confirm('정말로 이 일기를 삭제하시겠습니까?')) {
             try {
                 await axios.delete(`/diary/${diaryId}`);
                 navigate('/diary');
             } catch (error) {
-                alert('일기 삭제에 실패했습니다.');
+                console.error('일기 삭제 실패:', error);
+                
+                if (error.response?.status === 403) {
+                    alert('일기 삭제 권한이 없습니다.');
+                } else {
+                    alert('일기 삭제에 실패했습니다.');
+                }
             }
         }
     };
 
     const handleEdit = () => {
+        if (!permissions.canEdit) {
+            alert('일기 수정 권한이 없습니다.');
+            return;
+        }
+
         navigate(`/diary/${diaryId}/edit`, {
             state: {
                 isEdit: true,
@@ -116,7 +171,7 @@ const DiaryDetail = () => {
         <ContentDetailLayout
             title={diary.title}
             content={diary.content}
-            authorInfo="내 일기"
+            authorInfo={`작성자: ${diary.authorName}`}
             createdDate={diary.createdDate}
             diaryDate={diary.diaryDate}
             customDateInfo={
@@ -138,7 +193,6 @@ const DiaryDetail = () => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onBack={() => navigate('/diary')}
-            // 일기는 댓글 기능 없음
             commentsSection={null}
             className="diary-detail-container"
         />
