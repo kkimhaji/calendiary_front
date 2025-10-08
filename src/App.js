@@ -28,6 +28,8 @@ import MemberProfilePage from './pages/MemberProfilePage';
 import DiaryPage from './pages/DiaryPage';
 import CreateDiary from './components/diary/CreateDiary';
 import DiaryDetail from './pages/DiaryDetail';
+import AccountEditPage from './pages/AccountEditPage';
+import PasswordVerificationPage from './pages/PasswordVerificationPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
@@ -94,6 +96,8 @@ function App() {
               <Route path='/diary/create' element={<CreateDiary />} />
               <Route path='/diary/:diaryId' element={<DiaryDetail />} />
               <Route path='/diary/:diaryId/edit' element={<CreateDiary />} />
+              <Route path="/account/verify-password" element={<PasswordVerificationPage />} />
+              <Route path="/account/edit" element={<AccountEditPage />} />
             </Routes>
           </Layout>
         ) : (

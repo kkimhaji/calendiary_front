@@ -43,23 +43,34 @@ const AccountInfoPage = () => {
     }
   };
 
-  if (!memberInfo) return <div>Loading...</div>;
+  const handleEditInfo = () => {
+    navigate('/account/verify-password');
+  };
 
+  if (!memberInfo) return <div className="loading">Loading...</div>;
 
   return (
     <div className="account-info-container">
       <h2>계정 정보</h2>
 
       <div className="basic-info">
-        <p>이메일: {memberInfo.email}</p>
-        <p>기본 닉네임: {memberInfo.nickname}</p>
+        <div className="info-row">
+          <span className="info-label">이메일:</span>
+          <span className="info-value">{memberInfo.email}</span>
+        </div>
+        <div className="info-row">
+          <span className="info-label">기본 닉네임:</span>
+          <span className="info-value">{memberInfo.nickname}</span>
+        </div>
+        
         <button
-          onClick={() => navigate('/change-password')}
-          className="password-change-btn"
+          onClick={handleEditInfo}
+          className="edit-info-btn"
         >
-          비밀번호 변경
+          정보 수정
         </button>
       </div>
+
       <div className="team-section">
         <div
           className="team-info-header"
