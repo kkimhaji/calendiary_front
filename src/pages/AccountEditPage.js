@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
+import { useDispatch } from 'react-redux';
+import { fetchUserInfo } from '../store/authSlice'; 
 import './AccountEditPage.css';
 
 const AccountEditPage = () => {
@@ -9,7 +11,8 @@ const AccountEditPage = () => {
   const [activeTab, setActiveTab] = useState('nickname');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
+  const dispatch = useDispatch();
+
   // 닉네임 변경 관련
   const [nickname, setNickname] = useState('');
   const [newNickname, setNewNickname] = useState('');
@@ -35,7 +38,6 @@ const AccountEditPage = () => {
       return;
     }
 
-    // 현재 닉네임 가져오기
     const fetchMemberInfo = async () => {
       try {
         const response = await axios.get('/member/account-info');
@@ -72,9 +74,11 @@ const AccountEditPage = () => {
       
       setSuccess('닉네임이 성공적으로 변경되었습니다.');
       setNickname(newNickname);
+
+      dispatch(fetchUserInfo());
       
       setTimeout(() => {
-        navigate('/account');
+        navigate('/account-info');
       }, 1500);
     } catch (error) {
       console.error('닉네임 변경 실패:', error);
@@ -115,7 +119,7 @@ const AccountEditPage = () => {
       setPasswordData({ newPassword: '', confirmPassword: '' });
       
       setTimeout(() => {
-        navigate('/account');
+        navigate('/account-info');
       }, 1500);
     } catch (error) {
       console.error('비밀번호 변경 실패:', error);
