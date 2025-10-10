@@ -276,6 +276,17 @@ const DiaryPage = () => {
         }
     };
 
+    const getCurrentYearMonthText = () => {
+        return `${currentDate.getFullYear()}년 ${currentDate.getMonth() + 1}월`;
+    };
+    
+    // 월 변경 함수
+    const handleMonthChange = (delta) => {
+        const newDate = new Date(currentDate);
+        newDate.setMonth(newDate.getMonth() + delta);
+        setCurrentDate(newDate);
+    };
+
     // 나머지 렌더링 부분은 동일...
     return (
         <div className="diary-page">
@@ -336,10 +347,27 @@ const DiaryPage = () => {
                 </div>
             ) : (
                 <div className="list-container">
-                    <SearchBar
+                    <div className="list-month-controls">
+                        <button
+                            className="month-nav-btn"
+                            onClick={() => handleMonthChange(-1)}
+                            aria-label="이전 달"
+                        >
+                            ◀
+                        </button>
+                        <span className="list-current-ym">{getCurrentYearMonthText()}</span>
+                        <button
+                            className="month-nav-btn"
+                            onClick={() => handleMonthChange(1)}
+                            aria-label="다음 달"
+                        >
+                            ▶
+                        </button>
+                        </div>
+                        <SearchBar
                         onSearch={handleSearch}
                         placeholder="일기 검색..."
-                    />
+                        />
                     
                     {isLoading && <div className="loading">로딩 중...</div>}
 

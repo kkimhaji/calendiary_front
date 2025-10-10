@@ -387,7 +387,7 @@
 }
 
 .create-btn-inline {
-    margin-top: 20px;
+    margin: 20px;
     padding: 12px 24px;
     background: #28a745;
     color: white;
@@ -596,4 +596,32 @@
         height: 14px;
         font-size: 0.5em;
     }
+}
+
+.list-month-controls {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    gap: 12px;
+}
+
+.list-current-ym {
+    font-size: 1.7rem;
+    font-weight: bold;
+    margin: 0 6px;
+}
+
+.month-nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #888;
+    padding: 0 8px;
+    transition: color 0.2s;
+}
+.month-nav-btn:hover {
+    color: #222;
 }
