@@ -91,10 +91,14 @@ const AccountInfoPage = () => {
         {isTeamsExpanded && teams.length > 0 && (
           <ul className="team-list">
             {teams.map(team => (
-              <li key={team.teamId} className="team-item">
-                <span className="team-name">팀 이름: {team.teamName}</span>
-                <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
-              </li>
+            <li key={team.teamId} className="team-item">
+            <span className="team-name">팀 이름: {team.teamName}</span>
+            <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
+            {/* 역할 표시 추가 */}
+            {team.roleName && (
+              <span className="team-role">역할: {team.roleName}</span>
+            )}
+          </li>
             ))}
           </ul>
         )}
