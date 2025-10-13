@@ -16,7 +16,7 @@ const PostList = ({ teamId, categoryId, onMetadataLoaded }) => {
             const params = { page, size: 20, sort: 'createdDate,desc' };
 
             if (isSearch) {
-                url = `/teams/${teamId}/post-search`;
+                url = `/teams/${teamId}/posts/search`;
                 params.q = searchQuery;
                 params.teamId = teamId; // 팀별 검색 필터 추가
             } else {
