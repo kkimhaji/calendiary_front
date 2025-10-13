@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import DiaryItem from './DiaryItem';
-import SearchBar from '../post/SearchBar';
 import { useNavigate } from 'react-router-dom';
 import './DiaryList.css';
 
@@ -20,7 +19,6 @@ const DiaryList = ({
     const [diaries, setDiaries] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -33,17 +31,17 @@ const DiaryList = ({
     useEffect(() => {
         if (!isPropsMode) {
             setPage(0);
-            fetchDiaries(!!searchQuery);
+            fetchDiaries();
         }
-    }, [searchQuery, isPropsMode]);
+    }, [isPropsMode]);
 
     useEffect(() => {
         if (!isPropsMode && page > 0) {
-            fetchDiaries(!!searchQuery);
+            fetchDiaries();
         }
     }, [page, isPropsMode]);
 
-    const fetchDiaries = async (isSearch = false) => {
+    const fetchDiaries = async () => {
         if (isPropsMode) return;
         
         setIsLoading(true);
@@ -54,13 +52,7 @@ const DiaryList = ({
                 sort: 'createdDate,desc' 
             };
 
-            let url = '/diary';
-            if (isSearch && searchQuery) {
-                url = '/diary/search';
-                params.q = searchQuery;
-            }
-
-            const response = await axios.get(url, { params });
+            const response = await axios.get('/diary', { params });
             const newDiaries = response.data.content || [];
 
             setDiaries(prev => page === 0 ? newDiaries : [...prev, ...newDiaries]);
@@ -76,10 +68,6 @@ const DiaryList = ({
 
     const handleDiaryClick = (diary) => {
         navigate(`/diary/${diary.diaryId || diary.id}`);
-    };
-
-    const handleSearch = (query) => {
-        setSearchQuery(query);
     };
 
     const handleLoadMore = () => {
@@ -111,11 +99,6 @@ const DiaryList = ({
 
     return (
         <div className={`diary-list-container ${isEmbedded ? 'embedded' : ''}`}>
-            {/* 독립 모드일 때만 검색바 표시 */}
-            {!isPropsMode && !isEmbedded && (
-                <SearchBar onSearch={handleSearch} placeholder="일기 검색..." />
-            )}
-            
             {/* 닫기 버튼 */}
             {onClose && (
                 <button className="close-button" onClick={onClose}>

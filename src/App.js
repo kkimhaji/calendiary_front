@@ -98,6 +98,7 @@ function App() {
               <Route path='/diary/:diaryId/edit' element={<CreateDiary />} />
               <Route path="/account/verify-password" element={<PasswordVerificationPage />} />
               <Route path="/account/edit" element={<AccountEditPage />} />
+              <Route path="/diary/search" element={<SearchResults />} />
             </Routes>
           </Layout>
         ) : (

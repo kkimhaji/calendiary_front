@@ -10,13 +10,25 @@ const SearchBar = () => {
   const { teamId, categoryId } = useParams();
   const [searchType, setSearchType] = useState(queryParams.get('type') || 'BOTH');
 
+  // 현재 경로가 다이어리인지 판단
+  const isDiaryPage = location.pathname.includes('/diary');
+
   const handleSearch = (e) => {
     e.preventDefault();
-    const basePath = categoryId
-      ? `/teams/${teamId}/category/${categoryId}/search`
-      : `/teams/${teamId}/posts/search`;
+    
+    let searchPath;
+    
+    if (isDiaryPage) {
+      // 다이어리 검색
+      searchPath = `/diary/search`;
+    } else {
+      // 게시글 검색 (기존 로직)
+      searchPath = categoryId
+        ? `/teams/${teamId}/category/${categoryId}/search`
+        : `/teams/${teamId}/posts/search`;
+    }
 
-    navigate(`${basePath}?q=${encodeURIComponent(keyword)}&type=${searchType}`);
+    navigate(`${searchPath}?q=${encodeURIComponent(keyword)}&type=${searchType}`);
   };
 
   return (
