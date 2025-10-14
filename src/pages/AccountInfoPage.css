@@ -1,199 +1,265 @@
 .account-info-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .basic-info {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
 }
 
 .password-change-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
 .team-info-header {
-    padding: 15px;
-    background: #f0f0f0;
-    border-radius: 8px;
-    margin: 20px 0;
-    transition: background-color 0.2s;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  margin: 20px 0;
+  transition: background-color 0.2s;
 }
+
 .team-list {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .team-info-header:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .team-list-toggle-icon {
-    margin-left: 10px;
-    font-size: 0.9em;
+  margin-left: 10px;
+  font-size: 0.9em;
 }
 
 .loading {
-    color: #666;
-    padding: 10px;
-    text-align: center;
+  color: #666;
+  padding: 10px;
+  text-align: center;
 }
 
 .error {
-    color: #dc3545;
-    padding: 10px;
+  color: #dc3545;
+  padding: 10px;
 }
 
 .no-teams {
-    color: #666;
-    padding: 20px;
-    text-align: center;
+  color: #666;
+  padding: 20px;
+  text-align: center;
 }
 
 .team-info-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .team-label {
-    font-weight: 500;
-    color: #2c3e50;
-    min-width: 100px;
+  font-weight: 500;
+  color: #2c3e50;
+  min-width: 100px;
 }
 
 .team-value {
-    color: #34495e;
-    background: #f8f9fa;
-    padding: 4px 8px;
-    border-radius: 4px;
+  color: #34495e;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .team-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.team-item:hover {
+  background-color: #f5f5f5;
+  border-color: #4CAF50;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-info-wrapper {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1;
 }
 
 .team-name {
-    font-weight: 500;
-    color: #333;
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
 }
 
 .team-nickname {
-    color: #666;
-    font-style: italic;
+  font-size: 14px;
+  color: #666;
 }
 
-/* ChangePasswordPage.css에 추가 */
+.team-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 16px;
+}
+
+.team-item:hover .go-to-team-icon {
+  color: #4CAF50;
+  transform: translateX(4px);
+}
+
 .forgot-password {
-    margin-top: 8px;
-    text-align: right;
-  }
-  
-  .text-button {
-    background: none;
-    border: none;
-    color: #4361ee;
-    padding: 0;
-    font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
-  .text-button:hover {
-    color: #3a56d4;
-  }
-  
-  /* 임시 비밀번호 발급 모달 스타일 */
-  .reset-password-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease;
-  }
-  
-  .reset-password-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    animation: slideUp 0.3s ease;
-  }
-  
-  .reset-password-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  .edit-info-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .edit-info-btn:hover {
-    background-color: #45a049;
-  }
-  
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .info-label {
-    font-weight: 500;
-    color: #666;
-  }
-  
-  .info-value {
-    color: #333;
+  margin-top: 8px;
+  text-align: right;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #4361ee;
+  padding: 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.text-button:hover {
+  color: #3a56d4;
+}
+
+/* 임시 비밀번호 발급 모달 스타일 */
+.reset-password-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.reset-password-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease;
+}
+
+.reset-password-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
 
-  .team-role {
-    background: #e3f2fd;
-    color: #333;
-    padding: 0.25rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-  }  
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.edit-info-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.edit-info-btn:hover {
+  background-color: #45a049;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.info-value {
+  color: #333;
+}
+
+.team-role {
+  background: #e3f2fd;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.go-to-team-icon{
+  /* padding: 0.3rem; */
+  margin-left: 0.5rem;
+}
+@media (max-width: 768px) {
+  .team-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .go-to-team-icon {
+    align-self: flex-end;
+  }
+
+  .team-info-wrapper {
+    width: 100%;
+  }
+}

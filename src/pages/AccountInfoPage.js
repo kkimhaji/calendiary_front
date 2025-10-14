@@ -47,6 +47,11 @@ const AccountInfoPage = () => {
     navigate('/account/verify-password');
   };
 
+  // 팀 클릭 핸들러 추가
+  const handleTeamClick = (teamId) => {
+    navigate(`/teams/${teamId}/info`);
+  };
+
   if (!memberInfo) return <div className="loading">Loading...</div>;
 
   return (
@@ -62,7 +67,7 @@ const AccountInfoPage = () => {
           <span className="info-label">기본 닉네임:</span>
           <span className="info-value">{memberInfo.nickname}</span>
         </div>
-        
+
         <button
           onClick={handleEditInfo}
           className="edit-info-btn"
@@ -91,14 +96,20 @@ const AccountInfoPage = () => {
         {isTeamsExpanded && teams.length > 0 && (
           <ul className="team-list">
             {teams.map(team => (
-            <li key={team.teamId} className="team-item">
-            <span className="team-name">팀 이름: {team.teamName}</span>
-            <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
-            {/* 역할 표시 추가 */}
-            {team.roleName && (
-              <span className="team-role">역할: {team.roleName}</span>
-            )}
-          </li>
+              <li
+                key={team.teamId}
+                className="team-item"
+                onClick={() => handleTeamClick(team.teamId)}
+              >
+                <div className="team-info-wrapper">
+                  <span className="team-name">팀 이름: {team.teamName}</span>
+                  <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
+                  {team.roleName && (
+                    <span className="team-role">역할: {team.roleName}</span>
+                  )}
+                </div>
+                <span className="go-to-team-icon">→</span>
+              </li>
             ))}
           </ul>
         )}
