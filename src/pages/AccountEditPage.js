@@ -13,6 +13,10 @@ const AccountEditPage = () => {
   const [success, setSuccess] = useState('');
   const dispatch = useDispatch();
 
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   // 닉네임 변경 관련
   const [nickname, setNickname] = useState('');
   const [newNickname, setNewNickname] = useState('');
@@ -137,6 +141,50 @@ const AccountEditPage = () => {
     }));
   };
 
+   // 회원 탈퇴
+   const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!deletePassword) {
+      setError('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    if (deleteConfirm !== '회원탈퇴') {
+      setError('확인 문구를 정확히 입력해주세요.');
+      return;
+    }
+
+    if (!window.confirm('정말로 탈퇴하시겠습니까?\n모든 데이터가 삭제되며 복구할 수 없습니다.')) {
+      return;
+    }
+
+    setDeleteLoading(true);
+    try {
+      await axios.delete('/member/delete', {
+        data: { password: deletePassword }
+      });
+      
+      alert('회원 탈퇴가 완료되었습니다.');
+      
+      // 로그아웃 처리
+      dispatch(logoutUser());
+      navigate('/');
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      if (error.response?.status === 401) {
+        setError('비밀번호가 일치하지 않습니다.');
+      } else {
+        setError('회원 탈퇴 처리 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+
   return (
     <div className="account-edit-container">
       <div className="account-edit-box">
@@ -163,6 +211,18 @@ const AccountEditPage = () => {
           >
             비밀번호 변경
           </button>
+
+          <button
+            className={`tab-button ${activeTab === 'delete' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('delete');
+              setError('');
+              setSuccess('');
+            }}
+          >
+            회원 탈퇴
+          </button>
+
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -247,6 +307,55 @@ const AccountEditPage = () => {
           </form>
         )}
 
+{activeTab === 'delete' && (
+          <form onSubmit={handleDeleteAccount} className="edit-form delete-form">
+            <div className="warning-box">
+              <h3>⚠️ 경고</h3>
+              <p>회원 탈퇴 시 다음 데이터가 모두 삭제됩니다:</p>
+              <ul>
+                <li>작성한 모든 일기 및 이미지</li>
+                <li>팀에 작성한 모든 게시글 및 댓글</li>
+                <li>팀 멤버십 정보</li>
+                <li>계정 정보</li>
+              </ul>
+              <p className="warning-text">삭제된 데이터는 복구할 수 없습니다.</p>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="deletePassword">비밀번호 확인</label>
+              <input
+                type="password"
+                id="deletePassword"
+                value={deletePassword}
+                onChange={(e) => setDeletePassword(e.target.value)}
+                placeholder="비밀번호를 입력하세요"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="deleteConfirm">확인 문구 입력</label>
+              <input
+                type="text"
+                id="deleteConfirm"
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                placeholder="'회원탈퇴'를 입력하세요"
+                required
+              />
+              <small className="input-hint">회원탈퇴를 정확히 입력해주세요</small>
+            </div>
+
+            <button
+              type="submit"
+              className="submit-button delete-button"
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? '탈퇴 처리 중...' : '회원 탈퇴'}
+            </button>
+          </form>
+        )}
+        
         <button
           type="button"
           className="cancel-button"
