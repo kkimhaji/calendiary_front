@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../store/authSlice';
+import { loginUser, clearError } from '../store/authSlice';
 import './Login.css';
 import ToggleButton from '../components/ToggleButton';
 import axios from '../api/axios';
@@ -31,8 +31,11 @@ function Login() {
         if (params.get('expired') === 'true') {
             setError('세션이 만료되었습니다. 다시 로그인해주세요.');
             setExpired(true);
-        }
-    }, [location]);
+        } return () => {
+            dispatch(clearError());
+        };
+    }, [location, dispatch]);
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -55,21 +58,66 @@ function Login() {
             await axios.post('/auth/get-temp-password', { email: resetEmail });
             alert('임시 비밀번호가 이메일로 발송되었습니다.');
             setShowReset(false);
+            setResetEmail('');
         } catch (error) {
             alert('이메일 주소를 확인해주세요.');
+        }
+    };
+
+    // 인증 코드 재발송 함수
+    const resendVerificationCode = async (email) => {
+        try {
+            await axios.post('/auth/resend-verification', { email });
+            alert('인증 코드가 이메일로 재발송되었습니다.');
+            navigate('/verify-email', { state: { email } });
+        } catch (error) {
+            alert('인증 코드 재발송에 실패했습니다. 다시 시도해주세요.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        dispatch(clearError());
 
         try {
             // Redux 액션 디스패치
             const resultAction = await dispatch(loginUser(loginData));
-
             if (!resultAction.error) {
+                // 로그인 성공
                 navigate(redirectUrl);
+            } else {
+                // 로그인 실패 - 에러 코드에 따라 처리
+                const errorCode = resultAction.payload?.code;
+                const errorMessage = resultAction.payload?.message;
+                const email = resultAction.payload?.email;
+
+                switch (errorCode) {
+                    case 'ACCOUNT_NOT_VERIFIED':
+                        // 계정 미인증
+                        const confirmResend = window.confirm(
+                            '계정 인증이 완료되지 않았습니다.\n인증 코드를 다시 받으시겠습니까?'
+                        );
+                        if (confirmResend) {
+                            await resendVerificationCode(email);
+                        }
+                        break;
+
+                    case 'VERIFICATION_CODE_EXPIRED':
+                        // 인증 코드 만료 (인증 화면에서 발생)
+                        alert(errorMessage || '인증 코드가 만료되었습니다.');
+                        break;
+
+                    case 'INVALID_VERIFICATION_CODE':
+                        // 잘못된 인증 코드 (인증 화면에서 발생)
+                        alert(errorMessage || '인증 코드가 일치하지 않습니다.');
+                        break;
+
+                    default:
+                        // 기타 로그인 실패
+                        setError(errorMessage || '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
+                        break;
+                }
             }
         } catch (err) {
             setError('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
