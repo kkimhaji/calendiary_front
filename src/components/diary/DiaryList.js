@@ -4,7 +4,7 @@ import DiaryItem from './DiaryItem';
 import { useNavigate } from 'react-router-dom';
 import './DiaryList.css';
 
-const DiaryList = ({ 
+const DiaryList = ({
     // Props로 데이터를 받는 경우 (DiaryPage에서 사용)
     diaries: propDiaries,
     onDiaryClick: propOnDiaryClick,
@@ -12,7 +12,7 @@ const DiaryList = ({
     showDate = true,
     isEmbedded = false,
     highlight,
-    
+
     // 독립 컴포넌트로 사용하는 경우 (기존 방식)
     viewMode = 'list'
 }) => {
@@ -43,13 +43,13 @@ const DiaryList = ({
 
     const fetchDiaries = async () => {
         if (isPropsMode) return;
-        
+
         setIsLoading(true);
         try {
-            const params = { 
-                page, 
-                size: 20, 
-                sort: 'createdDate,desc' 
+            const params = {
+                page,
+                size: 20,
+                sort: 'createdDate,desc'
             };
 
             const response = await axios.get('/diary', { params });
@@ -83,11 +83,11 @@ const DiaryList = ({
                 </div>
             );
         }
-        
+
         return (
             <div className="empty-state">
                 <p>작성된 일기가 없습니다.</p>
-                <button 
+                <button
                     className="create-btn"
                     onClick={() => navigate('/diary/create')}
                 >
@@ -105,7 +105,7 @@ const DiaryList = ({
                     X
                 </button>
             )}
-            
+
             {/* 일기 아이템들 */}
             <div className={`diary-grid ${viewMode} ${isEmbedded ? 'embedded' : ''}`}>
                 {displayDiaries.map(diary => (
@@ -127,8 +127,8 @@ const DiaryList = ({
 
             {/* 더보기 버튼 (독립 모드일 때만) */}
             {!isPropsMode && hasMore && !isLoading && (
-                <button 
-                    className="load-more-btn" 
+                <button
+                    className="load-more-btn"
                     onClick={handleLoadMore}
                 >
                     더 보기

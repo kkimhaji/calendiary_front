@@ -15,9 +15,9 @@ const SearchBar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    
+
     let searchPath;
-    
+
     if (isDiaryPage) {
       // 다이어리 검색
       searchPath = `/diary/search`;

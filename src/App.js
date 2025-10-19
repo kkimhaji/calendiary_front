@@ -42,17 +42,18 @@ function App() {
         const success = await authService.attemptAutoLogin();
         setIsAuthenticated(success);
       } catch (error) {
-        setIsAuthenticated(false);}
+        setIsAuthenticated(false);
+      }
     };
-    
+
     attemptAutoLogin();
   }, []);
 
   useEffect(() => {
     // 로그인 상태지만 토큰이 없는 경우 강제 로그아웃
-    const token = localStorage.getItem('accessToken') || 
-                  sessionStorage.getItem('accessToken');
-    
+    const token = localStorage.getItem('accessToken') ||
+      sessionStorage.getItem('accessToken');
+
     if (isLoggedIn && !token) {
       console.log('비정상 상태 감지: 로그인 상태지만 토큰 없음');
       localStorage.clear();
@@ -71,7 +72,7 @@ function App() {
         {isLoggedIn ? (
           <Layout>
             <Routes>
-              <Route path='/' element={ <MainPage />} />
+              <Route path='/' element={<MainPage />} />
               <Route path="/teams/:teamId/recent" element={<RecentPosts />} />
               <Route path="/teams/:teamId/category/:categoryId/recent" element={<RecentPosts />} />
               <Route path='/test' element={<TestConnection />} />
@@ -83,9 +84,9 @@ function App() {
               <Route path="/teams/:teamId/info" element={<TeamInfo />} />
               <Route path='/teams/:teamId/edit' element={<CreateTeam />} />
               <Route path="/teams/:teamId/category/:categoryId/info" element={<CategoryInfo />} />
-              <Route path="/teams/:teamId/roles/:roleId/edit" element={<CreateRole />}/>
-              <Route path='/teams/:teamId/posts/search' element={<SearchResults />}/>
-              <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />}/>
+              <Route path="/teams/:teamId/roles/:roleId/edit" element={<CreateRole />} />
+              <Route path='/teams/:teamId/posts/search' element={<SearchResults />} />
+              <Route path='/teams/:teamId/categories/:categoryId/edit' element={<CreateCategory />} />
               <Route path="/teams/:teamId/join" element={<TeamJoinPage />} />
               <Route path="/teams/:teamId/create-role" element={<CreateRole />} />
               <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />

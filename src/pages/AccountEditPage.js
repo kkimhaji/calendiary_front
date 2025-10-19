@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import { useDispatch } from 'react-redux';
-import { fetchUserInfo } from '../store/authSlice'; 
+import { fetchUserInfo, logoutUser } from '../store/authSlice'; 
 import './AccountEditPage.css';
 
 const AccountEditPage = () => {

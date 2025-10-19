@@ -93,7 +93,7 @@
     margin: -0.5em;
 }
 
-.react-calendar--doubleView .react-calendar__viewContainer > * {
+.react-calendar--doubleView .react-calendar__viewContainer>* {
     width: 50%;
     margin: 0.5em;
 }
@@ -174,7 +174,8 @@
 /* 날짜 타일 크기 대폭 확대 */
 .react-calendar__tile {
     max-width: 100%;
-    min-height: 120px !important; /* 높이 대폭 증가 */
+    min-height: 120px !important;
+    /* 높이 대폭 증가 */
     padding: 8px !important;
     background: none;
     text-align: center;
@@ -240,7 +241,8 @@
     bottom: 4px;
     left: 4px;
     right: 4px;
-    top: 25px; /* 날짜 숫자 아래 여백 */
+    top: 25px;
+    /* 날짜 숫자 아래 여백 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -314,32 +316,32 @@
     .diary-page {
         padding: 10px;
     }
-    
+
     .diary-header {
         flex-direction: column;
         gap: 20px;
         align-items: stretch;
     }
-    
+
     .diary-header h1 {
         text-align: center;
         font-size: 2em;
     }
-    
+
     .view-controls {
         justify-content: center;
         flex-wrap: wrap;
     }
-    
+
     .react-calendar__tile {
         min-height: 80px !important;
         font-size: 0.9em !important;
     }
-    
+
     .diary-placeholder {
         font-size: 1.5em;
     }
-    
+
     .multiple-indicator {
         width: 20px;
         height: 20px;
@@ -352,11 +354,11 @@
         min-height: 60px !important;
         padding: 4px !important;
     }
-    
+
     .diary-tile-content {
         top: 20px;
     }
-    
+
     .diary-placeholder {
         font-size: 1.2em;
     }
@@ -463,14 +465,18 @@
     top: 4px !important;
     right: 4px !important;
     left: auto !important;
-    font-size: 0.75em !important; /* 크기 줄임 */
-    font-weight: 500 !important; /* 두께 줄임 */
+    font-size: 0.75em !important;
+    /* 크기 줄임 */
+    font-weight: 500 !important;
+    /* 두께 줄임 */
     color: white !important;
-    background: rgba(106, 106, 106, 0.4) !important; /* 반투명 배경 */
+    background: rgba(106, 106, 106, 0.4) !important;
+    /* 반투명 배경 */
     padding: 3px 6px !important;
     border-radius: 8px !important;
     line-height: 1 !important;
-    z-index: 30 !important; /* 최상위 레이어 */
+    z-index: 30 !important;
+    /* 최상위 레이어 */
     text-decoration: none !important;
     display: inline-block !important;
     min-width: 16px !important;
@@ -480,7 +486,8 @@
 
 /* 오늘 날짜 스타일 수정 */
 .react-calendar__tile--now abbr {
-    background: rgba(255, 193, 7, 0.8) !important; /* 노란색 반투명 배경 */
+    background: rgba(255, 193, 7, 0.8) !important;
+    /* 노란색 반투명 배경 */
     color: #000 !important;
     font-weight: 600 !important;
 }
@@ -501,7 +508,8 @@
 /* 썸네일 컨테이너 z-index 조정 */
 .diary-tile-content {
     position: absolute;
-    top: 0px !important; /* 상단부터 시작 */
+    top: 0px !important;
+    /* 상단부터 시작 */
     left: 4px;
     right: 4px;
     bottom: 4px;
@@ -510,7 +518,8 @@
     justify-content: center;
     overflow: hidden;
     border-radius: 4px;
-    z-index: 1 !important; /* 날짜 숫자보다 낮게 */
+    z-index: 1 !important;
+    /* 날짜 숫자보다 낮게 */
 }
 
 /* 썸네일 이미지 스타일 */
@@ -520,7 +529,8 @@
     object-fit: cover;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    opacity: 0.9; /* 약간의 투명도로 날짜 가독성 향상 */
+    opacity: 0.9;
+    /* 약간의 투명도로 날짜 가독성 향상 */
 }
 
 /* 플레이스홀더 스타일 */
@@ -554,7 +564,8 @@
     font-size: 0.6em;
     font-weight: bold;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    z-index: 25; /* 날짜 숫자보다 낮지만 썸네일보다 높게 */
+    z-index: 25;
+    /* 날짜 숫자보다 낮지만 썸네일보다 높게 */
 }
 
 /* 호버 효과 개선 */
@@ -576,7 +587,7 @@
         padding: 2px 4px !important;
         min-width: 14px !important;
     }
-    
+
     .multiple-indicator {
         width: 16px;
         height: 16px;
@@ -590,7 +601,7 @@
         padding: 1px 3px !important;
         min-width: 12px !important;
     }
-    
+
     .multiple-indicator {
         width: 14px;
         height: 14px;
@@ -622,6 +633,7 @@
     padding: 0 8px;
     transition: color 0.2s;
 }
+
 .month-nav-btn:hover {
     color: #222;
 }

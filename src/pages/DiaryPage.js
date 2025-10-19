@@ -31,16 +31,16 @@ const DiaryPage = () => {
         const d1 = date1 instanceof Date ? date1 : new Date(date1);
         const d2 = date2 instanceof Date ? date2 : new Date(date2);
         return d1.getFullYear() === d2.getFullYear() &&
-               d1.getMonth() === d2.getMonth() &&
-               d1.getDate() === d2.getDate();
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate();
     };
 
     const formatDateToString = (date) => {
         if (!date) return '';
         const d = date instanceof Date ? date : new Date(date);
-        return d.getFullYear() + '-' + 
-               String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-               String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' +
+            String(d.getMonth() + 1).padStart(2, '0') + '-' +
+            String(d.getDate()).padStart(2, '0');
     };
 
     useEffect(() => {
@@ -63,18 +63,18 @@ const DiaryPage = () => {
         try {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
-    
+
             const params = { year, month };
-    
+
             // 캘린더 뷰에서도 검색 지원
             if (searchQuery) {
                 params.q = searchQuery;
                 params.type = searchType;
             }
-    
+
             const url = searchQuery ? '/diary/search' : '/diary/calendar';
             const response = await axios.get(url, { params });
-    
+
             setCalendarData(response.data.content || response.data || []);
         } catch (error) {
             console.error('달력 데이터 로드 실패:', error);
@@ -159,7 +159,7 @@ const DiaryPage = () => {
 
         diaries.forEach(diary => {
             const dateKey = getEffectiveDate(diary);
-            
+
             if (!dateKey) {
                 console.warn('일기에 날짜 정보가 없습니다:', diary);
                 return;
@@ -185,7 +185,7 @@ const DiaryPage = () => {
             const isMatch = isSameDate(clickedDate, diary.diaryDate);
             return isMatch;
         });
-        
+
         if (dayDiaries.length === 1) {
             navigate(`/diary/${dayDiaries[0].diaryId}`);
         } else if (dayDiaries.length > 1) {
@@ -202,7 +202,7 @@ const DiaryPage = () => {
         setSelectedDate(null);
         setSelectedDiaries([]);
         setPage(0);
-        
+
         // 검색 상태 초기화 (검색어 제거)
         if (searchQuery) {
             navigate('/diary');
@@ -277,7 +277,7 @@ const DiaryPage = () => {
     const getCurrentYearMonthText = () => {
         return `${currentDate.getFullYear()}년 ${currentDate.getMonth() + 1}월`;
     };
-    
+
     const handleMonthChange = (delta) => {
         const newDate = new Date(currentDate);
         newDate.setMonth(newDate.getMonth() + delta);
