@@ -121,6 +121,10 @@ const PostDetail = () => {
 
 
     const handleEdit = () => {
+        if (!permissions.canEdit) {
+            alert('게시글 수정 권한이 없습니다.');
+            return;
+        }
         navigate(`/teams/${teamId}/category/${categoryId}/posts/${postId}/edit`, {
             state: {
                 isEdit: true,

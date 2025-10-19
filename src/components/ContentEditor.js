@@ -19,8 +19,9 @@ const ContentEditor = ({
     const [content, setContent] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [visibility, setVisibility] = useState('PUBLIC');
-    const [isLoadingContent, setIsLoadingContent] = useState(false); // 데이터 로딩 상태
+    const [isLoadingContent, setIsLoadingContent] = useState(false);
     const [diaryDate, setDiaryDate] = useState('');
+    const [hasEditPermission, setHasEditPermission] = useState(null); // 권한 상태 추가
 
     const { teamId, categoryId, postId, diaryId } = useParams();
     const navigate = useNavigate();
@@ -33,7 +34,6 @@ const ContentEditor = ({
         }
     }, [contentType, categoryId, selectedCategory]);
 
-    //일기 작성 시 오늘 날짜를 기본값으로 설정
     useEffect(() => {
         if (contentType === 'diary' && !isEdit && !diaryDate) {
             const today = new Date().toISOString().split('T')[0];
@@ -42,23 +42,17 @@ const ContentEditor = ({
     }, [contentType, isEdit, diaryDate]);
 
     const handleSubmitSuccess = (responseData) => {
-
-        // 성공 메시지 표시 (선택사항)
         const action = isEdit ? '수정' : '작성';
         alert(`${contentType === 'post' ? '게시글' : '일기'} ${action}이 완료되었습니다.`);
 
-        // 목록 페이지로 이동
         if (contentType === 'post') {
-            // 게시글의 경우: 해당 카테고리의 최근 게시글 페이지로 이동
             const finalCategoryId = selectedCategory || categoryId;
             navigate(`/teams/${teamId}/category/${finalCategoryId}/recent`);
         } else if (contentType === 'diary') {
-            // 일기의 경우: 일기 목록 페이지로 이동
-            navigate('/diary/list');
+            navigate('/diary');
         }
     };
 
-    // 커스텀 훅으로 로직 분리
     const {
         handleSubmit,
         handleImageUpload,
@@ -70,39 +64,75 @@ const ContentEditor = ({
         isEdit,
         contentId,
         teamId,
-        categoryId: selectedCategory, // 실제 선택된 카테고리 전달
+        categoryId: selectedCategory,
         onSubmitSuccess: handleSubmitSuccess
     });
 
+    // 권한 확인 함수 추가
+    const checkEditPermission = async () => {
+        if (!isEdit) return true; // 새 글 작성은 권한 확인 불필요
+
+        try {
+            if (contentType === 'post') {
+                const response = await axios.get(`/edit-delete-check/post`, {
+                    params: { postId: contentId }
+                });
+                return response.data.canEdit;
+            } else if (contentType === 'diary') {
+                const response = await axios.get(`/edit-delete-check/diary`, {
+                    params: { diaryId: contentId }
+                });
+                return response.data.canEdit;
+            }
+        } catch (error) {
+            console.error('권한 확인 실패:', error);
+            return false;
+        }
+    };
+
     useEffect(() => {
+                // 새 글 작성 모드면 권한을 true로 설정
+                if (!isEdit) {
+                    setHasEditPermission(true);
+                    return;
+                }
+
         if (!isEdit || !contentId) return;
 
         const fetchContentData = async () => {
             try {
                 setIsLoadingContent(true);
 
-                // API 엔드포인트를 통해 데이터 조회
+                // 1. 권한 확인 먼저 수행
+                const hasPermission = await checkEditPermission();
+                
+                if (!hasPermission) {
+                    alert(`${contentType === 'post' ? '게시글' : '일기'} 수정 권한이 없습니다.`);
+                    navigate(-1);
+                    return;
+                }
+
+                setHasEditPermission(true);
+
+                // 2. 데이터 조회
                 let url;
                 if (contentType === 'diary') {
                     url = apiEndpoints.fetch(contentId);
                 } else {
                     const finalCategoryId = selectedCategory || categoryId;
                     url = apiEndpoints.fetch(teamId, finalCategoryId, contentId);
-                    // url = apiEndpoints.fetch(teamId, categoryId, contentId);
                 }
+                
                 const response = await axios.get(url);
 
-                // 받아온 데이터로 상태 업데이트
                 if (response.data) {
                     setTitle(response.data.title || '');
                     setContent(response.data.content || '');
 
-                    // 게시글의 경우 카테고리 정보 설정
                     if (contentType === 'post' && response.data.categoryId) {
                         setSelectedCategory(response.data.categoryId);
                     }
 
-                    // 일기의 경우 공개/비공개 설정
                     if (contentType === 'diary') {
                         if (response.data.visibility) {
                             setVisibility(response.data.visibility);
@@ -114,6 +144,7 @@ const ContentEditor = ({
                 }
             } catch (error) {
                 console.error('콘텐츠 데이터 로드 실패:', error);
+                
                 if (error.response?.status === 404) {
                     alert('해당 콘텐츠를 찾을 수 없습니다.');
                     navigate(-1);
@@ -122,6 +153,7 @@ const ContentEditor = ({
                     navigate(-1);
                 } else {
                     alert('데이터를 불러오는데 실패했습니다.');
+                    navigate(-1);
                 }
             } finally {
                 setIsLoadingContent(false);
@@ -130,6 +162,11 @@ const ContentEditor = ({
 
         fetchContentData();
     }, [isEdit, contentId, teamId, categoryId, apiEndpoints, contentType, navigate]);
+
+    // 권한 없으면 아무것도 렌더링하지 않음
+    if (isEdit && !hasEditPermission) {
+        return null;
+    }
 
     // 로딩 중일 때 표시
     if (isLoadingContent) {
@@ -155,7 +192,6 @@ const ContentEditor = ({
             <form onSubmit={(e) => handleSubmit(e, {
                 title, content, selectedCategory, visibility, diaryDate
             })}>
-                {/* 제목 입력 */}
                 <div className="content-form-group">
                     <input
                         type="text"
@@ -167,7 +203,6 @@ const ContentEditor = ({
                     />
                 </div>
 
-                {/* 일기용 날짜 선택기 */}
                 {contentType === 'diary' && (
                     <div className="content-form-group">
                         <DatePicker
@@ -178,7 +213,6 @@ const ContentEditor = ({
                     </div>
                 )}
 
-                {/* 카테고리 선택 (게시글에만 표시) */}
                 {showCategory && (
                     <CategorySelector
                         teamId={teamId}
@@ -187,7 +221,6 @@ const ContentEditor = ({
                     />
                 )}
 
-                {/* 공개/비공개 설정 (일기에만 표시) */}
                 {showVisibility && (
                     <VisibilitySelector
                         visibility={visibility}
@@ -195,7 +228,6 @@ const ContentEditor = ({
                     />
                 )}
 
-                {/* 본문 에디터 */}
                 <div className="content-form-group">
                     <RichTextEditor
                         initialValue={content}
@@ -205,7 +237,6 @@ const ContentEditor = ({
                     />
                 </div>
 
-                {/* 추가 필드들 (필요시) */}
                 {additionalFields.map(field => (
                     <div key={field.name} className="form-group">
                         {field.component}
