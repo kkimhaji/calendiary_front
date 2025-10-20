@@ -33,35 +33,35 @@ const PostDetail = () => {
     useEffect(() => {
         let isCancelled = false;
         const checkPermissions = async () => {
-                    try {
-                        const response = await axios.get(`/edit-delete-check/post`, {
-                            params: {
-                                postId: postId
-                            },
-                        });
-                        setPermissions(response.data);
-                    } catch (error) {
-                        console.error('권한 확인 실패:', error);
-                        setPermissions({ canEdit: false, canDelete: false });
-                    }
-                };
+            try {
+                const response = await axios.get(`/edit-delete-check/post`, {
+                    params: {
+                        postId: postId
+                    },
+                });
+                setPermissions(response.data);
+            } catch (error) {
+                console.error('권한 확인 실패:', error);
+                setPermissions({ canEdit: false, canDelete: false });
+            }
+        };
 
         const loadData = async () => {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 // 1. 게시글 조회 (필수)
                 await fetchPost();
-                
+
                 if (isCancelled) return;
-                
+
                 // 2. 댓글과 권한을 병렬로 조회 (선택적)
                 await Promise.allSettled([
                     refreshComments(),
                     checkPermissions()
                 ]);
-                
+
             } catch (error) {
                 console.error('데이터 로딩 실패:', error);
                 if (!isCancelled) {
@@ -107,7 +107,7 @@ const PostDetail = () => {
         } catch (error) {
             console.error('게시글 로딩 실패:', error);
             setPost(null);
-            
+
             if (error.response?.status === 403) {
                 setError('게시글 조회 권한이 없습니다.');
             } else if (error.response?.status === 404) {
@@ -169,16 +169,16 @@ const PostDetail = () => {
                     <h4>댓글 ({comments.length})</h4>
                     {isAuthenticated ? (
                         <>
-                            <CommentForm 
-                                categoryId={categoryId} 
-                                postId={postId} 
+                            <CommentForm
+                                categoryId={categoryId}
+                                postId={postId}
                                 onCommentSubmitted={refreshComments}
                             />
-                            <CommentList 
-                                comments={comments} 
-                                onCommentSubmitted={refreshComments} 
-                                postId={postId} 
-                                teamId={teamId} 
+                            <CommentList
+                                comments={comments}
+                                onCommentSubmitted={refreshComments}
+                                postId={postId}
+                                teamId={teamId}
                             />
                         </>
                     ) : (

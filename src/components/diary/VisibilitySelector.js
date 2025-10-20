@@ -2,9 +2,9 @@
 import React from 'react';
 import './VisibilitySelector.css';
 
-const VisibilitySelector = ({ 
-    visibility, 
-    onChange 
+const VisibilitySelector = ({
+    visibility,
+    onChange
 }) => {
     const visibilityOptions = [
         {
@@ -26,7 +26,7 @@ const VisibilitySelector = ({
             <h4 className="visibility-title">공개 범위</h4>
             <div className="visibility-options">
                 {visibilityOptions.map(option => (
-                    <label 
+                    <label
                         key={option.value}
                         className={`visibility-option ${visibility === option.value ? 'selected' : ''}`}
                     >

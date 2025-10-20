@@ -30,19 +30,19 @@ function Header() {
             // 1. 직접 로컬/세션 스토리지에서 토큰 제거
             localStorage.removeItem('accessToken');
             sessionStorage.removeItem('accessToken');
-            
+
             // 2. Redux 상태 초기화 (동기적으로 먼저 처리)
             dispatch(clearCredentials());
-            
+
             // 3. 로컬 스토리지의 Redux 상태 초기화
             persistor.purge();
-            
+
             // 4. 서버 로그아웃 요청 (백그라운드로 처리)
             dispatch(logoutUser()).catch(error => {
                 console.error('서버 로그아웃 요청 실패:', error);
                 // 실패해도 UI는 이미 로그아웃 상태
             });
-            
+
             // 5. 로그인 페이지로 리다이렉트
             navigate('/login');
         } catch (error) {
@@ -72,12 +72,12 @@ function Header() {
                 </div>
                 <nav className="nav">
                     <ul>
-                    {isLoggedIn && (
-                        <li>
-                            <Link to="/account-info" className='user-nickname-link'>
-                            {currentUser?.nickname ? `${currentUser.nickname}님` : '사용자님'}
-                            </Link>
-                        </li>
+                        {isLoggedIn && (
+                            <li>
+                                <Link to="/account-info" className='user-nickname-link'>
+                                    {currentUser?.nickname ? `${currentUser.nickname}님` : '사용자님'}
+                                </Link>
+                            </li>
                         )}
                         <li>
                             <button

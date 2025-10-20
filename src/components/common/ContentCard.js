@@ -1,13 +1,13 @@
 import React from 'react';
 import './ContentCard.css';
 
-const ContentCard = ({ 
-    title, 
-    author, 
-    date, 
-    children, 
-    onClick, 
-    className = "" 
+const ContentCard = ({
+    title,
+    author,
+    date,
+    children,
+    onClick,
+    className = ""
 }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -17,8 +17,8 @@ const ContentCard = ({
     };
 
     return (
-        <div 
-            className={`content-card ${className}`} 
+        <div
+            className={`content-card ${className}`}
             onClick={onClick}
             onKeyDown={handleKeyDown}
             role="button"

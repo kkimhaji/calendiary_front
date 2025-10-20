@@ -6,12 +6,12 @@ function CommentList({ comments = [], postId, depth = 0, onCommentSubmitted, tea
     return (
         <div className="comment-list">
             {comments.map((comment) => (
-                <div 
-                    key={comment.id} 
+                <div
+                    key={comment.id}
                     className={`comment depth-${depth}`}
                     style={{ marginLeft: depth * 30 }}
                 >
-                    <CommentItem 
+                    <CommentItem
                         categoryId={categoryId}
                         comment={comment}
                         teamId={teamId}

@@ -9,9 +9,17 @@
     margin: 5px 0;
 }
 
-.comment.depth-0 { margin-left: 0; }
-.comment.depth-1 { margin-left: 30px; }
-.comment.depth-2 { margin-left: 60px; }
+.comment.depth-0 {
+    margin-left: 0;
+}
+
+.comment.depth-1 {
+    margin-left: 30px;
+}
+
+.comment.depth-2 {
+    margin-left: 60px;
+}
 
 .comment-content {
     background: #f8f9fa;
@@ -36,7 +44,8 @@
     gap: 8px;
 }
 
-.btn-edit, .btn-delete {
+.btn-edit,
+.btn-delete {
     padding: 2px 8px;
     font-size: 0.9em;
     border: none;

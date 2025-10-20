@@ -70,7 +70,7 @@
     .diary-list-container {
         padding: 10px;
     }
-    
+
     .diary-grid.grid-view {
         grid-template-columns: 1fr;
     }

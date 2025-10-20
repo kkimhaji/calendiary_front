@@ -189,27 +189,27 @@
     .diary-item {
         padding: 15px;
     }
-    
+
     .diary-list-thumbnail,
     .diary-list-placeholder {
         height: 150px;
     }
-    
+
     .diary-grid.list-view .diary-item {
         flex-direction: column;
     }
-    
+
     .diary-grid.list-view .diary-thumbnail-container {
         margin-right: 0;
         margin-bottom: 15px;
     }
-    
+
     .diary-grid.list-view .diary-list-thumbnail,
     .diary-grid.list-view .diary-list-placeholder {
         width: 100%;
         height: 150px;
     }
-    
+
     .image-count-badge {
         bottom: 5px;
         right: 5px;
@@ -224,11 +224,11 @@
         align-items: flex-start;
         gap: 5px;
     }
-    
+
     .diary-info {
         flex-wrap: wrap;
     }
-    
+
     .visibility {
         font-size: 0.75rem;
         padding: 3px 6px;

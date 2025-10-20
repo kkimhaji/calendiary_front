@@ -24,7 +24,7 @@ const TeamJoinPage = () => {
     const validateInvite = async () => {
       try {
         setValidationLoading(true);
-        
+
         const response = await axios.get(`/teams/${teamId}/invite/validate`, {
           params: { code: inviteCode },
         });

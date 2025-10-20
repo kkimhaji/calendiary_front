@@ -6,14 +6,15 @@
     padding-right: 1rem;
     padding-top: 5px;
     padding-bottom: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 60px;
     background-color: #f8f9fa;
-    z-index: 1000; /* 사이드바보다 위에 표시 */
+    z-index: 1000;
+    /* 사이드바보다 위에 표시 */
 }
 
 .header-left {
@@ -50,6 +51,7 @@
 .nav a:hover {
     color: #007bff;
 }
+
 .menu-button {
     background: none;
     border: none;
@@ -106,7 +108,7 @@
     border-radius: 4erm;
 }
 
-.property:hover{
+.property:hover {
     color: #007bff;
 }
 
@@ -115,8 +117,8 @@
     margin-right: 15px;
     font-weight: 500;
     color: #4a90e2;
-  }
-  
+}
+
 /* Header.css에 추가 */
 .user-nickname-link {
     display: inline-block;
@@ -126,29 +128,28 @@
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.2s, color 0.2s;
-  }
-  
-  .user-nickname-link:hover {
+}
+
+.user-nickname-link:hover {
     background-color: rgba(74, 144, 226, 0.1);
     color: #2a70c2;
     text-decoration: none;
-  }
-  
-  /* 이미 있던 property 클래스와 스타일 연결 */
-  .nav ul {
+}
+
+/* 이미 있던 property 클래스와 스타일 연결 */
+.nav ul {
     display: flex;
     align-items: center;
-  }
-  
-  .nav li {
+}
+
+.nav li {
     margin-left: 15px;
-  }
-  
-  /* 모바일 대응 */
-  @media (max-width: 768px) {
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
     .user-nickname-link {
-      padding: 6px 8px;
-      font-size: 14px;
+        padding: 6px 8px;
+        font-size: 14px;
     }
-  }
-  
+}

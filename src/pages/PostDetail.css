@@ -3,6 +3,7 @@
     padding: 0.3rem 0.8rem;
     border-radius: 15px;
 }
+
 .post-detail-container {
     max-width: 800px;
     margin: 0 auto;
@@ -37,7 +38,8 @@
 }
 
 .post-body img {
-    max-width: 100%; /* 컨테이너 너비에 맞춤 */
+    max-width: 100%;
+    /* 컨테이너 너비에 맞춤 */
     height: auto;
     display: block;
     margin: 10px 0;
@@ -85,14 +87,14 @@
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
-  }
-  
-  .author-link:hover {
+}
+
+.author-link:hover {
     color: #0d47a1;
     text-decoration: underline;
-  }
-  
-  .view-count {
+}
+
+.view-count {
     color: #666;
     margin-left: 5px;
     font-size: 0.95em;

@@ -1,55 +1,55 @@
 .permissions-section {
-    margin-top: 1.5rem;
-  }
-  
-  .permissions-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .role-permission-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .role-item {
-    border: 1px solid #eee;
-    border-radius: 4px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: #f9f9f9;
-  }
-  
-  .role-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-  
-  .role-name {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .permission-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  
-  .permission-tag {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 0.25rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.85rem;
-  }
-  
-  .no-data {
-    color: #777;
-    font-style: italic;
-    text-align: center;
-    padding: 1rem;
-  }  
+  margin-top: 1.5rem;
+}
+
+.permissions-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.role-permission-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.role-item {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f9f9f9;
+}
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.role-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.permission-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.permission-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.no-data {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}

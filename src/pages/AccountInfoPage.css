@@ -244,10 +244,11 @@
   font-size: 0.9rem;
 }
 
-.go-to-team-icon{
+.go-to-team-icon {
   /* padding: 0.3rem; */
   margin-left: 0.5rem;
 }
+
 @media (max-width: 768px) {
   .team-item {
     flex-direction: column;

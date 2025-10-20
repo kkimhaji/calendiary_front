@@ -23,7 +23,7 @@ const PasswordVerificationPage = () => {
 
       if (response.data === true) {
         // 비밀번호 인증 성공
-        navigate('/account/edit', { 
+        navigate('/account/edit', {
           state: { verified: true, timestamp: Date.now() }
         });
       } else {
@@ -78,8 +78,8 @@ const PasswordVerificationPage = () => {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="verify-button"
             disabled={isLoading || !password}
           >

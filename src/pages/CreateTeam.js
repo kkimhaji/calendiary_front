@@ -10,13 +10,13 @@ function CreateTeam() {
         name: '',
         description: ''
     });
-    const {refreshTeams} = useTeam();
-    const {teamId} = useParams();
-    
+    const { refreshTeams } = useTeam();
+    const { teamId } = useParams();
+
     useEffect(() => {
         const loadTeamData = async () => {
             if (!teamId) return;
-            
+
             try {
                 const response = await axios.get(`/team/${teamId}`);
                 setTeamData({
@@ -41,7 +41,7 @@ function CreateTeam() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('accessToken');
-        
+
         try {
             if (teamId) {
                 // 수정 요청
@@ -100,8 +100,8 @@ function CreateTeam() {
                     <button type="submit" className="submit-btn">
                         {teamId ? '수정 완료' : '팀 생성'}
                     </button>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         onClick={() => navigate(-1)}
                         className="cancel-btn"
                     >

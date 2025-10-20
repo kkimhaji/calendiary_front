@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
 import { useDispatch } from 'react-redux';
-import { fetchUserInfo, logoutUser } from '../store/authSlice'; 
+import { fetchUserInfo, logoutUser } from '../store/authSlice';
 import './AccountEditPage.css';
 
 const AccountEditPage = () => {
@@ -21,7 +21,7 @@ const AccountEditPage = () => {
   const [nickname, setNickname] = useState('');
   const [newNickname, setNewNickname] = useState('');
   const [nicknameLoading, setNicknameLoading] = useState(false);
-  
+
   // 비밀번호 변경 관련
   const [passwordData, setPasswordData] = useState({
     newPassword: '',
@@ -34,7 +34,7 @@ const AccountEditPage = () => {
     const verified = location.state?.verified;
     const timestamp = location.state?.timestamp;
     const now = Date.now();
-    
+
     // 인증되지 않았거나 5분 이상 지난 경우
     if (!verified || !timestamp || (now - timestamp) > 5 * 60 * 1000) {
       alert('본인 확인이 필요합니다.');
@@ -75,12 +75,12 @@ const AccountEditPage = () => {
       await axios.put('/member/update-name', null, {
         params: { newNickname: newNickname }
       });
-      
+
       setSuccess('닉네임이 성공적으로 변경되었습니다.');
       setNickname(newNickname);
 
       dispatch(fetchUserInfo());
-      
+
       setTimeout(() => {
         navigate('/account-info');
       }, 1500);
@@ -118,10 +118,10 @@ const AccountEditPage = () => {
       await axios.post('/member/change-password', {
         newPassword: passwordData.newPassword
       });
-      
+
       setSuccess('비밀번호가 성공적으로 변경되었습니다.');
       setPasswordData({ newPassword: '', confirmPassword: '' });
-      
+
       setTimeout(() => {
         navigate('/account-info');
       }, 1500);
@@ -141,8 +141,8 @@ const AccountEditPage = () => {
     }));
   };
 
-   // 회원 탈퇴
-   const handleDeleteAccount = async (e) => {
+  // 회원 탈퇴
+  const handleDeleteAccount = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -166,9 +166,9 @@ const AccountEditPage = () => {
       await axios.delete('/member/delete', {
         data: { password: deletePassword }
       });
-      
+
       alert('회원 탈퇴가 완료되었습니다.');
-      
+
       // 로그아웃 처리
       dispatch(logoutUser());
       navigate('/');
@@ -307,7 +307,7 @@ const AccountEditPage = () => {
           </form>
         )}
 
-{activeTab === 'delete' && (
+        {activeTab === 'delete' && (
           <form onSubmit={handleDeleteAccount} className="edit-form delete-form">
             <div className="warning-box">
               <h3>⚠️ 경고</h3>
@@ -355,7 +355,7 @@ const AccountEditPage = () => {
             </button>
           </form>
         )}
-        
+
         <button
           type="button"
           className="cancel-button"

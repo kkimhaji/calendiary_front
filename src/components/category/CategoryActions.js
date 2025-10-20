@@ -14,7 +14,7 @@ const CategoryActions = ({ teamId, categoryId, onDeleteClick, hasPermission }) =
       >
         카테고리 수정
       </button>
-      <button 
+      <button
         className="btn-delete"
         onClick={onDeleteClick}
       >

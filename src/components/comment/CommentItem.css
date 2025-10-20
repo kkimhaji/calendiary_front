@@ -30,7 +30,8 @@
 
 .comment-time {
     font-size: 0.9em;
-    color: #666; /* 회색 계열 */
+    color: #666;
+    /* 회색 계열 */
     font-weight: 400;
 }
 
@@ -39,9 +40,9 @@
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
-  }
-  
-  .author-name:hover {
+}
+
+.author-name:hover {
     color: #0d47a1;
     text-decoration: underline;
-  }
+}

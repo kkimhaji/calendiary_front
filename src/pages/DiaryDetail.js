@@ -21,7 +21,7 @@ const DiaryDetail = () => {
         const checkAuthor = async () => {
             try {
                 const response = await axios.get(`/diary/${diaryId}/check`);
-                
+
                 if (!isCancelled) {
                     const isAuthor = response.data;
                     // 작성자인 경우에만 수정/삭제 가능
@@ -42,15 +42,15 @@ const DiaryDetail = () => {
         const fetchDiary = async () => {
             try {
                 const response = await axios.get(`/diary/${diaryId}`);
-                
+
                 if (!isCancelled) {
                     setDiary(response.data);
                 }
-                
+
                 return response.data;
             } catch (error) {
                 console.error('일기 로드 실패:', error);
-                
+
                 if (!isCancelled) {
                     if (error.response?.status === 403) {
                         setError('일기 조회 권한이 없습니다.');
@@ -60,7 +60,7 @@ const DiaryDetail = () => {
                         setError('일기를 불러오는데 실패했습니다.');
                     }
                 }
-                
+
                 throw error;
             }
         };
@@ -70,17 +70,17 @@ const DiaryDetail = () => {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 // 1. 일기 조회 (필수)
                 await fetchDiary();
-                
+
                 if (isCancelled) return;
-                
+
                 // 2. 작성자 확인 (병렬 실행)
                 await Promise.allSettled([
                     checkAuthor()
                 ]);
-                
+
             } catch (error) {
                 console.error('데이터 로딩 실패:', error);
             } finally {
@@ -109,7 +109,7 @@ const DiaryDetail = () => {
                 navigate('/diary');
             } catch (error) {
                 console.error('일기 삭제 실패:', error);
-                
+
                 if (error.response?.status === 403) {
                     alert('일기 삭제 권한이 없습니다.');
                 } else {
