@@ -359,7 +359,7 @@ const AccountEditPage = () => {
         <button
           type="button"
           className="cancel-button"
-          onClick={() => navigate('/account')}
+          onClick={() => navigate('/account-info')}
         >
           취소
         </button>
