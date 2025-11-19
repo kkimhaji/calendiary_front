@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; // 변경
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
 import './TeamCategoriesSection.css';
@@ -19,6 +19,8 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
         try {
             setLoading(true);
             const response = await axios.get(`/teams/${teamId}/categories`);
+            // 데이터 구조 확인용 로그
+            console.log('받아온 카테고리:', response.data);
             setCategories(response.data);
             setError(null);
         } catch (error) {
@@ -29,8 +31,23 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
         }
     };
 
-    const handleDragEnd = async (result) => {
-        if (!result.destination) return;
+    const handleDragEnd = (result) => {
+        // 드롭 위치가 없으면 취소
+        if (!result.destination) {
+            console.log('드롭 위치 없음');
+            return;
+        }
+
+        // 같은 위치면 취소
+        if (result.destination.index === result.source.index) {
+            console.log('같은 위치로 드롭');
+            return;
+        }
+
+        console.log('드래그 완료:', {
+            from: result.source.index,
+            to: result.destination.index
+        });
 
         const items = Array.from(categories);
         const [reorderedItem] = items.splice(result.source.index, 1);
@@ -38,14 +55,22 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
 
         // 낙관적 업데이트
         setCategories(items);
-        setIsReordering(true);
-
+        
         // 서버에 순서 저장
+        saveOrder(items);
+    };
+
+    const saveOrder = async (items) => {
+        setIsReordering(true);
         const categoryIds = items.map(cat => cat.id);
+        
+        console.log('서버에 전송할 순서:', categoryIds);
+        
         try {
             await axios.put(`/teams/${teamId}/categories/reorder`, {
                 categoryIds
             });
+            console.log('순서 변경 성공');
         } catch (error) {
             console.error('순서 변경 실패:', error);
             alert('카테고리 순서 변경에 실패했습니다.');
@@ -124,12 +149,13 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
                                     <ul
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        className={`category-list ${snapshot.isDraggingOver ? 'dragging-over' : ''
-                                            }`}
+                                        className={`category-order-list ${
+                                            snapshot.isDraggingOver ? 'dragging-over' : ''
+                                        }`}
                                     >
                                         {categories.map((category, index) => (
                                             <Draggable
-                                                key={category.id}
+                                                key={String(category.id)} // String으로 변환
                                                 draggableId={String(category.id)}
                                                 index={index}
                                                 isDragDisabled={isReordering}
@@ -138,12 +164,21 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
                                                     <li
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className={`category-item ${snapshot.isDragging ? 'dragging' : ''
-                                                            }`}
+                                                        className={`category-item ${
+                                                            snapshot.isDragging ? 'dragging' : ''
+                                                        }`}
                                                     >
-                                                        <span className="drag-handle">☰</span>
-                                                        <div
+                                                        {/* 드래그 핸들 영역 */}
+                                                        <span 
+                                                            {...provided.dragHandleProps}
+                                                            className="drag-handle"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            ☰
+                                                        </span>
+                                                        
+                                                        {/* 클릭 가능한 컨텐츠 영역 */}
+                                                        <div 
                                                             className="category-content"
                                                             onClick={() => handleCategoryClick(category.id)}
                                                         >
@@ -167,7 +202,7 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
                         </DragDropContext>
                     ) : (
                         // 일반 사용자는 읽기 전용
-                        <ul className="category-list read-only">
+                        <ul className="category-order-list read-only">
                             {categories.map((category) => (
                                 <li
                                     key={category.id}
