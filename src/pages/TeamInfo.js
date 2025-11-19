@@ -15,6 +15,7 @@ import TeamMemberInfo from '../components/team/TeamMemberInfo';
 import TeamRolesSection from '../components/team/TeamRolesSection';
 import TeamMembersSection from '../components/team/TeamMembersSection';
 import TeamMetadata from '../components/team/TeamMetadata';
+import TeamCategoriesSection from '../components/team/TeamCategoriesSection';
 
 const TeamInfo = ({ readOnly = false }) => {
   const { teamId } = useParams();
@@ -143,6 +144,12 @@ const TeamInfo = ({ readOnly = false }) => {
           createdAt={teamData.createdAt}
           memberCount={teamData.memberCount}
           createdBy={teamData.created_by}
+        />
+
+        <TeamCategoriesSection
+          teamId={teamId}
+          hasManagePermission={permissions['MANAGE_CATEGORIES'] || permissions['MANAGE_TEAM']}
+          readOnly={readOnly}
         />
 
         {/* 역할 정보 섹션 */}
