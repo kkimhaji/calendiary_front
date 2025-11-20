@@ -58,7 +58,7 @@ function Sidebar() {
                 className="create-category-button"
                 onClick={handleCreateCategory}
             >
-                카테고리 추가
+                + 카테고리 추가
             </button>
             <nav className="sidebar-category-list">
                 <ul>

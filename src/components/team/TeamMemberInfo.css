@@ -8,6 +8,7 @@
 
 .my-team-info-section h3 {
   font-size: 1.2rem;
+  margin-left: 1rem;
   margin-bottom: 12px;
   color: #333;
 }
@@ -18,7 +19,7 @@
   gap: 12px;
 }
 
-.info-row {
+.my-team-info-section .info-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

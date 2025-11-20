@@ -219,7 +219,7 @@
   background-color: #45a049;
 }
 
-.info-row {
+.account-info-container .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;

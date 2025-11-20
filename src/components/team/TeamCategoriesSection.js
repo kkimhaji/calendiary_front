@@ -55,7 +55,7 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
 
         // 낙관적 업데이트
         setCategories(items);
-        
+
         // 서버에 순서 저장
         saveOrder(items);
     };
@@ -63,9 +63,9 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
     const saveOrder = async (items) => {
         setIsReordering(true);
         const categoryIds = items.map(cat => cat.id);
-        
+
         console.log('서버에 전송할 순서:', categoryIds);
-        
+
         try {
             await axios.put(`/teams/${teamId}/categories/reorder`, {
                 categoryIds
@@ -149,9 +149,8 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
                                     <ul
                                         {...provided.droppableProps}
                                         ref={provided.innerRef}
-                                        className={`category-order-list ${
-                                            snapshot.isDraggingOver ? 'dragging-over' : ''
-                                        }`}
+                                        className={`category-order-list ${snapshot.isDraggingOver ? 'dragging-over' : ''
+                                            }`}
                                     >
                                         {categories.map((category, index) => (
                                             <Draggable
@@ -164,21 +163,20 @@ const TeamCategoriesSection = ({ teamId, hasManagePermission, readOnly = false }
                                                     <li
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
-                                                        className={`category-item ${
-                                                            snapshot.isDragging ? 'dragging' : ''
-                                                        }`}
+                                                        className={`category-item ${snapshot.isDragging ? 'dragging' : ''
+                                                            }`}
                                                     >
                                                         {/* 드래그 핸들 영역 */}
-                                                        <span 
+                                                        <span
                                                             {...provided.dragHandleProps}
                                                             className="drag-handle"
                                                             onClick={(e) => e.stopPropagation()}
                                                         >
                                                             ☰
                                                         </span>
-                                                        
+
                                                         {/* 클릭 가능한 컨텐츠 영역 */}
-                                                        <div 
+                                                        <div
                                                             className="category-content"
                                                             onClick={() => handleCategoryClick(category.id)}
                                                         >

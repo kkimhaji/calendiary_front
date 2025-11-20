@@ -102,7 +102,7 @@ const AccountInfoPage = () => {
                 onClick={() => handleTeamClick(team.teamId)}
               >
                 <div className="team-info-wrapper">
-                  <span className="team-name">팀 이름: {team.teamName}</span>
+                  <span className="team-name">{team.teamName}</span>
                   <span className="team-nickname">팀 닉네임: {team.teamNickname}</span>
                   {team.roleName && (
                     <span className="team-role">역할: {team.roleName}</span>

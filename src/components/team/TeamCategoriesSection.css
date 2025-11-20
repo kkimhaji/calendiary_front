@@ -19,7 +19,7 @@
     color: #333;
 }
 
-.create-category-button {
+.section-header .create-category-button {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -30,7 +30,7 @@
     transition: background-color 0.2s;
 }
 
-.create-category-button:hover {
+.section-header .create-category-button:hover {
     background-color: #45a049;
 }
 
@@ -81,7 +81,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    min-height: 50px; /* 최소 높이 추가 */
+    min-height: 50px;
+    /* 최소 높이 추가 */
 }
 
 .category-order-list.dragging-over {
@@ -98,7 +99,8 @@
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     transition: all 0.2s;
-    user-select: none; /* 텍스트 선택 방지 */
+    user-select: none;
+    /* 텍스트 선택 방지 */
 }
 
 .category-item:hover {
@@ -110,7 +112,8 @@
     opacity: 0.8;
     background-color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: rotate(2deg); /* 약간 회전 효과 */
+    transform: rotate(2deg);
+    /* 약간 회전 효과 */
 }
 
 .drag-handle {
@@ -120,7 +123,8 @@
     cursor: grab;
     padding: 4px 8px;
     user-select: none;
-    touch-action: none; /* 터치 디바이스에서 드래그 지원 */
+    touch-action: none;
+    /* 터치 디바이스에서 드래그 지원 */
 }
 
 .drag-handle:hover {
