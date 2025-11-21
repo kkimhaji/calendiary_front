@@ -113,3 +113,38 @@
     flex-wrap: wrap;
     gap: 10px;
 }
+
+.comment-form.loading,
+.comment-form.no-permission {
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.comment-form.loading p {
+    color: #666;
+    margin: 0;
+}
+
+.comment-form.no-permission {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+}
+
+.permission-message {
+    color: #856404;
+    margin: 0;
+    font-size: 14px;
+}
+
+.comment-form textarea:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.comment-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
