@@ -15,7 +15,7 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
     setError('');
 
     try {
-      await axios.post(`/member/${teamId}/leave`, null, {
+      await axios.post(`/team/${teamId}/leave`, null, {
         params: { deleteContents }
       });
 
