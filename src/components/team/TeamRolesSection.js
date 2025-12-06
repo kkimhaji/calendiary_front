@@ -42,15 +42,18 @@ const TeamRolesSection = ({ teamId, hasManagePermission, readOnly }) => {
 
       {showRoles && (
         <div className="role-list">
-          <h3>역할 목록</h3>
-          {!readOnly && hasManagePermission && (
-            <button
-              className="add-role-button"
-              onClick={handleAddRole}
-            >
-              + 역할 추가
-            </button>
-          )}
+          <div className='role-list-header'>
+            <h3>역할 목록</h3>
+            {!readOnly && hasManagePermission && (
+              <button
+                className="add-role-button"
+                onClick={handleAddRole}
+              >
+                + 역할 추가
+              </button>
+            )}
+          </div>
+
           {loadingRoles ? (
             <div className="loading">역할 목록을 불러오는 중...</div>
           ) : error ? (
