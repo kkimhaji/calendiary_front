@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import axios from '../../api/axios';
 import './TeamMembersSection.css';
 
-const TeamMembersSection = ({ teamId, memberCount }) => {
+const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentUserId }) => {
   const [showMembers, setShowMembers] = useState(false);
   const [members, setMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [error, setError] = useState(null);
+  const [removingMemberId, setRemovingMemberId] = useState(null);
 
   const loadMembers = async () => {
     if (loadingMembers || (members.length > 0)) return;
@@ -26,6 +27,35 @@ const TeamMembersSection = ({ teamId, memberCount }) => {
       setError('멤버 목록을 불러오는데 실패했습니다.');
     } finally {
       setLoadingMembers(false);
+    }
+  };
+
+  // 멤버 강제 탈퇴 핸들러
+  const handleRemoveMember = async (teamMemberId, nickname) => {
+    if (!window.confirm(`정말로 '${nickname}' 님을 팀에서 탈퇴시키시겠습니까?`)) {
+      return;
+    }
+
+    setRemovingMemberId(teamMemberId);
+
+    try {
+      await axios.delete(`/teams/${teamId}/members/${teamMemberId}`);
+
+      // 성공 시 목록에서 제거
+      setMembers(prevMembers =>
+        prevMembers.filter(member => member.teamMemberId !== teamMemberId)
+      );
+
+      alert('멤버가 성공적으로 탈퇴되었습니다.');
+    } catch (error) {
+      console.error('멤버 탈퇴 실패:', error);
+
+      // 에러 메시지 처리
+      const errorMessage = error.response?.data?.message
+        || '멤버 탈퇴에 실패했습니다.';
+      alert(errorMessage);
+    } finally {
+      setRemovingMemberId(null);
     }
   };
 
@@ -50,12 +80,27 @@ const TeamMembersSection = ({ teamId, memberCount }) => {
             <div className="error-message">{error}</div>
           ) : (
             members.map(member => (
-              <div key={member.email} className="member-item">
+              <div key={member.teamMemberId} className="member-item">
                 <div className="member-info">
                   <span className="nickname">{member.teamNickname}</span>
                   <span className="email">{member.email}</span>
                 </div>
-                <span className="role">{member.roleName}</span>
+                <div className="member-actions">
+                  <span className="role">{member.roleName}</span>
+                  {/* 강제 탈퇴 버튼 */}
+                  {hasManagePermission && (
+                    <button
+                      className="remove-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveMember(member.teamMemberId, member.teamNickname);
+                      }}
+                      disabled={removingMemberId === member.teamMemberId}
+                    >
+                      {removingMemberId === member.teamMemberId ? '처리 중...' : '탈퇴'}
+                    </button>
+                  )}
+                </div>
               </div>
             ))
           )}

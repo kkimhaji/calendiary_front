@@ -1,59 +1,123 @@
 .members-section {
-    margin-top: 2rem;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 1rem;
-  }
-  
-  .toggle-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: background 0.2s;
-  }
-  
-  .toggle-header:hover {
-    background: #f8f9fa;
-  }
-  
-  .member-list {
-    margin-top: 1rem;
-  }
-  
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.toggle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: background 0.2s;
+}
+
+.toggle-header:hover {
+  background: #f8f9fa;
+}
+
+.member-list {
+  margin-top: 1rem;
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nickname {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.email {
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* 추가: 액션 영역 (역할 + 버튼) */
+.member-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.role {
+  background: #e9ecef;
+  color: #495057;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+/* 추가: 탈퇴 버튼 스타일 */
+.remove-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+}
+
+.remove-button:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.remove-button:disabled {
+  background: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 추가: 로딩, 에러 메시지 스타일 */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error-message {
+  text-align: center;
+  padding: 1rem;
+  color: #dc3545;
+  background: #f8d7da;
+  border-radius: 4px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
   .member-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .member-item:last-child {
-    border-bottom: none;
-  }
-  
-  .member-info {
-    display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    align-items: flex-start;
+    gap: 1rem;
   }
-  
-  .nickname {
-    font-weight: 500;
-    color: #2c3e50;
+
+  .member-actions {
+    width: 100%;
+    justify-content: space-between;
   }
-  
-  .email {
-    font-size: 0.9em;
-    color: #666;
+
+  .remove-button {
+    width: auto;
   }
-  
-  .role {
-    background: #e9ecef;
-    color: #495057;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.9em;
-  }
+}

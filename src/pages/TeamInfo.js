@@ -163,6 +163,8 @@ const TeamInfo = ({ readOnly = false }) => {
         <TeamMembersSection
           teamId={teamId}
           memberCount={teamData.memberCount}
+          hasManagePermission={permissions.MANAGE_MEMBERS || false}
+          // currentUserId={currentUser?.id} 
         />
       </InfoLayout>
     </>
