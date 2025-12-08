@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../../api/axios';
 import './TeamMembersSection.css';
+import RemoveMemberModal from './RemoveMemberModal';
 
 const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentUserId }) => {
   const [showMembers, setShowMembers] = useState(false);
@@ -8,6 +9,8 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [error, setError] = useState(null);
   const [removingMemberId, setRemovingMemberId] = useState(null);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const loadMembers = async () => {
     if (loadingMembers || (members.length > 0)) return;
@@ -30,6 +33,11 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
     }
   };
 
+  const handleRemoveClick = (member) => {
+    setSelectedMember(member);
+    setShowRemoveModal(true);
+  };
+
   // 멤버 강제 탈퇴 핸들러
   const handleRemoveMember = async (teamMemberId, nickname) => {
     if (!window.confirm(`정말로 '${nickname}' 님을 팀에서 탈퇴시키시겠습니까?`)) {
@@ -45,6 +53,10 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
       setMembers(prevMembers =>
         prevMembers.filter(member => member.teamMemberId !== teamMemberId)
       );
+      const message = deleteContent
+        ? '멤버와 해당 멤버의 모든 게시글/댓글이 삭제되었습니다.'
+        : '멤버가 탈퇴되었습니다. 게시글/댓글은 익명으로 전환되었습니다.';
+      alert(message);
 
       alert('멤버가 성공적으로 탈퇴되었습니다.');
     } catch (error) {
@@ -87,13 +99,12 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
                 </div>
                 <div className="member-actions">
                   <span className="role">{member.roleName}</span>
-                  {/* 강제 탈퇴 버튼 */}
-                  {hasManagePermission && (
+                  {hasManagePermission && !member.isOwner && (
                     <button
                       className="remove-button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleRemoveMember(member.teamMemberId, member.teamNickname);
+                        handleRemoveClick(member);
                       }}
                       disabled={removingMemberId === member.teamMemberId}
                     >
@@ -105,6 +116,16 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
             ))
           )}
         </div>
+      )}
+      {showRemoveModal && selectedMember && (
+        <RemoveMemberModal
+          member={selectedMember}
+          onConfirm={handleRemoveMember}
+          onCancel={() => {
+            setShowRemoveModal(false);
+            setSelectedMember(null);
+          }}
+        />
       )}
     </div>
   );
