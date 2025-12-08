@@ -39,7 +39,7 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
     setRemovingMemberId(teamMemberId);
 
     try {
-      await axios.delete(`/teams/${teamId}/members/${teamMemberId}`);
+      await axios.delete(`/team/${teamId}/members/${teamMemberId}`);
 
       // 성공 시 목록에서 제거
       setMembers(prevMembers =>
