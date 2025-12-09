@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Tabs, Tab } from '../components/Tabs';
 import PostItem from '../components/post/PostItem';
 import CommentItem from '../components/comment/CommentItem';
@@ -15,9 +15,37 @@ const MemberProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isDeletedMember, setIsDeletedMember] = useState(false);
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // teamMemberId가 null, undefined, 'null', 'undefined'인 경우 탈퇴 멤버로 처리
+    if (!teamMemberId ||
+      teamMemberId === 'null' ||
+      teamMemberId === 'undefined' ||
+      teamMemberId === 'NaN') {
+      setIsDeletedMember(true);
+      setLoading(false);
+      return;
+    }
+
+    // 숫자가 아닌 경우도 탈퇴 멤버로 처리
+    if (isNaN(Number(teamMemberId))) {
+      setIsDeletedMember(true);
+      setLoading(false);
+      return;
+    }
+
+    setIsDeletedMember(false);
+  }, [teamMemberId]);
 
   // 멤버 정보 로드
   useEffect(() => {
+    if (isDeletedMember) {
+      setLoading(false);
+      return;
+    }
     const fetchMemberInfo = async () => {
       try {
         const memberInfo = await axios.get(`/team/${teamId}/member/${teamMemberId}`);
@@ -32,6 +60,10 @@ const MemberProfilePage = () => {
 
   // 탭에 따라 게시글 또는 댓글 로드
   useEffect(() => {
+    if (isDeletedMember) {
+      return;
+    }
+
     setPage(0);
     setHasMore(true);
 
@@ -93,6 +125,54 @@ const MemberProfilePage = () => {
       loadComments(nextPage);
     }
   };
+
+  const handleGoBack = () => {
+    navigate(`/teams/${teamId}/info`);
+  };
+
+  // 탈퇴한 멤버 화면
+  if (isDeletedMember) {
+    return (
+      <div className="member-profile-container">
+        <div className="deleted-member-notice">
+          <div className="notice-icon">👤</div>
+          <h2>탈퇴한 멤버입니다</h2>
+          <p>이 멤버는 더 이상 팀에 속해있지 않습니다.</p>
+          <button className="back-button" onClick={handleGoBack}>
+            팀 정보로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 화면
+  if (error) {
+    return (
+      <div className="member-profile-container">
+        <div className="error-notice">
+          <div className="notice-icon">⚠️</div>
+          <h2>오류가 발생했습니다</h2>
+          <p>{error}</p>
+          <button className="back-button" onClick={handleGoBack}>
+            팀 정보로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 로딩 화면
+  if (loading && !memberInfo) {
+    return (
+      <div className="member-profile-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>멤버 정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="member-profile-container">
