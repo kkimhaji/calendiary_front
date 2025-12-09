@@ -147,10 +147,20 @@ const CreateCategory = () => {
                         </div>
                     ))}
                 </div>
+                <div className="button-group">
 
-                <button type="submit" className="submit-btn">
-                    {isEditMode ? '수정 완료' : '카테고리 생성'}
-                </button>
+                    <button type="submit" className="submit-btn">
+                        {isEditMode ? '수정 완료' : '카테고리 생성'}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="cancel-btn"
+                    >
+                        취소
+                    </button>
+                </div>
             </form>
         </div>
     );

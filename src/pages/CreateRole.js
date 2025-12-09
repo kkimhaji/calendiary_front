@@ -244,7 +244,7 @@ const CreateRole = () => {
                     />
                 </div>
                 {/* 버튼 그룹 - 삭제 버튼 추가 */}
-                <div className="action-buttons">
+                <div className="button-group">
                     {/* 삭제 버튼은 편집 모드에서만 표시 */}
                     {isEditMode && (
                         <button
@@ -255,7 +255,15 @@ const CreateRole = () => {
                             역할 삭제
                         </button>
                     )}
-                    <button type="submit">저장</button>
+                    <button type="submit" className='save-button'>저장</button>
+
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="cancel-btn"
+                    >
+                        취소
+                    </button>
                 </div>
             </form>
         </div>
