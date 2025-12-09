@@ -39,35 +39,36 @@ const TeamMembersSection = ({ teamId, memberCount, hasManagePermission, currentU
   };
 
   // 멤버 강제 탈퇴 핸들러
-  const handleRemoveMember = async (teamMemberId, nickname) => {
-    if (!window.confirm(`정말로 '${nickname}' 님을 팀에서 탈퇴시키시겠습니까?`)) {
-      return;
-    }
+  const handleRemoveMember = async (deleteContent) => {
+    if (!selectedMember) return;
 
-    setRemovingMemberId(teamMemberId);
+    setRemovingMemberId(selectedMember.teamMemberId);
+    setShowRemoveModal(false);
 
     try {
-      await axios.delete(`/team/${teamId}/members/${teamMemberId}`);
-
+      await axios.delete(`/team/${teamId}/members/${selectedMember.teamMemberId}`, {
+        data: { deleteContent }
+      });
+      
       // 성공 시 목록에서 제거
-      setMembers(prevMembers =>
-        prevMembers.filter(member => member.teamMemberId !== teamMemberId)
+      setMembers(prevMembers => 
+        prevMembers.filter(member => member.teamMemberId !== selectedMember.teamMemberId)
       );
-      const message = deleteContent
+      
+      const message = deleteContent 
         ? '멤버와 해당 멤버의 모든 게시글/댓글이 삭제되었습니다.'
         : '멤버가 탈퇴되었습니다. 게시글/댓글은 익명으로 전환되었습니다.';
       alert(message);
-
-      alert('멤버가 성공적으로 탈퇴되었습니다.');
     } catch (error) {
       console.error('멤버 탈퇴 실패:', error);
-
+      
       // 에러 메시지 처리
-      const errorMessage = error.response?.data?.message
+      const errorMessage = error.response?.data?.message 
         || '멤버 탈퇴에 실패했습니다.';
       alert(errorMessage);
     } finally {
       setRemovingMemberId(null);
+      setSelectedMember(null);
     }
   };
 
