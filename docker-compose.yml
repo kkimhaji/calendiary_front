@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+    container_name: frontend
+    env_file:
+      - local.env
+    ports:
+      - "3000:80"
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    name: myproject_network
+    external: true  # 외부에서 이미 생성된 네트워크 사용
