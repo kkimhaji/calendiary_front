@@ -91,11 +91,11 @@ const ContentEditor = ({
     };
 
     useEffect(() => {
-                // 새 글 작성 모드면 권한을 true로 설정
-                if (!isEdit) {
-                    setHasEditPermission(true);
-                    return;
-                }
+        // 새 글 작성 모드면 권한을 true로 설정
+        if (!isEdit) {
+            setHasEditPermission(true);
+            return;
+        }
 
         if (!isEdit || !contentId) return;
 
@@ -105,7 +105,7 @@ const ContentEditor = ({
 
                 // 1. 권한 확인 먼저 수행
                 const hasPermission = await checkEditPermission();
-                
+
                 if (!hasPermission) {
                     alert(`${contentType === 'post' ? '게시글' : '일기'} 수정 권한이 없습니다.`);
                     navigate(-1);
@@ -122,7 +122,7 @@ const ContentEditor = ({
                     const finalCategoryId = selectedCategory || categoryId;
                     url = apiEndpoints.fetch(teamId, finalCategoryId, contentId);
                 }
-                
+
                 const response = await axios.get(url);
 
                 if (response.data) {
@@ -144,7 +144,7 @@ const ContentEditor = ({
                 }
             } catch (error) {
                 console.error('콘텐츠 데이터 로드 실패:', error);
-                
+
                 if (error.response?.status === 404) {
                     alert('해당 콘텐츠를 찾을 수 없습니다.');
                     navigate(-1);
