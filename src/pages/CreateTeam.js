@@ -60,7 +60,7 @@ function CreateTeam() {
                     }
                 });
                 alert('팀 생성이 완료되었습니다');
-                navigate(`/teams/${response.data.id}/info`);
+                navigate(`/teams/${response.data.teamId}/info`);
             }
             refreshTeams();
             // navigate(teamId ? `/team/${teamId}` : `/teams/${response.data.id}/info`);
