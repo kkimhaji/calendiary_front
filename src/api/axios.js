@@ -1,12 +1,13 @@
 import axios from 'axios';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+
 const instance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: API_BASE_URL,
   withCredentials: true,
   timeout: 15000,
 });
 
-// ✅ 토큰 갱신 상태 관리 - 중복 방지
 let isRefreshing = false;
 let refreshPromise = null;
 let failedQueue = [];
@@ -86,7 +87,7 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ 핵심 개선된 응답 인터셉터 - 한 번만 토큰 갱신
+// 핵심 개선된 응답 인터셉터 - 한 번만 토큰 갱신
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -115,7 +116,7 @@ instance.interceptors.response.use(
         return Promise.reject(new Error('로그아웃'));
       }
 
-      // ✅ 토큰 갱신 중이면 큐에 추가
+      // 토큰 갱신 중이면 큐에 추가
       if (isRefreshing) {
         console.log('토큰 갱신 중 - 요청을 큐에 추가');
         return new Promise((resolve, reject) => {
@@ -126,7 +127,7 @@ instance.interceptors.response.use(
         }).catch(err => Promise.reject(err));
       }
 
-      // ✅ 토큰 갱신 시작 - 한 번만 실행
+      // 토큰 갱신 시작 - 한 번만 실행
       isRefreshing = true;
       
       if (!refreshPromise) {
@@ -174,5 +175,6 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+export const getBaseURL = () => API_BASE_URL;
 
 export default instance;
