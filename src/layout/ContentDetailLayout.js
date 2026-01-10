@@ -1,8 +1,7 @@
 import React, {useMemo} from 'react';
 import DOMPurify from 'dompurify';
 import './ContentDetailLayout.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+import { convertRelativeImageUrls } from '../utils/imageUtils';
 
 const ContentDetailLayout = ({
     title,
@@ -37,20 +36,10 @@ const ContentDetailLayout = ({
 
     const processedContent = useMemo(() => {
         if (!content) return '';
-
-        // 1. DOMPurify로 XSS 방어
+        
         const sanitized = DOMPurify.sanitize(content);
-
-        // 2. 상대 경로를 전체 URL로 변환
-        const withFullUrls = sanitized.replace(
-            /<img([^>]*?)src="(\/[^"]+)"([^>]*?)>/gi,
-            (match, before, src, after) => {
-                // 이미 전체 URL이면 그대로, 상대 경로면 전체 URL로 변환
-                const fullUrl = src.startsWith('http') ? src : `${API_BASE_URL}${src}`;
-                return `<img${before}src="${fullUrl}"${after}>`;
-            }
-        );
-
+        const withFullUrls = convertRelativeImageUrls(sanitized);
+        
         return withFullUrls;
     }, [content]);
 

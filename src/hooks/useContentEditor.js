@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { convertUploadedImagePath } from '../utils/imageUtils'; 
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
 
@@ -31,10 +32,7 @@ export const useContentEditor = ({
             const imagePath = response.data;  // 예: /post-temp-images/xxx.png
 
             // 전체 URL로 변환해서 반환
-            const fullUrl = imagePath.startsWith('http') 
-                ? imagePath 
-                : `${API_BASE_URL}${imagePath}`;
-
+            const fullUrl = convertUploadedImagePath(imagePath);
 
             return fullUrl;
             
