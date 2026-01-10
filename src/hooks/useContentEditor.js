@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+
 export const useContentEditor = ({
     contentType,
     apiEndpoints,
@@ -26,10 +28,18 @@ export const useContentEditor = ({
                 }
             });
 
-            return response.data; // 임시 URL 직접 반환
+            const imagePath = response.data;  // 예: /post-temp-images/xxx.png
 
+            // 전체 URL로 변환해서 반환
+            const fullUrl = imagePath.startsWith('http') 
+                ? imagePath 
+                : `${API_BASE_URL}${imagePath}`;
+
+
+            return fullUrl;
+            
         } catch (error) {
-            console.error('handleImageUpload - 업로드 실패:', {
+            console.error('❌ handleImageUpload - 업로드 실패:', {
                 status: error.response?.status,
                 statusText: error.response?.statusText,
                 data: error.response?.data,

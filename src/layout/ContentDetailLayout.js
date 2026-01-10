@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import DOMPurify from 'dompurify';
 import './ContentDetailLayout.css';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
 
 const ContentDetailLayout = ({
     title,
@@ -33,6 +35,25 @@ const ContentDetailLayout = ({
         return new Date(dateString).toLocaleString('ko-KR');
     };
 
+    const processedContent = useMemo(() => {
+        if (!content) return '';
+
+        // 1. DOMPurify로 XSS 방어
+        const sanitized = DOMPurify.sanitize(content);
+
+        // 2. 상대 경로를 전체 URL로 변환
+        const withFullUrls = sanitized.replace(
+            /<img([^>]*?)src="(\/[^"]+)"([^>]*?)>/gi,
+            (match, before, src, after) => {
+                // 이미 전체 URL이면 그대로, 상대 경로면 전체 URL로 변환
+                const fullUrl = src.startsWith('http') ? src : `${API_BASE_URL}${src}`;
+                return `<img${before}src="${fullUrl}"${after}>`;
+            }
+        );
+
+        return withFullUrls;
+    }, [content]);
+
     return (
         <div className={className}>
             <div className="content-detail-wrapper">
@@ -56,12 +77,12 @@ const ContentDetailLayout = ({
                 <div className="content-meta">
                     <span className="author-info">{authorInfo}</span>
                                           
-                    {/* ✅ customDateInfo가 있으면 우선 사용 */}
+                    {/* customDateInfo가 있으면 우선 사용 */}
                     {customDateInfo ? (
                         customDateInfo
                     ) : (
                         <div className="date-info">
-                            {/* ✅ diaryDate가 있으면 구분해서 표시 */}
+                            {/* diaryDate가 있으면 구분해서 표시 */}
                             {diaryDate && diaryDate !== createdDate ? (
                                 <>
                                     <span className="diary-date">
@@ -87,7 +108,7 @@ const ContentDetailLayout = ({
                 <div 
                     className="content-body" 
                     dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(content)
+                        __html: processedContent
                     }}
                 />
 
