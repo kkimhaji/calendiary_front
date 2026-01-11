@@ -119,10 +119,8 @@ const ContentEditor = ({
                 });
                 return response.data.canEdit;
             } else if (contentType === 'diary') {
-                const response = await axios.get(`/edit-delete-check/diary`, {
-                    params: { diaryId: contentId }
-                });
-                return response.data.canEdit;
+                const response = await axios.get(`/diary/${diaryId}/check`);
+                return response.data;
             }
         } catch (error) {
             console.error('권한 확인 실패:', error);
