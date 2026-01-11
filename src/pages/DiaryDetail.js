@@ -171,7 +171,7 @@ const DiaryDetail = () => {
         <ContentDetailLayout
             title={diary.title}
             content={diary.content}
-            authorInfo={`작성자: ${diary.authorName}`}
+            authorInfo={`작성자: ${diary.authorNickname}`}
             createdDate={diary.createdDate}
             diaryDate={diary.diaryDate}
             customDateInfo={
