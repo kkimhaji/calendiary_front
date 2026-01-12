@@ -73,7 +73,7 @@ const CategorySelector = ({
                     {categories.map(category => (
                         <div
                             key={category.id}
-                            className={`category-item ${selectedCategory === category.id ? 'selected' : ''}`}
+                            className={`category-select-item ${selectedCategory === category.id ? 'selected' : ''}`}
                             onClick={() => handleCategorySelect(category.id, category.name)}
                             role="option"
                             aria-selected={selectedCategory === category.id}
