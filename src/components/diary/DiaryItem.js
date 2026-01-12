@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentCard from '../common/ContentCard';
 import './DiaryItem.css';
+import { getFullImageUrl, getFullImageUrls } from '../../utils/imageUtils';
 
 const DiaryItem = ({
     diary,
@@ -56,8 +57,8 @@ const DiaryItem = ({
         diaryDate: diary.diaryDate,
         authorNickname: diary.authorNickname || '나',
         visibility: diary.visibility || 'PRIVATE',
-        thumbnailImageUrl: diary.thumbnailImageUrl,
-        imageUrls: diary.imageUrls
+        thumbnailImageUrl: getFullImageUrl(diary.thumbnailImageUrl),
+        imageUrls: getFullImageUrls(diary.imageUrls)
     };
 
     const plainContent = getPlainTextContent(diaryData.content);
@@ -91,12 +92,17 @@ const DiaryItem = ({
                     </div>
                 )}
 
+                {/* 썸네일 이미지 (전체 URL로 변환됨) */}
                 {diaryData.thumbnailImageUrl && (
                     <div className="diary-thumbnail-wrapper">
                         <img
                             src={diaryData.thumbnailImageUrl}
                             alt="썸네일"
                             className="diary-thumbnail"
+                            onError={(e) => {
+                                console.error('썸네일 로드 실패:', diaryData.thumbnailImageUrl);
+                                e.target.style.display = 'none';  // 로드 실패 시 숨김
+                            }}
                         />
                     </div>
                 )}
@@ -120,6 +126,10 @@ const DiaryItem = ({
                         src={diaryData.thumbnailImageUrl}
                         alt="썸네일"
                         className="diary-thumbnail"
+                        onError={(e) => {
+                            console.error('썸네일 로드 실패:', diaryData.thumbnailImageUrl);
+                            e.target.style.display = 'none';  // 로드 실패 시 숨김
+                        }}
                     />
                 )}
                 <div className="diary-info">

@@ -17,10 +17,10 @@ export const convertRelativeToAbsoluteUrls = (html) => {
             if (src.startsWith('http://') || src.startsWith('https://')) {
                 return match;
             }
-            
+
             // 상대 경로면 전체 URL로 변환
             const fullUrl = `${API_BASE_URL}${src}`;
-            
+
             return `<img${before}src="${fullUrl}"${after}>`;
         }
     );
@@ -38,7 +38,6 @@ export const convertRelativeToAbsoluteUrls = (html) => {
 export const convertAbsoluteToRelativeUrls = (html) => {
     if (!html) return html;
 
-    // 방법 1: 현재 API_BASE_URL만 제거 (안전)
     const processed = html.replace(
         new RegExp(`(<img[^>]*?)src="${API_BASE_URL}(/[^"]+)"([^>]*?)>`, 'gi'),
         (match, before, src, after) => {
@@ -67,7 +66,50 @@ export const convertUploadedImagePath = (imagePath) => {
     // 상대 경로면 전체 URL로 변환
     const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
     const fullUrl = `${API_BASE_URL}${cleanPath}`;
+
     return fullUrl;
+};
+
+/**
+ * 단일 이미지 URL을 전체 URL로 변환 (썸네일, 프로필 이미지 등)
+ * /diary-images/xxx.png → http://localhost:8080/diary-images/xxx.png
+ * null/undefined → null/undefined (그대로 반환)
+ * 
+ * @param {string|null|undefined} imageUrl - 이미지 URL
+ * @returns {string|null|undefined} 전체 URL 또는 원본
+ */
+export const getFullImageUrl = (imageUrl) => {
+    // null, undefined, 빈 문자열은 그대로 반환
+    if (!imageUrl) {
+        return imageUrl;
+    }
+
+    // 이미 전체 URL이면 그대로 반환
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+        return imageUrl;
+    }
+
+    // 상대 경로면 전체 URL로 변환
+    const cleanPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+    const fullUrl = `${API_BASE_URL}${cleanPath}`;
+
+    return fullUrl;
+};
+
+/**
+ * 이미지 URL 배열을 전체 URL 배열로 변환
+ * ['/diary-images/a.png', '/diary-images/b.png'] 
+ * → ['http://localhost:8080/diary-images/a.png', 'http://localhost:8080/diary-images/b.png']
+ * 
+ * @param {string[]|null|undefined} imageUrls - 이미지 URL 배열
+ * @returns {string[]|null|undefined} 전체 URL 배열 또는 원본
+ */
+export const getFullImageUrls = (imageUrls) => {
+    if (!imageUrls || !Array.isArray(imageUrls)) {
+        return imageUrls;
+    }
+
+    return imageUrls.map(url => getFullImageUrl(url));
 };
 
 /**

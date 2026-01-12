@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import axios from '../api/axios';
 import DiaryList from '../components/diary/DiaryList';
 import SearchBar from '../components/post/SearchBar';
+import { getFullImageUrl } from '../utils/imageUtils';
 import './DiaryPage.css';
 import 'react-calendar/dist/Calendar.css';
 
@@ -74,8 +75,14 @@ const DiaryPage = () => {
 
             const url = searchQuery ? '/diary/search' : '/diary/calendar';
             const response = await axios.get(url, { params });
+            const rawData = response.data.content || response.data || [];
 
-            setCalendarData(response.data.content || response.data || []);
+            const processedData = rawData.map(diary => ({
+                ...diary,
+                thumbnailImageUrl: getFullImageUrl(diary.thumbnailImageUrl)
+            }));
+
+            setCalendarData(processedData);
         } catch (error) {
             console.error('달력 데이터 로드 실패:', error);
             setCalendarData([]);
@@ -119,23 +126,30 @@ const DiaryPage = () => {
 
             const response = await axios.get(url, { params });
 
-            const newDiaries = Array.isArray(response.data)
+            const rawDiaries = Array.isArray(response.data)
                 ? response.data
                 : (response.data.content || []);
 
+            // 서버에서 받은 데이터의 썸네일 URL 변환
+            const processedDiaries = rawDiaries.map(diary => ({
+                ...diary,
+                thumbnailImageUrl: getFullImageUrl(diary.thumbnailImageUrl),
+                imageUrls: diary.imageUrls?.map(url => getFullImageUrl(url))
+            }));
+
             if (isReset) {
-                setListData(newDiaries);
-                const grouped = groupDiariesByDate(newDiaries);
+                setListData(processedDiaries);
+                const grouped = groupDiariesByDate(processedDiaries);
                 setGroupedListData(grouped);
             } else {
-                const updatedDiaries = [...listData, ...newDiaries];
+                const updatedDiaries = [...listData, ...processedDiaries];
                 setListData(updatedDiaries);
                 const grouped = groupDiariesByDate(updatedDiaries);
                 setGroupedListData(grouped);
             }
 
             if (Array.isArray(response.data)) {
-                setHasMore(newDiaries.length === 20);
+                setHasMore(processedDiaries.length === 20);
             } else {
                 setHasMore(!response.data.last);
             }
