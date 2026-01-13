@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-import { convertUploadedImagePath } from '../utils/imageUtils'; 
+import { convertUploadedImagePath } from '../utils/imageUtils';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
 
@@ -24,7 +24,7 @@ export const useContentEditor = ({
             formData.append('domain', contentType.toUpperCase());
 
             const response = await axios.post('/images/temp-upload', formData, {
-                headers: { 
+                headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -35,7 +35,7 @@ export const useContentEditor = ({
             const fullUrl = convertUploadedImagePath(imagePath);
 
             return fullUrl;
-            
+
         } catch (error) {
             console.error('❌ handleImageUpload - 업로드 실패:', {
                 status: error.response?.status,
@@ -43,11 +43,11 @@ export const useContentEditor = ({
                 data: error.response?.data,
                 message: error.message
             });
-            
-            const errorMessage = error.response?.data?.message || 
-                               error.response?.statusText ||
-                               '이미지 업로드에 실패했습니다.';
-            
+
+            const errorMessage = error.response?.data?.message ||
+                error.response?.statusText ||
+                '이미지 업로드에 실패했습니다.';
+
             alert(`이미지 업로드 실패: ${errorMessage}`);
             throw new Error(errorMessage);
         }
@@ -117,10 +117,10 @@ export const useContentEditor = ({
                 data: error.response?.data,
                 message: error.message
             });
-            
+
             const errorMessage = error.response?.data?.message ||
-                               error.response?.statusText ||
-                               '저장에 실패했습니다.';
+                error.response?.statusText ||
+                '저장에 실패했습니다.';
             setError(errorMessage);
             alert(errorMessage);
         } finally {

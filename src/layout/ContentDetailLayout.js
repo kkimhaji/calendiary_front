@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import DOMPurify from 'dompurify';
 import './ContentDetailLayout.css';
 import { convertRelativeImageUrls } from '../utils/imageUtils';
@@ -9,7 +9,7 @@ const ContentDetailLayout = ({
     authorInfo,
     createdDate,
     diaryDate, // diaryDate 추가
-    customDateInfo, 
+    customDateInfo,
     headerExtra, // 카테고리, 공개설정 등
     metaInfo, // 조회수 등 추가 정보
     permissions,
@@ -36,10 +36,10 @@ const ContentDetailLayout = ({
 
     const processedContent = useMemo(() => {
         if (!content) return '';
-        
+
         const sanitized = DOMPurify.sanitize(content);
         const withFullUrls = convertRelativeImageUrls(sanitized);
-        
+
         return withFullUrls;
     }, [content]);
 
@@ -65,7 +65,7 @@ const ContentDetailLayout = ({
                 {/* 메타 정보 */}
                 <div className="content-meta">
                     <span className="author-info">{authorInfo}</span>
-                                          
+
                     {/* customDateInfo가 있으면 우선 사용 */}
                     {customDateInfo ? (
                         customDateInfo
@@ -88,14 +88,14 @@ const ContentDetailLayout = ({
                             )}
                         </div>
                     )}
-                    
+
                     {metaInfo && <span className="meta-extra">{metaInfo}</span>}
                 </div>
 
-                <hr/>
+                <hr />
                 {/* 본문 내용 */}
-                <div 
-                    className="content-body" 
+                <div
+                    className="content-body"
                     dangerouslySetInnerHTML={{
                         __html: processedContent
                     }}
@@ -118,11 +118,11 @@ const ContentDetailLayout = ({
                     >
                         목록으로
                     </button>
-                    
+
                     <div className="button-spacer" />
-                    
+
                     {additionalActions}
-                    
+
                     {permissions?.canDelete && (
                         <button
                             className="btn btn-danger"

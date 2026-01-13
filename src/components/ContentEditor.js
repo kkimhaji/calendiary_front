@@ -22,10 +22,10 @@ const processImageUrls = (html) => {
             if (src.startsWith('http://') || src.startsWith('https://')) {
                 return match;
             }
-            
+
             // 상대 경로면 전체 URL로 변환
             const fullUrl = `${API_BASE_URL}${src}`;
-            
+
             return `<img${before}src="${fullUrl}"${after}>`;
         }
     );

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from '../api/axios';
 import './CategorySelector.css';
 
-const CategorySelector = ({ 
-    teamId, 
-    selectedCategory, 
-    onCategorySelect, 
-    error 
+const CategorySelector = ({
+    teamId,
+    selectedCategory,
+    onCategorySelect,
+    error
 }) => {
     const [categories, setCategories] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,13 +21,13 @@ const CategorySelector = ({
                     const categoryList = response.data || [];
                     setCategories(categoryList);
                     // setCategories(response.data || []);
-                        // 선택된 카테고리가 있으면 해당 카테고리 이름으로 설정
-                        if (selectedCategory && categoryList.length > 0) {
-                            const selectedCat = categoryList.find(cat => cat.id === selectedCategory);
-                            if (selectedCat) {
-                                setSelectedCategoryName(selectedCat.name);
-                            }
+                    // 선택된 카테고리가 있으면 해당 카테고리 이름으로 설정
+                    if (selectedCategory && categoryList.length > 0) {
+                        const selectedCat = categoryList.find(cat => cat.id === selectedCategory);
+                        if (selectedCat) {
+                            setSelectedCategoryName(selectedCat.name);
                         }
+                    }
                 } catch (error) {
                     console.error('카테고리 목록 조회 실패:', error);
                     setCategories([]);
