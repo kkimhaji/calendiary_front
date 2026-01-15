@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { convertRelativeToAbsoluteUrls } from '../../utils/imageUtils';
 import {
     ClassicEditor,
     Autoformat,
@@ -74,6 +75,20 @@ const RichTextEditor = React.memo(({
     // 무한 재렌더링 방지를 위한 안정화된 콜백
     const stableOnImageUpload = useCallback(onImageUpload, []);
 
+    const processedInitialValue = useMemo(() => {
+        if (!initialValue) return '';
+
+        console.log('📝 RichTextEditor 초기값 처리');
+        console.log('원본 initialValue:', initialValue.substring(0, 200));
+
+        // imageUtils 사용: 상대 경로 → 전체 URL
+        const processed = convertRelativeToAbsoluteUrls(initialValue);
+
+        console.log('처리된 initialValue:', processed.substring(0, 200));
+
+        return processed;
+    }, [initialValue]);
+
     // 커스텀 플러그인 정의
     const customPlugins = useMemo(() => {
         // 파일 업로드 어댑터 플러그인
@@ -114,11 +129,13 @@ const RichTextEditor = React.memo(({
                                 data.preventDefault();
                                 
                             } catch (error) {
+                                console.error('클립보드 이미지 업로드 실패:', error);
                                 // 업로드 실패 시 기본 동작 유지
                             }
                         }
                     }
                 } catch (error) {
+                    console.error('클립보드 처리 실패:', error);
                     // 전체 처리 실패 시 기본 동작 유지
                 }
             });
@@ -238,7 +255,7 @@ const RichTextEditor = React.memo(({
     return (
         <CKEditor
             editor={ClassicEditor}
-            data={initialValue}
+            data={processedInitialValue}
             config={editorConfiguration}
             onChange={(event, editor) => {
                 const data = editor.getData();
