@@ -9,31 +9,6 @@ import './ContentEditor.css';
 import DatePicker from './diary/DatePicker';
 import { convertRelativeImageUrls } from '../utils/imageUtils';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
-
-const processImageUrls = (html) => {
-    if (!html) return html;
-
-    // 상대 경로를 전체 URL로 변환
-    const processed = html.replace(
-        /<img([^>]*?)src="(\/[^"]+)"([^>]*?)>/gi,
-        (match, before, src, after) => {
-            // 이미 전체 URL이면 그대로
-            if (src.startsWith('http://') || src.startsWith('https://')) {
-                return match;
-            }
-
-            // 상대 경로면 전체 URL로 변환
-            const fullUrl = `${API_BASE_URL}${src}`;
-
-            return `<img${before}src="${fullUrl}"${after}>`;
-        }
-    );
-
-    console.log('변환 완료:', processed.substring(0, 200));
-    return processed;
-};
-
 const ContentEditor = ({
     initialTitle = '',
     initialContent = '',
