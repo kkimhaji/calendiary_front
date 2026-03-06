@@ -6,6 +6,7 @@ import './Login.css';
 import ToggleButton from '../components/ToggleButton';
 import axios from '../api/axios';
 
+
 function Login() {
     const dispatch = useDispatch();
     const { loading, error: authError } = useSelector(state => state.auth);
@@ -20,22 +21,26 @@ function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const [expired, setExpired] = useState(false);
-    // URL에서 리다이렉트 URL 가져오기
     const params = new URLSearchParams(location.search);
     const errorReason = params.get('reason');
     const redirectUrl = params.get('redirectUrl') || '/';
 
     useEffect(() => {
-        // URL 파라미터에서 expired 확인
         const params = new URLSearchParams(location.search);
-        if (params.get('expired') === 'true') {
+        const expired = params.get('expired') === 'true';
+        const reason = params.get('reason');
+
+        if (expired) {
             setError('세션이 만료되었습니다. 다시 로그인해주세요.');
             setExpired(true);
-        } return () => {
-            dispatch(clearError());
-        };
-    }, [location, dispatch]);
+        } else if (reason === 'invalid_credentials') {
+            setError('이메일 또는 비밀번호를 확인해주세요.');
+        } else if (reason === 'account_not_verified') {
+            setError('이메일 인증이 필요합니다.');
+        }
 
+        dispatch(clearError());
+    }, [location, dispatch]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -129,7 +134,8 @@ function Login() {
         <div className="login-container">
             <div className="login-box">
                 <h2>로그인</h2>
-                {(error || authError) && <div className="error-message">{error || authError}</div>}
+                {error && <div className="error-message">{error}</div>}
+                {authError && <div className="error-message">{authError}</div>}
 
                 {/* 리다이렉트 URL이 있는 경우 안내 메시지 표시 */}
                 {redirectUrl !== '/' && (

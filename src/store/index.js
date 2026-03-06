@@ -53,64 +53,65 @@ export const setupAxiosInterceptors = (axiosInstance = instance) => {
   }
 
   axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // 이미 로그아웃 처리 중인지 확인
-    if (window.__isLoggingOut) {
+    response => response,
+    async (error) => {
+      const originalRequest = error.config;
+  
+      if (window.isLoggingOut) {
+        return Promise.reject(error);
+      }
+  
+      const status = error.response?.status;
+      const url = originalRequest?.url || '';
+  
+      // 1) 로그인, 회원가입, 비밀번호 관련 요청은 여기서 바로 반환 (전역 로그아웃/리다이렉트 금지)
+      const isAuthEndpoint =
+        url.includes('/auth/authenticate') ||
+        url.includes('/auth/register') ||
+        url.includes('/auth/verify') ||
+        url.includes('/auth/get-temp-password') ||
+        url.includes('/auth/resend-verification');
+  
+      if (status === 401 && isAuthEndpoint) {
+        // 단순히 호출한 곳(Login.js 등)이 에러를 처리하도록 넘긴다
+        return Promise.reject(error);
+      }
+  
+      // 2) 리프레시 토큰 재발급 요청에서 401 → 강제 로그아웃 + expired=true
+      if (status === 401 && url.includes('/auth/refresh-token')) {
+        if (!originalRequest.retry) {
+          originalRequest.retry = true;
+          window.isLoggingOut = true;
+          store.dispatch(setLoading(false));
+          try {
+            await store.dispatch(logoutUser());
+          } catch (e) {
+            console.error('Logout failed after refresh-token 401:', e);
+          } finally {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.replace('login?expired=true');
+          }
+        }
+        return Promise.reject(error);
+      }
+  
+      // 3) 그 외 401 → 엑세스 토큰 만료로 보고 리프레시 토큰 플로우 실행 (기존 로직 유지)
+      if (status === 401 && !originalRequest.retry) {
+        originalRequest.retry = true;
+        try {
+          await store.dispatch(refreshAccessToken());
+          const newToken = store.getState().auth.accessToken;
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return axiosInstance(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+  
       return Promise.reject(error);
     }
-
-    // 401 에러 처리
-    if (error.response?.status === 401) {
-
-      await forceLogout();
-      // 리프레시 토큰 요청 자체가 실패한 경우 - 즉시 로그아웃
-    //   if (originalRequest.url?.includes('/auth/refresh-token') || originalRequest._retry) {
-    //     window.__isLoggingOut = true;
-        
-    //     // 로딩 상태 해제
-    //     store.dispatch(setLoading(false));
-        
-    //     // 로그아웃 처리
-    //     try {
-    //       await store.dispatch(logoutUser());
-    //     } catch (e) {
-    //       console.error('로그아웃 액션 디스패치 실패:', e);
-    //     } finally {
-    //       // 로컬 스토리지 직접 정리 (안전장치)
-    //       localStorage.clear();
-    //       sessionStorage.clear();
-          
-    //       // 로그인 페이지로 강제 이동
-    //       window.location.replace('/login?expired=true');
-    //     }
-        
-    //     return Promise.reject(error);
-    //   }
-      
-    //   // 일반 401 오류 - 리프레시 시도
-    //   if (!originalRequest._retry) {
-    //     originalRequest._retry = true;
-        
-    //     try {
-    //       await store.dispatch(refreshAccessToken());
-          
-    //       // 새 토큰으로 원래 요청 재시도
-    //       const newToken = store.getState().auth.accessToken;
-    //       originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-    //       return axiosInstance(originalRequest);
-    //     } catch (refreshError) {
-    //       // 리프레시 실패 - 위 로직으로 처리됨
-    //       return Promise.reject(refreshError);
-    //     }
-    //   }
-    // }
-    }
-    return Promise.reject(error);
-  }
-);
+  );
 };
 try {
   setupAxiosInterceptors();
