@@ -217,9 +217,50 @@ const authSlice = createSlice({
       .addCase(fetchUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.accessToken = action.payload.accessToken;
+        state.loading = false;
+        state.error = null;
+        state.errorCode = null;
+      })
+      .addCase(refreshAccessToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refreshAccessToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || '토큰 갱신 실패';
+        state.errorCode = action.payload?.code;
       });
   }
 });
+export const refreshAccessToken = createAsyncThunk(
+  'auth/refreshAccessToken',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('/auth/refresh-token', {}, { skipAuth: true });
+      const { accessToken } = response.data;
+      
+      const rememberMe = localStorage.getItem('rememberMe') === 'true';
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('accessToken', accessToken);
+      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+      resetAuthState();
+
+      return { accessToken };
+    } catch (error) {
+      // 리프레시 실패 → 로그아웃 처리
+      localStorage.removeItem('accessToken');
+      sessionStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('rememberMe');
+      delete axios.defaults.headers.common.Authorization;
+      resetAuthState();
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 
 export const { setCredentials, setLoading, setError, clearCredentials, clearError } = authSlice.actions;
 
