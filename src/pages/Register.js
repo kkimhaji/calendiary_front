@@ -23,7 +23,6 @@ function Register() {
 
     const [passwordValidation, setPasswordValidation] = useState({
         length: false,
-        uppercase: false,
         lowercase: false,
         number: false,
         specialChar: false
@@ -45,7 +44,6 @@ function Register() {
     const validatePassword = (password) => {
         const validations = {
             length: password.length >= 8,
-            uppercase: /[A-Z]/.test(password),
             lowercase: /[a-z]/.test(password),
             number: /[0-9]/.test(password),
             specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
@@ -205,9 +203,6 @@ function Register() {
                             <div className="password-validation">
                                 <p className={passwordValidation.length ? 'valid' : 'invalid'}>
                                     ✓ 8자 이상
-                                </p>
-                                <p className={passwordValidation.uppercase ? 'valid' : 'invalid'}>
-                                    ✓ 대문자 포함
                                 </p>
                                 <p className={passwordValidation.lowercase ? 'valid' : 'invalid'}>
                                     ✓ 소문자 포함
