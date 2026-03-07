@@ -22,7 +22,6 @@ import { selectIsAuthenticated } from './store/authSlice';
 import SearchResults from './pages/SearchResults';
 import MainPage from './pages/MainPage';
 import AccountInfoPage from './pages/AccountInfoPage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
 import MemberProfilePage from './pages/MemberProfilePage';
 import DiaryPage from './pages/DiaryPage';
 import CreateDiary from './components/diary/CreateDiary';
@@ -91,7 +90,6 @@ function App() {
               <Route path="/teams/:teamId/category/:categoryId/search" element={<SearchResults />} />
               <Route path="/teams/:teamId/members/:teamMemberId" element={<MemberProfilePage />} />
               <Route path="/account-info" element={isLoggedIn ? <AccountInfoPage /> : <Navigate to="/login" />} />
-              <Route path="/change-password" element={isLoggedIn ? <ChangePasswordPage /> : <Navigate to="/login" />} />
               <Route path="/diary" element={<DiaryPage />} />
               <Route path='/diary/create' element={<CreateDiary />} />
               <Route path='/diary/:diaryId' element={<DiaryDetail />} />
