@@ -41,6 +41,7 @@ function Register() {
         }
         return () => clearInterval(timer);
     }, [timerActive, timeLeft]);
+    
     const validatePassword = (password) => {
         const validations = {
             length: password.length >= 8,

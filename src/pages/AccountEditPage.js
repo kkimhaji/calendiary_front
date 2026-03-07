@@ -28,6 +28,12 @@ const AccountEditPage = () => {
     confirmPassword: ''
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    lowercase: false,
+    number: false,
+    specialChar: false
+  });
 
   // 비밀번호 인증 확인
   useEffect(() => {
@@ -95,16 +101,28 @@ const AccountEditPage = () => {
       setNicknameLoading(false);
     }
   };
+  const validatePassword = (password) => {
+    const validations = {
+      length: password.length >= 8,
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
 
-  // 비밀번호 변경
+    setPasswordValidation(validations);
+
+    // 모든 조건이 충족되는지 확인
+    return Object.values(validations).every(isValid => isValid);
+  };
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    // 비밀번호 유효성 검증
-    if (passwordData.newPassword.length < 8) {
-      setError('비밀번호는 최소 8자 이상이어야 합니다.');
+    // 강화된 검증 (회원가입과 동일 조건)
+    if (!validatePassword(passwordData.newPassword)) {
+      setError('비밀번호는 8자 이상이어야 하며, 소문자, 숫자, 특수문자(!?.@#$%^&*)를 1개 이상 포함해야 합니다.');
       return;
     }
 
@@ -121,6 +139,7 @@ const AccountEditPage = () => {
 
       setSuccess('비밀번호가 성공적으로 변경되었습니다.');
       setPasswordData({ newPassword: '', confirmPassword: '' });
+      setPasswordValidation({ length: false, lowercase: false, number: false, specialChar: false });
 
       setTimeout(() => {
         navigate('/account-info');
@@ -139,6 +158,10 @@ const AccountEditPage = () => {
       ...prev,
       [name]: value
     }));
+
+    if (name === 'newPassword') {
+      validatePassword(value);
+    }
   };
 
   // 회원 탈퇴
@@ -265,7 +288,6 @@ const AccountEditPage = () => {
             </button>
           </form>
         )}
-
         {activeTab === 'password' && (
           <form onSubmit={handlePasswordChange} className="edit-form">
             <div className="form-group">
@@ -277,10 +299,34 @@ const AccountEditPage = () => {
                 value={passwordData.newPassword}
                 onChange={handlePasswordInputChange}
                 placeholder="새 비밀번호를 입력하세요"
-                minLength={8}
                 required
               />
-              <small className="input-hint">최소 8자 이상 입력해주세요</small>
+
+              {/* **실시간 validation UI 추가** */}
+              <div className="password-validation-hint">
+                {passwordData.newPassword ? (
+                  <>
+                    <div className="password-validation">
+                      <p className={passwordValidation.length ? 'valid' : 'invalid'}>
+                        ✓ 8자 이상
+                      </p>
+                      <p className={passwordValidation.lowercase ? 'valid' : 'invalid'}>
+                        ✓ 소문자 포함
+                      </p>
+                      <p className={passwordValidation.number ? 'valid' : 'invalid'}>
+                        ✓ 숫자 포함
+                      </p>
+                      <p className={passwordValidation.specialChar ? 'valid' : 'invalid'}>
+                        ✓ 특수문자 포함
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <small className="input-hint">
+                    8자 이상, 소문자, 숫자, 특수문자(!?.@#$%^&*) 1개 이상
+                  </small>
+                )}
+              </div>
             </div>
 
             <div className="form-group">
@@ -292,7 +338,6 @@ const AccountEditPage = () => {
                 value={passwordData.confirmPassword}
                 onChange={handlePasswordInputChange}
                 placeholder="비밀번호를 다시 입력하세요"
-                minLength={8}
                 required
               />
             </div>
