@@ -16,6 +16,8 @@ RUN npm run build
 
 # Production stage - Nginx로 정적 파일 서빙
 FROM nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 WORKDIR /usr/share/nginx/html
 
 # 기존 nginx 기본 파일 삭제
