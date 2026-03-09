@@ -124,12 +124,10 @@ function Register() {
             });
 
             const { accessToken, refreshToken } = response.data;
-
-            // Redux store에 인증 정보 저장
+            
             dispatch(setCredentials({
-                access: accessToken,
-                refresh: refreshToken,
-                rememberMe: true
+                accessToken: accessToken,
+                refreshToken: refreshToken,
             }));
 
             localStorage.setItem('accessToken', accessToken);
