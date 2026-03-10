@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import './TeamLeaveButton.css';
+import { useTeam } from '../../contexts/TeamContext';
 
 const TeamLeaveButton = ({ teamId, isOwner }) => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [deleteContents, setDeleteContents] = useState(false);
+  const { refreshTeams } = useTeam();
 
   const handleLeaveTeam = async () => {
     setLoading(true);
@@ -19,7 +21,7 @@ const TeamLeaveButton = ({ teamId, isOwner }) => {
         params: { deleteContents }
       });
 
-      // 성공 시 메인 페이지로 이동
+      refreshTeams();
       navigate('/', {
         state: { message: '팀에서 성공적으로 탈퇴했습니다.' }
       });

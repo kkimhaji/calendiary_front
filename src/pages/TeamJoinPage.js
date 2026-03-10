@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import TeamInfo from './TeamInfo'; // 기존 TeamInfo 컴포넌트 재사용
+import TeamInfo from './TeamInfo';
 import './TeamJoinPage.css';
+import { useTeam } from '../contexts/TeamContext';
 
 const TeamJoinPage = () => {
   const { teamId } = useParams();
@@ -18,6 +19,7 @@ const TeamJoinPage = () => {
   const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
   const [duplicateChecked, setDuplicateChecked] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
+  const { refreshTeams } = useTeam();
 
   // 초대 코드 유효성 검증
   useEffect(() => {
@@ -129,16 +131,14 @@ const TeamJoinPage = () => {
       return;
     }
 
-
     try {
       setJoining(true);
-
-      // 팀 닉네임을 포함한 가입 요청
       await axios.post(`/teams/${teamId}/join`, {
         code: inviteCode,
-        teamNickname: teamNickname.trim()
+        teamNickname: teamNickname.trim(),
       });
 
+      refreshTeams();
       navigate(`/teams/${teamId}/info`);
     } catch (error) {
       console.error('팀 가입 실패:', error);
