@@ -21,14 +21,10 @@ export const loginUser = createAsyncThunk(
         email: loginData.email,
         password: loginData.password,
       });
-
       const { accessToken, refreshToken } = response.data;
 
       localStorage.setItem('accessToken', accessToken);
-      if (refreshToken) {
-        localStorage.setItem('refreshToken', refreshToken);
-      }
-
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
       resetAuthState();
 
@@ -57,11 +53,11 @@ export const fetchUserInfo = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
+  async () => {
     try {
       await axios.post('/auth/logout', {}, { _skipAuth: true });
-    } catch (error) {
-      // 서버 오류가 있어도 로컬 상태는 정리
+    } catch {
+      // 서버 오류 무시
     } finally {
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
@@ -82,11 +78,8 @@ const authSlice = createSlice({
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
       state.isLoggedIn = true;
-
-      localStorage.setItem('accessToken', accessToken);
-      if (refreshToken) {
-        localStorage.setItem('refreshToken', refreshToken);
-      }
+      if (accessToken) localStorage.setItem('accessToken', accessToken);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
     },
     clearCredentials: (state) => {
       state.accessToken = null;
@@ -96,16 +89,9 @@ const authSlice = createSlice({
       state.error = null;
       state.errorCode = null;
     },
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
-    clearError: (state) => {
-      state.error = null;
-      state.errorCode = null;
-    },
+    setLoading: (state, action) => { state.loading = action.payload; },
+    setError: (state, action) => { state.error = action.payload; },
+    clearError: (state) => { state.error = null; state.errorCode = null; },
   },
   extraReducers: (builder) => {
     builder
@@ -124,12 +110,9 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoggedIn = false;
-        state.error = action.payload?.message;
-        state.errorCode = action.payload?.code;
         state.loading = false;
-      })
-      .addCase(logoutUser.pending, (state) => {
-        state.loading = true;
+        state.error = action.payload?.message || '로그인에 실패했습니다.';
+        state.errorCode = action.payload?.code || null;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.accessToken = null;
@@ -147,18 +130,12 @@ const authSlice = createSlice({
         state.user = null;
         state.loading = false;
       })
-      .addCase(fetchUserInfo.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      .addCase(fetchUserInfo.pending, (state) => { state.loading = true; })
       .addCase(fetchUserInfo.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(fetchUserInfo.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+      .addCase(fetchUserInfo.rejected, (state) => { state.loading = false; });
   },
 });
 
