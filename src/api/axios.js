@@ -15,11 +15,8 @@ let logoutInProgress = false;
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(token);
   });
   failedQueue = [];
 };
@@ -29,27 +26,24 @@ export const resetAuthState = () => {
   refreshPromise = null;
   failedQueue = [];
   logoutInProgress = false;
+  window.isLoggingOut = false;
 };
 
 export const handleLogout = async () => {
   if (logoutInProgress) return;
 
   logoutInProgress = true;
-  window.isLoggingOut = true; // index.js 인터셉터와 상태 공유
+  window.isLoggingOut = true;
 
   try {
-    await instance.post('/auth/logout', {}, {
-      _skipAuth: true,
-      timeout: 3000
-    });
-  } catch (error) {
-    // 서버 로그아웃 실패는 무시
+    await instance.post('/auth/logout', {}, { _skipAuth: true, timeout: 3000 });
+  } catch {
+    // 서버 로그아웃 실패 무시
   }
 
   localStorage.clear();
   sessionStorage.clear();
   delete instance.defaults.headers.common['Authorization'];
-
   resetAuthState();
 
   setTimeout(() => {
@@ -66,12 +60,12 @@ instance.interceptors.request.use(
       return Promise.reject(new Error('로그아웃 진행 중'));
     }
 
-    // _skipAuth가 true인 경우 인터셉터 통과 (refresh 요청 등)
+    // _skipAuth 플래그가 있으면 토큰 주입 건너뜀
     if (config._skipAuth) {
       return config;
     }
 
-    // auth 관련 URL은 토큰 주입 스킵
+    // 인증 불필요 URL
     const skipAuthUrls = ['/auth/authenticate', '/auth/logout', '/auth/register'];
     if (skipAuthUrls.some(url => config.url?.includes(url))) {
       return config;
@@ -96,7 +90,8 @@ instance.interceptors.response.use(
       return Promise.reject(new Error('로그아웃 진행 중'));
     }
 
-    // 이미 재시도했거나 skipAuth 요청이거나 auth 관련 URL이면 그대로 reject
+    // 이미 재시도했거나, _skipAuth이거나, /auth/ 경로면 그대로 reject
+    // → 로그인 실패(401)가 loginUser thunk의 catch로 정상 전달됨
     if (
       originalRequest._retry ||
       originalRequest._skipAuth ||
@@ -133,8 +128,7 @@ instance.interceptors.response.use(
     isRefreshing = true;
 
     if (!refreshPromise) {
-      // ✅ 핵심 수정: refresh token을 Authorization 헤더에 명시적으로 설정
-      // instance.defaults.headers의 만료된 access token이 전송되는 것을 방지
+      // refresh token을 Authorization 헤더에 명시적으로 설정
       refreshPromise = instance.post('/auth/refresh-token', {}, {
         headers: { Authorization: `Bearer ${storedRefreshToken}` },
         timeout: 10000,
@@ -147,14 +141,10 @@ instance.interceptors.response.use(
       const newAccessToken = refreshResponse.data.accessToken;
       const newRefreshToken = refreshResponse.data.refreshToken;
 
-      if (!newAccessToken) {
-        throw new Error('새 액세스 토큰이 없습니다');
-      }
+      if (!newAccessToken) throw new Error('새 액세스 토큰이 없습니다');
 
       localStorage.setItem('accessToken', newAccessToken);
-      if (newRefreshToken) {
-        localStorage.setItem('refreshToken', newRefreshToken);
-      }
+      if (newRefreshToken) localStorage.setItem('refreshToken', newRefreshToken);
 
       instance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
