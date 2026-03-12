@@ -15,7 +15,6 @@ import TeamInfo from './pages/TeamInfo';
 import CategoryInfo from './pages/CategoryInfo';
 import CreateRole from './pages/CreateRole';
 import TeamJoinPage from './pages/TeamJoinPage';
-import authService from './services/authService';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from './store/authSlice';
@@ -31,24 +30,9 @@ import PasswordVerificationPage from './pages/PasswordVerificationPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);
-  const loading = useSelector(state => state.auth.loading);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const attemptAutoLogin = async () => {
-      try {
-        const success = await authService.attemptAutoLogin();
-        setIsAuthenticated(success);
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-
-    attemptAutoLogin();
-  }, []);
-
-  useEffect(() => {
-    // 로그인 상태지만 토큰이 없는 경우 강제 로그아웃
     const token = localStorage.getItem('accessToken') ||
       sessionStorage.getItem('accessToken');
 
@@ -59,10 +43,6 @@ function App() {
       window.location.replace('/login');
     }
   }, [isLoggedIn]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Router>
