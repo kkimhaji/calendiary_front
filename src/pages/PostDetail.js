@@ -15,6 +15,7 @@ const PostDetail = () => {
         canEdit: false,
         canDelete: false
     });
+    const [canWriteComment, setCanWriteComment] = useState(false);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,19 +31,33 @@ const PostDetail = () => {
         }
     };
 
+
     useEffect(() => {
         let isCancelled = false;
+
         const checkPermissions = async () => {
             try {
-                const response = await axios.get(`/edit-delete-check/post`, {
-                    params: {
-                        postId: postId
-                    },
-                });
-                setPermissions(response.data);
+                // 게시글 수정/삭제 권한 + 댓글 작성 권한을 병렬 조회
+                const [postPermRes, commentPermRes] = await Promise.allSettled([
+                    axios.get('/edit-delete-check/post', { params: { postId } }),
+                    axios.get('/permission-check', {
+                        params: { permission: 'CREATE_COMMENT', targetId: categoryId }
+                    })
+                ]);
+
+                if (postPermRes.status === 'fulfilled') {
+                    setPermissions(postPermRes.value.data);
+                } else {
+                    setPermissions({ canEdit: false, canDelete: false });
+                }
+
+                if (commentPermRes.status === 'fulfilled') {
+                    setCanWriteComment(commentPermRes.value.data);
+                } else {
+                    setCanWriteComment(false);
+                }
             } catch (error) {
                 console.error('권한 확인 실패:', error);
-                setPermissions({ canEdit: false, canDelete: false });
             }
         };
 
@@ -50,35 +65,21 @@ const PostDetail = () => {
             try {
                 setLoading(true);
                 setError(null);
-
-                // 1. 게시글 조회 (필수)
                 await fetchPost();
-
                 if (isCancelled) return;
-
-                // 2. 댓글과 권한을 병렬로 조회 (선택적)
                 await Promise.allSettled([
                     refreshComments(),
                     checkPermissions()
                 ]);
-
             } catch (error) {
                 console.error('데이터 로딩 실패:', error);
-                if (!isCancelled) {
-                }
             } finally {
-                if (!isCancelled) {
-                    console.log('로딩 상태 해제');
-                    setLoading(false);
-                }
+                if (!isCancelled) setLoading(false);
             }
         };
 
         loadData();
-
-        return () => {
-            isCancelled = true;
-        };
+        return () => { isCancelled = true; };
     }, [teamId, categoryId, postId]);
 
     const handleDelete = async () => {
@@ -164,29 +165,29 @@ const PostDetail = () => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onBack={() => navigate(-1)}
-            commentsSection={
-                <>
-                    <h4>댓글 ({comments.length})</h4>
-                    {isAuthenticated ? (
-                        <>
+            commentSection={
+                isAuthenticated ? (
+                    <>
+                        {/* 권한 있을 때만 CommentForm 렌더링 */}
+                        {canWriteComment && (
                             <CommentForm
                                 categoryId={categoryId}
                                 postId={postId}
                                 onCommentSubmitted={refreshComments}
                             />
-                            <CommentList
-                                comments={comments}
-                                onCommentSubmitted={refreshComments}
-                                postId={postId}
-                                teamId={teamId}
-                            />
-                        </>
-                    ) : (
-                        <div className="comment-auth-required">
-                            댓글을 보려면 로그인해주세요.
-                        </div>
-                    )}
-                </>
+                        )}
+                        <CommentList
+                            comments={comments}
+                            onCommentSubmitted={refreshComments}
+                            postId={postId}
+                            teamId={teamId}
+                        />
+                    </>
+                ) : (
+                    <div className="comment-auth-required">
+                        댓글을 보려면 로그인해주세요.
+                    </div>
+                )
             }
             className="post-detail-container"
         />
