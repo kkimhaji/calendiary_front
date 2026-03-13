@@ -165,7 +165,7 @@ const PostDetail = () => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onBack={() => navigate(-1)}
-            commentSection={
+            commentsSection={
                 isAuthenticated ? (
                     <>
                         {/* 권한 있을 때만 CommentForm 렌더링 */}
