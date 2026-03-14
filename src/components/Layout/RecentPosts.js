@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RecentPosts.css';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import PostList from '../post/PostList';
+import axios from '../../api/axios';
 
 const RecentPosts = () => {
     const { teamId, categoryId } = useParams();
     const [teamName, setTeamName] = useState('');
     const [categoryName, setCategoryName] = useState('');
+    const [canCreatePost, setCanCreatePost] = useState(false);
     const navigate = useNavigate();
 
     const handleMetadataLoaded = ({ teamName, categoryName }) => {
@@ -15,9 +16,26 @@ const RecentPosts = () => {
         if (categoryName) setCategoryName(categoryName);
     };
 
-    const handleCreatePost = () => {
-        navigate(`/teams/${teamId}/posts/create`);
-    };
+    useEffect(() => {
+        // categoryId가 없는 경우(팀 전체 글 목록)엔 권한 체크 불필요
+        if (!categoryId) {
+            setCanCreatePost(false);
+            return;
+        }
+
+        const checkCreatePostPermission = async () => {
+            try {
+                const response = await axios.get('/permission-check', {
+                    params: { permission: 'CREATE_POST', targetId: categoryId }
+                });
+                setCanCreatePost(response.data);
+            } catch {
+                setCanCreatePost(false);
+            }
+        };
+
+        checkCreatePostPermission();
+    }, [categoryId]);
 
     return (
         <div className="recent-posts-page">
@@ -28,7 +46,6 @@ const RecentPosts = () => {
                         : `${teamName} 팀의 글 목록`}
                 </h2>
                 <div className='header-buttons'>
-                    {/* 팀 정보 보기 버튼 - 항상 표시 */}
                     <button
                         className='team-info-button'
                         onClick={() => navigate(`/teams/${teamId}/info`)}
@@ -36,7 +53,6 @@ const RecentPosts = () => {
                         팀 정보 보기
                     </button>
 
-                    {/* 카테고리 정보 버튼 - categoryId가 있을 때만 표시 */}
                     {categoryId && (
                         <button
                             className='category-info-button'
@@ -46,13 +62,15 @@ const RecentPosts = () => {
                         </button>
                     )}
 
-                    {/* 글 작성하기 버튼 */}
-                    <button
-                        className='create-post-button'
-                        onClick={handleCreatePost}
-                    >
-                        글 작성하기
-                    </button>
+                    {/* 글 작성 권한이 있을 때만 표시 */}
+                    {canCreatePost && (
+                        <button
+                            className='create-post-button'
+                            onClick={() => navigate(`/teams/${teamId}/posts/create`)}
+                        >
+                            글 작성하기
+                        </button>
+                    )}
                 </div>
             </div>
             <PostList
