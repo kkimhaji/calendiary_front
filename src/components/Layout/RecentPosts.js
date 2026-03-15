@@ -17,12 +17,12 @@ const RecentPosts = () => {
     };
 
     useEffect(() => {
-        // categoryId가 없는 경우(팀 전체 글 목록)엔 권한 체크 불필요
+        // categoryId가 없는 경우(팀 전체 글 목록)엔 권한 체크 없이 버튼 표시
         if (!categoryId) {
-            setCanCreatePost(false);
+            setCanCreatePost(true);
             return;
         }
-
+    
         const checkCreatePostPermission = async () => {
             try {
                 const response = await axios.get('/permission-check', {
@@ -33,7 +33,7 @@ const RecentPosts = () => {
                 setCanCreatePost(false);
             }
         };
-
+    
         checkCreatePostPermission();
     }, [categoryId]);
 
