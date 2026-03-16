@@ -117,10 +117,16 @@ export const useContentEditor = ({
                 data: error.response?.data,
                 message: error.message
             });
-
-            const errorMessage = error.response?.data?.message ||
-                error.response?.statusText ||
-                '저장에 실패했습니다.';
+        
+            let errorMessage;
+            if (error.response?.status === 403) {
+                errorMessage = isEdit ? '수정 권한이 없습니다.' : '글 작성 권한이 없습니다.';
+            } else {
+                errorMessage = error.response?.data?.message ||
+                    error.response?.statusText ||
+                    '저장에 실패했습니다.';
+            }
+        
             setError(errorMessage);
             alert(errorMessage);
         } finally {
