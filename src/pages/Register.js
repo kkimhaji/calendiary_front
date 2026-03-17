@@ -103,12 +103,19 @@ function Register() {
                 nickname: formData.nickname,
                 password: formData.password
             });
+            // 신규 가입 or 미인증 재시도 모두 step 2로 이동
             setStep(2);
             setTimeLeft(300);
             setTimerActive(true);
         } catch (error) {
+            const errorCode = error.response?.data?.code;
+            if (errorCode === 'DUPLICATE_EMAIL') {
+                alert('이미 가입된 이메일입니다. 로그인 페이지로 이동합니다.');
+                navigate('/login');
+            } else {
+                alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
             console.error('Registration failed:', error);
-            alert('회원가입 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
         }
