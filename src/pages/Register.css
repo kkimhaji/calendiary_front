@@ -41,12 +41,12 @@
 
 .register-input {
   width: 100%;
-  margin-right: auto;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .register-input:focus {
@@ -98,6 +98,7 @@
   background-color: #f9f9f9;
   color: #666;
   cursor: not-allowed;
+  box-sizing: border-box;
 }
 
 .register-verification-group {
