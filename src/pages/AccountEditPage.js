@@ -151,19 +151,28 @@ const AccountEditPage = () => {
       setPasswordLoading(false);
     }
   };
-
+  const handlePasswordCompositionEnd = (e) => {
+    const filtered = e.target.value.replace(/[^\x20-\x7E]/g, '');
+    e.target.value = filtered;
+    setPasswordData(prev => ({ ...prev, [e.target.name]: filtered }));
+    if (e.target.name === 'newPassword') {
+      validatePassword(filtered);
+    }
+  };
   const handlePasswordInputChange = (e) => {
     const { name, value } = e.target;
+
+    const filtered = value.replace(/[^\x20-\x7E]/g, '');
+
     setPasswordData(prev => ({
       ...prev,
-      [name]: value
+      [name]: filtered
     }));
 
     if (name === 'newPassword') {
-      validatePassword(value);
+      validatePassword(filtered);
     }
   };
-
   // 회원 탈퇴
   const handleDeleteAccount = async (e) => {
     e.preventDefault();
@@ -298,6 +307,7 @@ const AccountEditPage = () => {
                 name="newPassword"
                 value={passwordData.newPassword}
                 onChange={handlePasswordInputChange}
+                onCompositionEnd={handlePasswordCompositionEnd}
                 placeholder="새 비밀번호를 입력하세요"
                 required
               />
@@ -337,6 +347,7 @@ const AccountEditPage = () => {
                 name="confirmPassword"
                 value={passwordData.confirmPassword}
                 onChange={handlePasswordInputChange}
+                onCompositionEnd={handlePasswordCompositionEnd}
                 placeholder="비밀번호를 다시 입력하세요"
                 required
               />

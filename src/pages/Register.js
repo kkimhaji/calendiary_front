@@ -41,7 +41,7 @@ function Register() {
         }
         return () => clearInterval(timer);
     }, [timerActive, timeLeft]);
-    
+
     const validatePassword = (password) => {
         const validations = {
             length: password.length >= 8,
@@ -73,19 +73,31 @@ function Register() {
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        const filtered = name === 'password'
+            ? value.replace(/[^\x20-\x7E]/g, '')
+            : value;
 
-        // 비밀번호 입력 시 유효성 검사
+        // 필터링 후 실제 input value도 강제 동기화
         if (name === 'password') {
-            validatePassword(value);
+            e.target.value = filtered;
         }
+
+        setFormData(prev => ({ ...prev, [name]: filtered }));
+
+        if (name === 'password') {
+            validatePassword(filtered);
+        }
+    };
+
+    // IME 조합 완료 시 한글 제거
+    const handlePasswordCompositionEnd = (e) => {
+        const filtered = e.target.value.replace(/[^\x20-\x7E]/g, '');
+        e.target.value = filtered;
+        setFormData(prev => ({ ...prev, password: filtered }));
+        validatePassword(filtered);
     };
 
     const handleInitialSubmit = async (e) => {
@@ -131,7 +143,7 @@ function Register() {
             });
 
             const { accessToken, refreshToken } = response.data;
-            
+
             dispatch(setCredentials({
                 accessToken: accessToken,
                 refreshToken: refreshToken,
@@ -203,6 +215,7 @@ function Register() {
                                 placeholder="비밀번호"
                                 value={formData.password}
                                 onChange={handleChange}
+                                onCompositionEnd={handlePasswordCompositionEnd}
                                 className="register-input"
                                 required
                             />
