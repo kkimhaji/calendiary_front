@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Calendar from 'react-calendar';
-import axios from '../api/axios';
-import DiaryList from '../components/diary/DiaryList';
-import SearchBar from '../components/post/SearchBar';
-import { getFullImageUrl } from '../utils/imageUtils';
+import axios from '../../api/axios';
+import DiaryList from '../../components/diary/DiaryList';
+import SearchBar from '../../components/post/SearchBar';
+import { getFullImageUrl } from '../../utils/imageUtils';
 import './DiaryPage.css';
 import 'react-calendar/dist/Calendar.css';
 

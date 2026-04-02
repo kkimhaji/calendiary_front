@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from '../api/axios';
+import axios from '../../api/axios';
 import './CategorySelector.css';
 
 const CategorySelector = ({

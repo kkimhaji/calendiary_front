@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './RecentPosts.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import PostList from '../post/PostList';
+import PostList from './PostList';
 import axios from '../../api/axios';
 
 const RecentPosts = () => {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, clearError } from '../store/authSlice';
-import './Login.css';
-import axios from '../api/axios';
+import { loginUser, clearError } from '../../store/authSlice';
+import './LoginPage.css';
+import axios from '../../api/axios';
 
 function Login() {
     const dispatch = useDispatch();
