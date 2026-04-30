@@ -610,18 +610,33 @@
 }
 
 .list-month-controls {
-    height: 3rem;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    min-height: 3rem;
+}
+
+/* 양쪽 사이드 영역 — 동일한 flex:1로 날짜를 정확히 중앙에 고정 */
+.month-controls-side {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 날짜 + 화살표 그룹 */
+.month-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .list-current-ym {
     font-size: 1.7rem;
     font-weight: bold;
-    margin: 0 6px;
+    margin: 0 8px;
+    min-width: 160px;
+    text-align: center;
 }
 
 .month-nav-btn {
@@ -630,28 +645,56 @@
     font-size: 1.4rem;
     cursor: pointer;
     color: #888;
-    padding: 0 8px;
-    transition: color 0.2s;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.2s, background-color 0.2s;
 }
 
 .month-nav-btn:hover {
     color: #222;
-}
-
-.sort-toggle-btn {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-size: 0.9rem;
-    color: #555;
-    cursor: pointer;
-    margin-left: 12px;
-    transition: all 0.2s;
-}
-
-.sort-toggle-btn:hover {
     background-color: #f0f0f0;
-    border-color: #999;
-    color: #333;
+}
+
+/* 정렬 버튼 */
+.sort-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.sort-toggle-btn:active {
+    transform: scale(0.96);
+}
+
+/* 최신순 — 파란 계열 */
+.sort-toggle-btn.sort-desc {
+    background-color: #e8f0fe;
+    color: #1a56db;
+}
+
+.sort-toggle-btn.sort-desc:hover {
+    background-color: #c7d9fc;
+}
+
+/* 오래된순 — 초록 계열 */
+.sort-toggle-btn.sort-asc {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+}
+
+.sort-toggle-btn.sort-asc:hover {
+    background-color: #c3e6cb;
+}
+
+.sort-icon {
+    font-size: 0.95rem;
+    line-height: 1;
 }

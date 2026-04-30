@@ -364,12 +364,21 @@ const DiaryPage = () => {
             ) : (
                 <div className="list-container">
                     <div className="list-month-controls">
-                        <button className="month-nav-btn" onClick={() => handleMonthChange(-1)}>◀</button>
-                        <span className="list-current-ym">{getCurrentYearMonthText()}</span>
-                        <button className="month-nav-btn" onClick={() => handleMonthChange(1)}>▶</button>
-                        <button className="sort-toggle-btn" onClick={handleSortToggle}>
-                            {sortOrder === 'desc' ? '최신순 ↓' : '오래된순 ↑'}
-                        </button>
+                        <div className="month-controls-side" />
+                        <div className="month-nav-group">
+                            <button className="month-nav-btn" onClick={() => handleMonthChange(-1)}>◀</button>
+                            <span className="list-current-ym">{getCurrentYearMonthText()}</span>
+                            <button className="month-nav-btn" onClick={() => handleMonthChange(1)}>▶</button>
+                        </div>
+                        <div className="month-controls-side">
+                            <button
+                                className={`sort-toggle-btn ${sortOrder === 'asc' ? 'sort-asc' : 'sort-desc'}`}
+                                onClick={handleSortToggle}
+                            >
+                                {sortOrder === 'desc' ? '최신순' : '오래된순'}
+                                <span className="sort-icon">{sortOrder === 'desc' ? '↓' : '↑'}</span>
+                            </button>
+                        </div>
                     </div>
                     {isLoading && <div className="loading">로딩 중...</div>}
 
