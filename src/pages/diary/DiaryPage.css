@@ -637,3 +637,21 @@
 .month-nav-btn:hover {
     color: #222;
 }
+
+.sort-toggle-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    margin-left: 12px;
+    transition: all 0.2s;
+}
+
+.sort-toggle-btn:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+    color: #333;
+}

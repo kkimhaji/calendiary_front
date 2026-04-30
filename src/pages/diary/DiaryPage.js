@@ -21,6 +21,7 @@ const DiaryPage = () => {
     const [hasMore, setHasMore] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
+    const [sortOrder, setSortOrder] = useState('desc'); // 'desc' | 'asc'
 
     // URL에서 검색 쿼리 읽기
     const queryParams = new URLSearchParams(location.search);
@@ -44,6 +45,7 @@ const DiaryPage = () => {
             String(d.getDate()).padStart(2, '0');
     };
 
+
     useEffect(() => {
         if (viewMode === 'calendar') {
             fetchCalendarData();
@@ -51,7 +53,7 @@ const DiaryPage = () => {
             setPage(0);
             fetchListData(true);
         }
-    }, [currentDate, viewMode, searchQuery, searchType]);
+    }, [currentDate, viewMode, searchQuery, searchType, sortOrder]);
 
     useEffect(() => {
         if (page > 0 && viewMode === 'list') {
@@ -111,17 +113,17 @@ const DiaryPage = () => {
                 month,
                 page: isReset ? 0 : page,
                 size: 20,
-                sort: 'createdDate,desc'
             };
 
-            // 검색 쿼리가 있으면 검색 API 호출
             let url;
             if (searchQuery) {
                 url = '/diary/search';
+                params.sort = 'createdDate,desc';
                 params.q = searchQuery;
                 params.type = searchType;
             } else {
                 url = '/diary/list/monthly';
+                params.sort = sortOrder; // 'asc' | 'desc'
             }
 
             const response = await axios.get(url, { params });
@@ -139,12 +141,12 @@ const DiaryPage = () => {
 
             if (isReset) {
                 setListData(processedDiaries);
-                const grouped = groupDiariesByDate(processedDiaries);
+                const grouped = groupDiariesByDate(processedDiaries, sortOrder);
                 setGroupedListData(grouped);
             } else {
                 const updatedDiaries = [...listData, ...processedDiaries];
                 setListData(updatedDiaries);
-                const grouped = groupDiariesByDate(updatedDiaries);
+                const grouped = groupDiariesByDate(updatedDiaries, sortOrder);
                 setGroupedListData(grouped);
             }
 
@@ -164,28 +166,27 @@ const DiaryPage = () => {
         }
     };
 
-    const groupDiariesByDate = (diaries) => {
+    const groupDiariesByDate = (diaries, sort = 'desc') => {
         if (!diaries || diaries.length === 0) {
             return {};
         }
 
         const grouped = {};
-
         diaries.forEach(diary => {
             const dateKey = getEffectiveDate(diary);
-
             if (!dateKey) {
                 console.warn('일기에 날짜 정보가 없습니다:', diary);
                 return;
             }
-
             if (!grouped[dateKey]) {
                 grouped[dateKey] = [];
             }
             grouped[dateKey].push(diary);
         });
 
-        const sortedKeys = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+        const sortedKeys = Object.keys(grouped).sort((a, b) =>
+            sort === 'asc' ? a.localeCompare(b) : b.localeCompare(a)
+        );
         const sortedGrouped = {};
         sortedKeys.forEach(key => {
             sortedGrouped[key] = grouped[key];
@@ -193,7 +194,6 @@ const DiaryPage = () => {
 
         return sortedGrouped;
     };
-
     const handleDateClick = (clickedDate) => {
         const dayDiaries = calendarData.filter(diary => {
             const isMatch = isSameDate(clickedDate, diary.diaryDate);
@@ -230,6 +230,10 @@ const DiaryPage = () => {
 
     const handleLoadMore = () => {
         setPage(prev => prev + 1);
+    };
+
+    const handleSortToggle = () => {
+        setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc');
     };
 
     const renderTileContent = ({ date, view }) => {
@@ -360,23 +364,13 @@ const DiaryPage = () => {
             ) : (
                 <div className="list-container">
                     <div className="list-month-controls">
-                        <button
-                            className="month-nav-btn"
-                            onClick={() => handleMonthChange(-1)}
-                            aria-label="이전 달"
-                        >
-                            ◀
-                        </button>
+                        <button className="month-nav-btn" onClick={() => handleMonthChange(-1)}>◀</button>
                         <span className="list-current-ym">{getCurrentYearMonthText()}</span>
-                        <button
-                            className="month-nav-btn"
-                            onClick={() => handleMonthChange(1)}
-                            aria-label="다음 달"
-                        >
-                            ▶
+                        <button className="month-nav-btn" onClick={() => handleMonthChange(1)}>▶</button>
+                        <button className="sort-toggle-btn" onClick={handleSortToggle}>
+                            {sortOrder === 'desc' ? '최신순 ↓' : '오래된순 ↑'}
                         </button>
                     </div>
-
                     {isLoading && <div className="loading">로딩 중...</div>}
 
                     <div className="diary-list-wrapper">
