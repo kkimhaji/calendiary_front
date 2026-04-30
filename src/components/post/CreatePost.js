@@ -1,5 +1,5 @@
 import React from 'react';
-import ContentEditor from '../ContentEditor';
+import ContentEditor from '../editor/ContentEditor';
 
 const CreatePost = () => {
     return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../api/axios';
-import ContentDetailLayout from '../layout/ContentDetailLayout';
+import ContentDetailLayout from '../../layouts/ContentDetailLayout';
 
 const DiaryDetail = () => {
     const [diary, setDiary] = useState(null);

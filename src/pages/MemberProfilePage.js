@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Tabs, Tab } from '../components/Tabs';
+import { Tabs, Tab } from '../components/common/Tabs';
 import PostItem from '../components/post/PostItem';
 import CommentItem from '../components/comment/CommentItem';
 import axios from '../api/axios';

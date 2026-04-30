@@ -3,7 +3,6 @@ import './Menubar.css';
 import { useTeam } from '../../contexts/TeamContext';
 import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import RecentPosts from './RecentPosts';
 
 function Menubar({ isOpen, setIsOpen, onClose }) {
     const [teams, setTeams] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import RichTextEditor from './RichTextEditor';
-import CategorySelector from './CategorySelector';
+import CategorySelector from '../category/CategorySelector';
 import VisibilitySelector from '../diary/VisibilitySelector';
 import { useContentEditor } from '../../hooks/useContentEditor';
 import './ContentEditor.css';

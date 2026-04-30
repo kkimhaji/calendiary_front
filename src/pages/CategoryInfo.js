@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import '../layout/InfoLayout.css';
-import InfoLayout from '../layout/InfoLayout';
-import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import '../layouts/InfoLayout.css';
+import InfoLayout from '../layouts/InfoLayout';
+import DeleteConfirmModal from '../components/common/DeleteConfirmModal';
 import { usePermissions } from '../hooks/usePermissions';
 import CategoryActions from '../components/category/CategoryActions';
 import CategoryPermissions from '../components/category/CategoryPermissions';

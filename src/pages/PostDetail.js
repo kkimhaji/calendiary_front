@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from '../api/axios';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';
-import ContentDetailLayout from '../layout/ContentDetailLayout';
+import ContentDetailLayout from '../layouts/ContentDetailLayout';
 import CommentForm from '../components/comment/CommentForm';
 import CommentList from '../components/comment/CommentList';
 

@@ -1,12 +1,12 @@
 import './App.css';
-import Login from './pages/Login';
+import Login from './pages/auth/LoginPage';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Register from './pages/Register';
+import Register from './pages/auth/RegisterPage';
 import TestConnection from './TestConnection';
 import { TeamProvider } from './contexts/TeamContext';
-import Layout from './layout/Layout';
+import Layout from './layouts/Layout';
 import CreateTeam from './pages/CreateTeam';
-import RecentPosts from './components/layout/RecentPosts';
+import RecentPosts from './components/post/RecentPosts';
 import CreateCategory from './pages/CreateCategory';
 import CreatePost from './components/post/CreatePost';
 import PostDetail from './pages/PostDetail';
@@ -20,13 +20,13 @@ import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from './store/authSlice';
 import SearchResults from './pages/SearchResults';
 import MainPage from './pages/MainPage';
-import AccountInfoPage from './pages/AccountInfoPage';
+import AccountInfoPage from './pages/account/AccountInfoPage';
 import MemberProfilePage from './pages/MemberProfilePage';
-import DiaryPage from './pages/DiaryPage';
+import DiaryPage from './pages/diary/DiaryPage';
 import CreateDiary from './components/diary/CreateDiary';
-import DiaryDetail from './pages/DiaryDetail';
-import AccountEditPage from './pages/AccountEditPage';
-import PasswordVerificationPage from './pages/PasswordVerificationPage';
+import DiaryDetail from './pages/diary/DiaryDetailPage';
+import AccountEditPage from './pages/account/AccountEditPage';
+import PasswordVerificationPage from './pages/account/PasswordVerificationPage';
 
 function App() {
   const isLoggedIn = useSelector(selectIsAuthenticated);

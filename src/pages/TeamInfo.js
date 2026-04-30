@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import axios from '../api/axios';
-import '../layout/InfoLayout.css';
+import '../layouts/InfoLayout.css';
 import { usePermissions } from '../hooks/usePermissions';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '../store/authSlice';
-import InfoLayout from '../layout/InfoLayout';
+import InfoLayout from '../layouts/InfoLayout';
 import TeamLeaveButton from '../components/team/TeamLeaveButton';
 import TeamDeleteButton from '../components/team/TeamDeleteButton';
 import TeamEditButton from '../components/team/TeamEditButton';
