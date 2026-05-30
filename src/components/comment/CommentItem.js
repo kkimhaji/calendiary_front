@@ -5,26 +5,20 @@ import CommentForm from "./CommentForm";
 import './CommentItem.css';
 import CommentList from "./CommentList";
 
-// CommentItem.js
 const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, teamId }) => {
-    const [permissions, setPermissions] = useState({
-        canEdit: false,
-        canDelete: false
-    });
+    const [permissions, setPermissions] = useState({ canEdit: false, canDelete: false });
     const [showReplyForm, setShowReplyForm] = useState(false);
-    // 답글 작성 버튼 핸들러
+    const [isDeleted, setIsDeleted] = useState(comment?.isDeleted || false);
+
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
     };
-    const [isDeleted, setIsDeleted] = useState(comment?.isDeleted || false);
 
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
                 const response = await axios.get(`/edit-delete-check/comment`, {
-                    params: {
-                        commentId: comment.id
-                    }
+                    params: { commentId: comment.id }
                 });
                 setPermissions(response.data);
             } catch (error) {
@@ -38,14 +32,10 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
 
     const handleDelete = async (commentId) => {
         try {
-            // 삭제 로직 구현 (API 호출 추가)
             onCommentSubmitted();
-
-            //api 호출 전 ui에 즉시 반영
             setIsDeleted(true);
             await axios.delete(`/category/${categoryId}/posts/${postId}/comments/${commentId}`);
         } catch (error) {
-            // 실패 시 UI 롤백
             setIsDeleted(false);
             console.error('댓글 삭제 실패:', error);
             alert('댓글 삭제에 실패했습니다.');
@@ -55,7 +45,7 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
     return (
         <div className="comment-content">
             {comment.isDeleted ? (
-                <em>  삭제된 댓글입니다.  </em>
+                <em>삭제된 댓글입니다.</em>
             ) : (
                 <>
                     <div className="comment-header">
@@ -82,17 +72,15 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
                     </div>
                     <p>{comment.content}</p>
 
-                    {/* 답글 작성 버튼 */}
-                    {depth < 2 && ( // 최대 3단계까지만 허용
-                        <button
-                            className="btn-reply"
-                            onClick={handleReplyClick}
-                        >
-                            답글 작성
+                    {/* 최대 depth 미만일 때만 답글 버튼 표시 */}
+                    {depth < 2 && (
+                        <button className="btn-reply" onClick={handleReplyClick}>
+                            {showReplyForm ? '답글 취소' : '답글 작성'}
                         </button>
                     )}
-                    {/* 답글 작성 폼 */}
-                    {showReplyForm && (
+
+                    {/* 답글 폼은 showReplyForm이 true일 때만 렌더링 */}
+                    {showReplyForm && depth < 2 && (
                         <CommentForm
                             categoryId={categoryId}
                             postId={postId}
@@ -100,22 +88,12 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
                             depth={depth}
                             onSuccess={() => {
                                 setShowReplyForm(false);
-                                onCommentSubmitted(); // 상위 컴포넌트에 새로고침 요청
+                                onCommentSubmitted();
                             }}
-                        />
-                    )}
-
-                    {comment.depth < 2 && (
-                        <CommentForm
-                            categoryId={categoryId}
-                            postId={postId}
-                            parentId={comment.id}
-                            depth={depth + 1}
                         />
                     )}
                 </>
             )}
-
 
             {/* 대댓글 목록 */}
             {(comment.replies || []).length > 0 && (
@@ -125,6 +103,7 @@ const CommentItem = ({ categoryId, comment, depth, postId, onCommentSubmitted, t
                     comments={comment.replies}
                     depth={depth + 1}
                     onCommentSubmitted={onCommentSubmitted}
+                    teamId={teamId}
                 />
             )}
         </div>
