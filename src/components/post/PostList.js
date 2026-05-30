@@ -10,15 +10,15 @@ const PostList = ({ teamId, categoryId, onMetadataLoaded }) => {
     const [hasMore, setHasMore] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const fetchPosts = async (isSearch = false) => {
+    const fetchPosts = async (currentPage, isSearch = false) => {
         try {
             let url;
-            const params = { page, size: 20, sort: 'createdDate,desc' };
+            const params = { page: currentPage, size: 20, sort: 'createdDate,desc' };
 
             if (isSearch) {
                 url = `/teams/${teamId}/posts/search`;
                 params.q = searchQuery;
-                params.teamId = teamId; // 팀별 검색 필터 추가
+                params.teamId = teamId;
             } else {
                 url = categoryId
                     ? `/teams/${teamId}/category/${categoryId}/recent`
@@ -26,24 +26,32 @@ const PostList = ({ teamId, categoryId, onMetadataLoaded }) => {
             }
 
             const response = await axios.get(url, { params });
-            //   const newPosts = response.data.posts.content || [];
             const { posts: { content: newPosts }, teamName, categoryName } = response.data;
 
             if (teamName || categoryName) {
                 onMetadataLoaded({ teamName, categoryName });
             }
 
-            setPosts(prev => page === 0 ? newPosts : [...prev, ...newPosts]);
-            setHasMore(!response.data.last);
+            // page 0이면 교체, 아니면 추가
+            setPosts(prev => currentPage === 0 ? newPosts : [...prev, ...newPosts]);
+            setHasMore(!response.data.posts.last);
         } catch (error) {
             console.error('데이터 불러오기 실패:', error);
         }
     };
 
+    // teamId, categoryId, searchQuery 변경 시: page를 0으로 리셋하고 fetch
     useEffect(() => {
         setPage(0);
-        fetchPosts(!!searchQuery);
+        fetchPosts(0, !!searchQuery);
     }, [teamId, categoryId, searchQuery]);
+
+    // page가 0보다 클 때(더보기 클릭)만 추가 fetch
+    useEffect(() => {
+        if (page > 0) {
+            fetchPosts(page, !!searchQuery);
+        }
+    }, [page]);
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -52,7 +60,6 @@ const PostList = ({ teamId, categoryId, onMetadataLoaded }) => {
     return (
         <div className="posts-list-container">
             <SearchBar onSearch={handleSearch} />
-
             <div className="posts-grid">
                 {posts.map(post => (
                     <PostItem
@@ -62,7 +69,6 @@ const PostList = ({ teamId, categoryId, onMetadataLoaded }) => {
                     />
                 ))}
             </div>
-
             {hasMore && (
                 <button className='load-more-btn' onClick={() => setPage(p => p + 1)}>
                     더 보기
