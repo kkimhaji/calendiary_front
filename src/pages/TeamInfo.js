@@ -56,16 +56,19 @@ const TeamInfo = ({ readOnly = false }) => {
 
         switch (response.data.userStatus) {
           case 'TEAM_MEMBER':
-            // 팀 멤버 UI 표시
+            // 팀 멤버 UI 표시 - 별도 처리 없음
             break;
 
           case 'VALID_INVITE':
-            // 팀 가입 배너 표시
             setShowJoinBanner(true);
+            setIsValidInvite(true);
             break;
 
           case 'NO_ACCESS':
-            // 접근 거부 UI 표시
+            // 접근 거부 UI - 필요시 별도 상태 추가
+            break;
+
+          default:
             break;
         }
       } catch (error) {
@@ -109,8 +112,8 @@ const TeamInfo = ({ readOnly = false }) => {
 
   return (
     <>
-      {/* 팀 가입 배너 */}
-      {readOnly && (
+      {/* showJoinBanner와 isValidInvite 모두 사용 */}
+      {showJoinBanner && (
         <TeamJoinBanner
           teamId={teamId}
           inviteCode={inviteCode}
@@ -125,7 +128,6 @@ const TeamInfo = ({ readOnly = false }) => {
         loading={loading}
         error={error}
       >
-        {/* 내 팀 정보 섹션 */}
         {!readOnly && (
           <TeamMemberInfo
             teamId={teamId}
@@ -133,38 +135,28 @@ const TeamInfo = ({ readOnly = false }) => {
             onNicknameUpdate={handleNicknameUpdate}
           />
         )}
-
-        {/* 초대 링크 섹션 */}
         {!readOnly && permissions['MANAGE_MEMBERS'] && (
           <TeamInviteSection teamId={teamId} />
         )}
-
-        {/* 팀 메타데이터 */}
         <TeamMetadata
           createdAt={teamData.createdAt}
           memberCount={teamData.memberCount}
           createdBy={teamData.created_by}
         />
-
         <TeamCategoriesSection
           teamId={teamId}
           hasManagePermission={permissions['MANAGE_CATEGORIES'] || permissions['MANAGE_TEAM']}
           readOnly={readOnly}
         />
-
-        {/* 역할 정보 섹션 */}
         <TeamRolesSection
           teamId={teamId}
           hasManagePermission={permissions['MANAGE_ROLES']}
           readOnly={readOnly}
         />
-
-        {/* 멤버 목록 섹션 */}
         <TeamMembersSection
           teamId={teamId}
           memberCount={teamData.memberCount}
           hasManagePermission={permissions.MANAGE_MEMBERS || false}
-          // currentUserId={currentUser?.id} 
         />
       </InfoLayout>
     </>
