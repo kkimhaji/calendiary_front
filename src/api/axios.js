@@ -54,33 +54,6 @@ export const handleLogout = async () => {
 };
 
 // 요청 인터셉터
-instance.interceptors.request.use(
-  (config) => {
-    if (logoutInProgress) {
-      return Promise.reject(new Error('로그아웃 진행 중'));
-    }
-
-    // _skipAuth 플래그가 있으면 토큰 주입 건너뜀
-    if (config._skipAuth) {
-      return config;
-    }
-
-    // 인증 불필요 URL
-    const skipAuthUrls = ['/auth/authenticate', '/auth/logout', '/auth/register'];
-    if (skipAuthUrls.some(url => config.url?.includes(url))) {
-      return config;
-    }
-
-    const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// 응답 인터셉터
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -90,8 +63,6 @@ instance.interceptors.response.use(
       return Promise.reject(new Error('로그아웃 진행 중'));
     }
 
-    // 이미 재시도했거나, _skipAuth이거나, /auth/ 경로면 그대로 reject
-    // → 로그인 실패(401)가 loginUser thunk의 catch로 정상 전달됨
     if (
       originalRequest._retry ||
       originalRequest._skipAuth ||
@@ -104,17 +75,21 @@ instance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // refresh token 자체가 만료/무효 응답이면 즉시 로그아웃 (무한 루프 방지)
+    const errorCode = error.response?.data?.code;
+    if (errorCode === 'REFRESH_TOKEN_EXPIRED') {
+      await handleLogout();
+      return Promise.reject(error);
+    }
+
     originalRequest._retry = true;
 
     const storedRefreshToken = localStorage.getItem('refreshToken');
-
-    // refresh token이 없으면 로그아웃
     if (!storedRefreshToken) {
       await handleLogout();
       return Promise.reject(new Error('No refresh token'));
     }
 
-    // 이미 갱신 중이면 큐에 추가
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -124,11 +99,9 @@ instance.interceptors.response.use(
       }).catch(err => Promise.reject(err));
     }
 
-    // 토큰 갱신 시작
     isRefreshing = true;
 
     if (!refreshPromise) {
-      // refresh token을 Authorization 헤더에 명시적으로 설정
       refreshPromise = instance.post('/auth/refresh-token', {}, {
         headers: { Authorization: `Bearer ${storedRefreshToken}` },
         timeout: 10000,
@@ -162,7 +135,6 @@ instance.interceptors.response.use(
     }
   }
 );
-
 export const getBaseURL = () => API_BASE_URL;
 
 export default instance;
