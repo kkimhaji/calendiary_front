@@ -11,7 +11,8 @@ export const useContentEditor = ({
     isEdit,
     contentId,
     teamId,
-    categoryId
+    categoryId,
+    onSubmitSuccess,
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -24,30 +25,13 @@ export const useContentEditor = ({
             formData.append('domain', contentType.toUpperCase());
 
             const response = await axios.post('/images/temp-upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            const imagePath = response.data;  // 예: /post-temp-images/xxx.png
-
-            // 전체 URL로 변환해서 반환
-            const fullUrl = convertUploadedImagePath(imagePath);
-
-            return fullUrl;
-
+            return convertUploadedImagePath(response.data);
         } catch (error) {
-            console.error('❌ handleImageUpload - 업로드 실패:', {
-                status: error.response?.status,
-                statusText: error.response?.statusText,
-                data: error.response?.data,
-                message: error.message
-            });
-
-            const errorMessage = error.response?.data?.message ||
-                error.response?.statusText ||
-                '이미지 업로드에 실패했습니다.';
-
+            console.error('이미지 업로드 실패:', error);
+            const errorMessage = error.response?.data?.message || '이미지 업로드에 실패했습니다.';
             alert(`이미지 업로드 실패: ${errorMessage}`);
             throw new Error(errorMessage);
         }
@@ -102,14 +86,18 @@ export const useContentEditor = ({
                 data: submitData
             });
 
-            // 성공 후 리다이렉트
+            if (onSubmitSuccess) {
+                onSubmitSuccess(response.data);
+                return;
+            }
+
+            // 콜백 없을 때 기본 동작
             if (contentType === 'diary') {
                 navigate('/diary');
             } else {
                 const targetCategoryId = formData.selectedCategory || categoryId;
                 navigate(`/teams/${teamId}/category/${targetCategoryId}/recent`);
             }
-
         } catch (error) {
             console.error('handleSubmit - 제출 실패:', {
                 status: error.response?.status,
