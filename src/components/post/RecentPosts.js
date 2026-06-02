@@ -17,12 +17,13 @@ const RecentPosts = () => {
     };
 
     useEffect(() => {
-        // categoryId가 없는 경우(팀 전체 글 목록)엔 권한 체크 없이 버튼 표시
+        // 카테고리가 없는 팀 전체 글 목록에서는 버튼을 표시하지 않음
+        // 글 작성에는 카테고리 선택이 필수이므로 카테고리 페이지에서만 허용
         if (!categoryId) {
-            setCanCreatePost(true);
+            setCanCreatePost(false);
             return;
         }
-    
+
         const checkCreatePostPermission = async () => {
             try {
                 const response = await axios.get('/permission-check', {
@@ -33,7 +34,7 @@ const RecentPosts = () => {
                 setCanCreatePost(false);
             }
         };
-    
+
         checkCreatePostPermission();
     }, [categoryId]);
 
@@ -62,8 +63,8 @@ const RecentPosts = () => {
                         </button>
                     )}
 
-                    {/* 글 작성 권한이 있을 때만 표시 */}
-                    {canCreatePost && (
+                    {/* 카테고리가 있고 작성 권한이 있을 때만 표시 */}
+                    {categoryId && canCreatePost && (
                         <button
                             className='create-post-button'
                             onClick={() => navigate(`/teams/${teamId}/posts/create`)}
