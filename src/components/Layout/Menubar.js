@@ -35,10 +35,9 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
 
     const handleCreateTeam = () => {
         navigate('/create-team');
-        onClose(); // ✅ 메뉴 닫기 추가
+        onClose();
     };
 
-    // ✅ 개인 일기 페이지로 이동하는 함수 추가
     const handleGoToDiary = () => {
         setSelectedTeamId(null); // 팀 선택 해제
         navigate('/diary');
@@ -48,13 +47,12 @@ function Menubar({ isOpen, setIsOpen, onClose }) {
     return (
         <div className={`team-menu ${isOpen ? 'open' : ''}`}>
             <div className='menubar-header'>
-                <h3>메뉴</h3>
                 <button className='close-button' onClick={onClose}>
                     ×
                 </button>
             </div>
             
-            {/* ✅ 개인 일기 메뉴 추가 */}
+            {/* 개인 일기 메뉴 추가 */}
             <div className='menubar-section'>
                 <button className='diary-button' onClick={handleGoToDiary}>
                     📔 개인 일기

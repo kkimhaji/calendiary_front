@@ -8,7 +8,7 @@ import { useTeam } from '../contexts/TeamContext';
 const CreateCategory = () => {
     const [rolePermissions, setRolePermissions] = useState([]);
     const navigate = useNavigate();
-    const { teamId, categoryId } = useParams(); // URL에서 teamId 가져오기
+    const { teamId, categoryId } = useParams();
     const { refreshCategories } = useTeam();
     const isEditMode = !!categoryId;
     const [formData, setFormData] = useState({
@@ -126,9 +126,11 @@ const CreateCategory = () => {
                     />
                 </div>
 
+                <br/>
                 {/* 역할별 권한 설정 섹션 */}
+                <h3>역할별 권한 설정</h3>
+
                 <div className="role-permissions-section">
-                    <h3>역할별 권한 설정</h3>
                     {rolePermissions.map(role => (
                         <div key={role.roleId} className="role-permissions">
                             <h4>{role.roleName}</h4>
